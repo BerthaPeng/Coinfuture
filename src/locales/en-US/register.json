@@ -1,0 +1,14 @@
+{
+  "tel": "Phone",
+  "email": "Email",
+  "tel_placeholder": "Phone Number",
+  "sms_placeholder": "SMS verification code",
+  "email_placeholder": "Email",
+  "email_verify_code_placeholder": "email verification code",
+  "pw1_placeholder": "password",
+  "pw2_placeholder": "confirm password",
+  "get_sms": "Send",
+  "retry": "Retry",
+  "retryafter": "Retry after ",
+  "agreement_txt": "I have read and argree with"
+}

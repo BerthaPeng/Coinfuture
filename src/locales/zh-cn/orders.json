@@ -1,0 +1,15 @@
+{
+  "openorders": "当前委托",
+  "orderhistory": "委托历史",
+  "transactionhistory": "成交明细",
+  "date": "时间",
+  "type": "交易类型",
+  "pairs": "交易对",
+  "type2": "方向",
+  "price": "价格",
+  "amount": "数量",
+  "total": "委托总额",
+  "executed": "已成交",
+  "unexecuted": "未成交",
+  "action": "操作"
+}

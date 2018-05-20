@@ -1,0 +1,10 @@
+{
+  "tel": "手机号",
+  "email": "邮箱",
+  "tel_placeholder": "手机号",
+  "sms_placeholder": "短信验证码",
+  "pw1_placeholder": "请设置8-12位密码",
+  "pw2_placeholder": "确认密码",
+  "get_sms": "获取验证码",
+  "agreement_txt": "我已阅读并同意"
+}

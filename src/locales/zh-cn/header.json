@@ -1,0 +1,10 @@
+{
+  "market": "行情",
+  "otc": "法币交易",
+  "exchange_a": "币币交易",
+  "login": "登录",
+  "signup": "注册",
+  "balances": "资产",
+  "orders": "订单",
+  "logout": "登出"
+}

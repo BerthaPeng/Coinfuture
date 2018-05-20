@@ -1,0 +1,10 @@
+{
+  "market": "MARKET",
+  "otc": "OTC",
+  "exchange_a": "EXCHANGE",
+  "login": "Log In ",
+  "signup": "Sign Up ",
+  "balances": "Balances",
+  "orders": "Orders",
+  "logout": "Log Out"
+}

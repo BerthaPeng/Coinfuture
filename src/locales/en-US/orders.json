@@ -1,0 +1,15 @@
+{
+  "openorders": "Open Orders",
+  "orderhistory": "Order History",
+  "transactionhistory": "Transaction History",
+  "date": "Date",
+  "type": "Type",
+  "pairs": "Pairs",
+  "type2": "Type",
+  "price": "Price",
+  "amount": "Amount",
+  "total": "Total",
+  "executed": "Executed",
+  "unexecuted": "Unexecuted",
+  "action": "Action"
+}
