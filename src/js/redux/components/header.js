@@ -18,47 +18,64 @@ class Header extends Component{
       login: false,
       uname: '',
       initDone: false,
-      lang: '',
+      path_url: '',
     }
   }
   render(){
     const options = [{key: 'ch', text: '中文-CH',value: 'ch'},
     {key: 'en', text: 'EN', value: 'en'}];
-  var { login, uname, lang } = this.state;
+  var { login, uname, lang, initDone, path_url } = this.state;
   var { lang } = this.props.Lang;
   return (
       <nav className="navbar header">
-        <div className="lang-box">
-          <ul>
-            <li className={ lang == 'zh-CN' ? "current-lang" : ""} onClick={this.changeLang.bind(this, 'zh-CN')}><Link>ZH</Link></li>
-            <li className={ lang == 'en-US' ? "current-lang" : ""} onClick={this.changeLang.bind(this, 'en-US')}><Link>EN</Link></li>
-          </ul>
+        {/*<div className="banner-header">
+        </div>*/}
+        <div className="logo" style={{ marginLeft: '15px'}}>
+          <img src="images/logo.png" width="40" height="40" />
+          {/*<img src="http://fakeimg.pl/60x30?text=logo" width="60" height="30" />*/}
         </div>
         <div className="nav">
-          <Link to=""><div>{intl.get('market')}</div></Link>
+          <Link to="/market" activeClassName="active"><div>行情</div></Link>
+          <Link to="/trade" activeClassName="active"><div>买卖</div></Link>
+          <Link to=""><div>资产</div></Link>
+          <Link to=""><div>帮助</div></Link>
+          {/*<Link to="/coin-coin-exchange"><div>下单</div></Link>*/}
+          {/*<Link to=""><div>{intl.get('market')}</div></Link>
           <Link to=""><div>{intl.get('otc')}</div></Link>
-          <Link to="/coin-coin-exchange"><div>{intl.get('exchange_a')}</div></Link>
+          <Link to="/coin-coin-exchange"><div>{intl.get('exchange_a')}</div></Link>*/}
         </div>
         {
           login ?
           <div className="social-nav">
-            <Link to="/user/finance"><div className="finance-block"><Icon name="yen" />{intl.get('balances')}</div></Link>
-            <Link to="/transaction"><div className="finance-block"><Icon name="file text outline" />{intl.get('orders')}</div></Link>
+            <Link to="/user/finance" activeClassName="active"><div className="finance-block"><Icon name="yen" />{intl.get('balances')}</div></Link>
+            <Link to="/transaction" activeClassName="active"><div className="finance-block"><Icon name="file text outline" />{intl.get('orders')}</div></Link>
             <Popup on="click" trigger = {<span className="uname"><Icon name="user outline"></Icon>{uname}<Icon name="caret down" /></span>}>
               <div className="setting-menu" onClick={this.logout.bind(this)}><Icon name="sign out" />{intl.get('logout')}</div>
             </Popup>
           </div>
           :
           <div className = "social-nav">
-            <Link to={ lang ? '/' + lang + '/login' : '/login'}><Button className="login-btn" size="tiny">{intl.get('login')}</Button></Link>
-            <Link to={ lang ? '/' + lang + '/register' : '/register'}><Button className="register-btn" size="tiny">{intl.get('signup')}</Button></Link>
+            <Link to='/login'><Button className="login-btn" size="tiny">登录</Button></Link>
+            <Link to='/register'><Button className="register-btn" size="tiny">注册</Button></Link>
             {/*<Dropdown text='中文-CH' options={options} />*/}
           </div>
         }
+        {/*<div className="lang-box">
+          <ul>
+            <li className={ lang == 'zh-CN' ? "current-lang" : ""} onClick={this.changeLang.bind(this, 'zh-CN')}><Link>ZH</Link></li>
+            <li className={ lang == 'en-US' ? "current-lang" : ""} onClick={this.changeLang.bind(this, 'en-US')}><Link>EN</Link></li>
+          </ul>
+        </div>*/}
       </nav>
       )
   }
   componentDidMount(){
+    var url = location.href;
+    if(url.indexOf('market')>-1){
+      this.setState({ path_url: 'market'})
+    }else if( url.indexOf('trade') > -1){
+      this.setState({path_url: 'trade'})
+    }
     if(sessionStorage.getItem('_udata')){
       var uname=sessionStorage.getItem('_udata_name')
       this.setState({ login: true, uname})
@@ -79,6 +96,7 @@ class Header extends Component{
       })
   }
   loadLocales(lang){
+    lang = 'zh-CN'
     intl.init({
       currentLocale: lang || 'en-us',
       locales: header

@@ -4,7 +4,8 @@ import { Lang } from './lang.js';
 
 var initial_state = {
   get_transac_ing: false,
-  transac_list: []
+  transac_list: [],
+  transac_detail_list: []
 }
 
 
@@ -16,6 +17,8 @@ function Transaction(state = initial_state, action){
       return { ...state, get_transac_ing: false, transac_list: action.data};break;
     case Actions.GET_TRANSAC_FAIL:
       return { ...state, get_transac_ing: false};break;
+    case Actions.GET_TRANSAC_DETAIL_LIST:
+      return { ...state, transac_detail_list: action.data };break;
     default: return state;break;
   }
 }

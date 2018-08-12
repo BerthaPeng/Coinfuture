@@ -15,6 +15,10 @@ let components = {
   Finance: require('./components/user/finance.js').default,
   CoinCoinExchange: require('./components/coin-coin-exchange/home.js').default,
   Transaction: require('./components/user/transaction.js').default,
+  IndexPage: require('./components/index.js').default,
+  Market: require('./components/market.js').default,
+  Trade: require('./components/trade.js').default,
+  UserCharge: require('./components/user/charge.js').default,
 }
 const requireAuth = (nextState, replace) => {
     if (!sessionStorage.getItem('_udata')) {
@@ -31,16 +35,15 @@ const get = componentName => ( routePath, callback ) => {
 const App = () => (
   <Router history={history}>
     <Route path="/" component={Main} >
+      <IndexRoute getComponent = { get('IndexPage')} />
       <Route path="/login" getComponent = { get('Login')} />
-      <Route path="/:lang/login" getComponent = { get('Login')} />
       <Route path="/register" getComponent = { get('Register')} />
-      <Route path="/:lang/register" getComponent = { get('Register')} />
       <Route path="/user/finance" onEnter={ requireAuth} getComponent={ get('Finance')} />
-      <Route path="/:lang/user/finance" onEnter={ requireAuth} getComponent={ get('Finance')} />
+      <Route path="/user/charge" onEnter={ requireAuth} getComponent={ get('UserCharge')} />
       <Route path="/coin-coin-exchange" getComponent = { get('CoinCoinExchange')}/>
-      <Route path="/:lang/coin-coin-exchange" getComponent = { get('CoinCoinExchange')}/>
       <Route path="/transaction" onEnter = { requireAuth } getComponent = { get('Transaction')} />
-      <Route path="/:lang/transaction" onEnter = { requireAuth } getComponent = { get('Transaction')} />
+      <Route path="/market" getComponent = { get('Market')} />
+      <Route path="/trade" getComponent = { get('Trade')} />
     </Route>
   </Router>
   )

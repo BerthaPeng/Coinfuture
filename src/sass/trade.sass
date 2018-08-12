@@ -1,0 +1,258 @@
+.fl-block.gray-bg
+  background-color: #f7f7f7
+  padding: 15px 0
+.item-20-100
+  width: 20%
+  min-height: 5px
+.item-60-100
+  width: 60%
+  min-height: 5px
+.item-80-100
+  width: 80%
+  min-height: 5px
+.item-3
+  width: 30%
+.item-7
+  width: 70%
+.coin-current-info
+  height: 140px
+  width: 100%
+.item-inner
+  background-color: #fff
+  padding: 7.5px
+  color: $font-color
+.market-k-chart
+  height: 370px
+  margin-top: 15px
+.trade-box
+  height: 370px
+  margin-top: 15px
+  .ui.secondary.pointing.menu
+    border-bottom: 1px solid #eee
+    .active.item
+      color: $theme-primary-color
+      border-color: $theme-primary-color
+      font-weight: inherit
+  .ui.basic.label
+    color: #909399
+    font-weight: 300
+  .ui.dropdown>.text
+    color: $theme-primary-color
+  .ui.input>input
+    color: $theme-primary-color
+.user-order-box
+  height: 200px
+  margin-top: 15px
+.coin-market
+  height: 500px
+  width: 100%
+.flex-wrapper
+  display: flex
+  width: 100%
+/* .no-border-table.ui.basic.table tbody tr
+  border: none; */
+.table-wrapper
+  /* padding: 0px 20px; */
+.no-border-table.ui.table
+  tr td, tr th
+    border: none
+    border: 0px
+    color: $font-color
+    .color-up
+      text-transform: lowercase;
+      color: $green-color
+    .color-down
+      color: $red-color;
+      margin-bottom: 10px
+  thead
+    background-color: rgba(46,110,146,.08);
+    border-bottom: none;
+    tr th
+      font-weight: normal;
+      color: #303133;
+      padding-top: none;
+    tr:first-child>th:first-child
+      border-radius: 0;
+  tr
+    th:first-child,td:first-child
+      text-align: right;
+    th:last-child, td:last-child
+      text-align: left;
+  tbody
+    tr td
+      border-bottom: 1px solid #eee;
+    tr:hover td
+      border-color: rgba(130,171,186,.3)
+  tr:first-child td, tr:first-child th
+    padding-left: 10px
+.no-border-table.ui[class*="very basic"].table:not(.sortable):not(.striped) thead tr:first-child th
+  padding-top: 8px;
+.market-price
+  text-align: center
+  h5
+    margin-bottom: 3px
+.unit, .price-amount
+  font-size: 16px
+  color: $theme-primary-color
+.latest-deals
+  text-align: center
+.gray-header-table.ui.basic.table tfoot, .gray-header-table.ui.basic.table thead
+  background-color: #eee
+  padding-top: 5px
+  tr
+    &:first-child>th:first-child
+      border-radius: 0
+    &:first-child>th:last-child
+      border-radius: 0
+    th
+      border: none
+.light-grey-color
+  color: #606266
+  font-size: 12px
+.item-40-100
+  width: 40%
+.fl-trade-panel.ui.segment
+  box-shadow: none;
+  -webket-box-shadow: none;
+  border: none;
+  .wrapper
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 250px;
+    margin-left: auto;
+    margin-right: auto;
+    .trade-panel-header
+      text-align: center
+      height: 35px
+      h5
+        font-size: 16px
+.tip-selector
+  width: 400px
+  span.tip
+    height: 38px
+    line-height: 38px
+    border: 1px solid rgba(34,36,38,.15)
+    border-right: none
+    display: inline-block
+  .ui.fluid.dropdown
+    width: 200px
+    display: inline-block
+    border-left: none
+.order-record
+  .ui.menu
+    margin-bottom: 0px
+  .ui.table td
+    padding-top: .3em
+    padding-bottom: .3em
+.fl-message.ui.green.message
+  width: 200px;
+  padding: .5em .5em;
+  border-radius: 3px;
+  position: fixed;
+  left: calc(50% - 100px)
+.line-guide-wrapper
+  font-size: 12px;
+  margin-top: 10px;
+  ul
+    display: inline-block
+    height: 100%
+    li
+      float: left;
+      >div
+        padding: 2px 8px;
+        border: 1px solid #ccc;
+        border-radius: 15px;
+        margin-right: 10px;
+        cursor: pointer
+  ul>li:hover>div,
+  ul>li.active>div
+    border: 1px solid $theme-primary-color
+    color: $theme-primary-color
+.ui.button.trade-btn.btn-buy
+  background-color: $red-color
+  color: #fff
+.ui.button.trade-btn.btn-sell
+  background-color: $green-color
+  color: #fff
+.table-title
+  font-weight: 600
+  font-size: 14px
+  text-align: center
+.cate-item
+  height: 60px;
+  line-height: 60px;
+  cursor: pointer;
+  font-size: 14px;
+  color: $theme-primary-color;
+  padding-left: 12px;
+  position: relative;
+  &:hover,&.active
+    color: #fff;
+    background-color : rgba(59, 147, 125, .5);
+  .arrow
+    position: absolute;
+    right: 8px;
+    color: rgba(255,255,255,.5);
+    font-size: 16px;
+    img
+      height: 16px;
+      width: 16px;
+.hover-cate-panel
+  height: 250px;
+  position: absolute;
+  top: 100px;
+  left: calc(20% - 15px);
+  width: 500px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,.1);
+  display: none;
+  .innerBox
+    background-color: #fff;
+    padding: 12px 48px 32px;
+    position: relative;
+    min-height: 220px;
+    .banner-line
+      position: relative;
+      height: 1px;
+      margin: 35px 0 23px;
+      background-color: rgba(77,85,93,.08);
+      .small-title
+        position: absolute;
+        top: -12px;
+        left: 0;
+        padding-right: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        color: #F20D0D;
+        line-height: 24px;
+        background-color: #fff;
+.tag-box
+  font-size: 0;
+  span
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: #4D555D;
+    line-height: 22px;
+    margin-right: 24px;
+    display: inline-block;
+    cursor: pointer;
+    &:hover,&.active
+      color: #fff;
+      background-color: $theme-primary-color;
+.l
+  float: left;
+.cate-box
+  height: 100px;
+  background-color: #fff;
+.ui.icon.button.clear-btn
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  right: 10px;
+  padding: 6px 5px 5px 5px;
+  background-color: #fff;
+  border: 1px solid $theme-primary-color;
+  color: $theme-primary-color;
+
+

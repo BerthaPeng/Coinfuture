@@ -71,7 +71,7 @@ gulp.task('template:dev', function(){
    
   return gulp.src(s('index.html'))
     .pipe(template({
-      'root': '/src/',
+      'root': config.root,
       'commons': webpack_server + 'commons.bundle.js',
       'index': webpack_server + 'index.bundle.js',
       'css': webpack_server + 'semantic-ui.styles.css'
@@ -85,7 +85,7 @@ gulp.task('template:deploy', function(){
   var webpack_assets = JSON.parse(fs.readFileSync('./build/webpack.assets.js').toString());
   return gulp.src(s('index.html'))
     .pipe(template({
-      'root': '/',
+      'root': config.root,
       'commons': webpack_assets.commons.js,
       'index': webpack_assets.index.js,
       'css': webpack_assets.index.css,

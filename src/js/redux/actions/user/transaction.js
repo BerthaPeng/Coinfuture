@@ -17,3 +17,15 @@ export function getTransacList(params){
       })
   }
 }
+
+
+export const GET_TRANSAC_DETAIL_LIST = 'GET_TRANSAC_DETAIL_LIST'
+
+export function getTransacDetailList(params){
+  return dispatch => {
+    return post(Url.get_transac_detail_list, 'app', params)
+      .done( data => {
+        dispatch({ type: GET_TRANSAC_DETAIL_LIST, data})
+      })
+  }
+}

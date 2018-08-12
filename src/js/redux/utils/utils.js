@@ -1,3 +1,28 @@
+import Noty from './_noty';
+function core_isFunction(arg) {
+  return typeof arg === 'function';
+}
+
+function core_isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+
+function core_isString(arg) {
+  return typeof arg === 'string';
+}
+
+function core_isArray(arg) {
+  return Object.prototype.toString.call(arg) === '[object Array]';
+}
+
+function core_isUndefined(arg) {
+  return arg === void 0;
+}
+
+function core_isNull(arg){
+  return typeof arg === 'object' && arg == null;
+}
+
 /**
  *
  * 描述：日期格式化（日期格式为2018-03-19T17:01:23.930）
@@ -37,8 +62,6 @@ function dateFormatUTC(date, format = 'yyyy-MM-dd') {
 }
 
 
-
-
 /**
 *
 * 描述：日期格式化
@@ -76,6 +99,7 @@ function dateFormat(date, format = 'yyyy-MM-dd') {
   }
 
 }
+
 
 /**
 *
@@ -143,10 +167,43 @@ function getLocaleFromBrowser(target, cb){
   return navigator.language || navigator.userLanguage
 }
 
+function timestampToTime(timestamp) {
+    var date = new Date(timestamp ),//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+    Y = date.getFullYear() + '-',
+    M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-',
+    D = date.getDate() + ' ',
+    h = date.getHours().toString(),
+    m = date.getMinutes().toString(),
+    s = date.getSeconds().toString();
+    h = h.length == 1 ? '0' + h + ":" : h + ":";
+    m = m.length == 1 ? ('0' + m)  : m ;
+    /*s = s.length == 1 ? '0' + s : s;*/
+    return h+m;
+}
+
+function timestampToDate(timestamp){
+  var date = new Date(timestamp),
+  Y = date.getFullYear() + '-',
+  M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-',
+  D = date.getDate();
+  return M+D;
+}
+
+var core = {
+  isArray: core_isArray,
+  isObject: core_isObject,
+  isString: core_isString,
+  isFunc: core_isFunction,
+  isUndefined: core_isUndefined,
+}
 
 export {
+  core,
   dateFormatUTC,
   dateFormat,
   map,
-  getLocaleFromBrowser
+  getLocaleFromBrowser,
+  timestampToTime,
+  timestampToDate,
+  Noty
 }

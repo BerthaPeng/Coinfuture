@@ -19,6 +19,7 @@ class Login extends Component{
       uname: '',
       pwd: '',
       submit_msg: '',
+      initDone: false,
     }
     /*intl.init({
 
@@ -26,11 +27,11 @@ class Login extends Component{
   }
   handleInputChange = (e, { name, value }) => this.setState({ [name]: value })
   render(){
-    var { uname, pwd, submit_msg } = this.state;
+    var { uname, pwd, submit_msg, initDone } = this.state;
     var { submit_ing } = this.props.Login;
     return (
       <div className="login">
-        <div className="box-container">
+        { initDone && <div className="box-container">
           <h1>{intl.get('title')}</h1>
           <Input name="uname" value={uname} onChange={this.handleInputChange.bind(this)} className="login-input" placeholder="手机号/邮箱" style={{marginTop: '50px'}} />
           <Input name="pwd" value={pwd} onChange={this.handleInputChange.bind(this)} className="login-input" placeholder="密码" type="password"/>
@@ -43,7 +44,7 @@ class Login extends Component{
             </Message>
             :null
           }
-        </div>
+        </div>}
       </div>
       )
   }
@@ -66,12 +67,13 @@ class Login extends Component{
     }
   }
   loadLocales(lang){
+    lang='zh-CN';
       intl.init({
         currentLocale: lang || 'en',
         locales: login,
       })
       .then( () => {
-        /*this.setState({ initDone: true })*/
+        this.setState({ initDone: true })
       })
   }
   submit(){
@@ -85,7 +87,7 @@ class Login extends Component{
           window.cf.login = true;*/
           location.reload();
         })
-        .fail( (msg ) => {
+        .fail( ({msg} ) => {
           this.setState({submit_msg:  msg || '用户名或密码错误'})
         })
     }else{

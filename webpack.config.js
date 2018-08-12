@@ -37,6 +37,10 @@ module.exports = {
       'stores'           : path.join(__dirname, './src/js/redux/stores'),
       'history_instance' : path.join(__dirname, './src/js/redux/history.js'),
       'locales'          : path.join(__dirname, './src/locales'),
+      'lib'              : path.join(__dirname, './src/lib'),
+      'plugins'              : path.join(__dirname, './src/plugins'),
+      'images'              : path.join(__dirname, './src/js/redux/images'),
+      'components'              : path.join(__dirname, './src/js/redux/components'),
 
     }
   },

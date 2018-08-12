@@ -1,5 +1,7 @@
+import { combineReducers } from 'redux';
 import * as Actions from 'actions/register';
 import config  from 'config/app.config';
+import { Lang } from './lang.js';
 
 const { SMS_COUNT } = config;
 var initial_state ={
@@ -9,7 +11,8 @@ var initial_state ={
   submit_ing:false
 }
 
-export default function Register(state = initial_state, action){
+
+function Register(state = initial_state, action){
   switch(action.type){
     case Actions.SEND_CAPTCHA_START:
       return { ...state, send_ing: true, remain_time: SMS_COUNT };break;
@@ -30,3 +33,8 @@ export default function Register(state = initial_state, action){
     default: return state;break;
   }
 }
+
+export default combineReducers({
+  Lang,
+  Register
+})

@@ -1,0 +1,64 @@
+.header
+  color: #303133
+  background-color: $block-bg-color
+  height: 50px
+  width: 100vw
+  display: -webkit-box
+  display: -ms-flexbox
+  display: flex
+  -webkit-box-align: center
+  -ms-flex-align: center
+  align-items: center
+  position: fixed
+  top: 0
+  z-index: 1000
+  .social-nav
+    margin-right: 25px
+  .ui.login-btn,.ui.register-btn
+    font-family: Nexa-Book;
+    border-radius: 18px;
+    font-size: 14px;
+    color: #fff;
+    margin-right: 10px
+  .ui.login-btn
+    border: 1px solid #fff;
+    background-color: $theme-primary-color
+  .ui.register-btn
+    background-color: $theme-default-color;
+    color: $font-color;
+    border: 1px solid #fff
+.nav
+  display: flex
+  margin-right: auto
+  margin-left: 200px
+  font-size: 14px
+  >a
+    color: $font-color
+    white-space: nowrap
+    &:hover
+      color: $theme-primary-color
+      div
+        line-height: 48px
+        border-bottom: 2px solid $theme-primary-color
+    div
+      margin-right: 72px
+      line-height: 48px
+      border-bottom: 2px solid #fff
+  >a.active
+    div
+      color: $theme-primary-color
+      border-bottom: 2px solid $theme-primary-color
+.lang-box ul li
+    display: inline-block;
+    list-style: none;
+    margin-right: 3px
+    a
+      color: rgba(99,75,63,.6);
+      padding: 4px;
+      background-color: $theme-default-color;
+      border-radius: 50%;
+      opacity: .9;
+      font-size: 11px
+.lang-box ul li.current-lang a
+    background-color: $theme-primary-color;
+    color: #fff

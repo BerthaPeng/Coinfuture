@@ -25,7 +25,7 @@ function _end_callback(resolve, reject) {
           resolve(data, msg);
         }else {
           console.error(msg || 'request error');
-          reject(msg, code);
+          reject({msg, code});
         }
       }else{
         var { result : {error_code, error_msg, code, msg }, data } = res.body;
@@ -34,14 +34,14 @@ function _end_callback(resolve, reject) {
             resolve(data, error_msg);
           }else {
             console.error(error_msg || 'request error');
-            reject(error_msg, error_code);
+            reject({msg: error_msg, code: error_code});
           }
         }else if(code != undefined){
           if (code === 200 || code === 0) {
             resolve(data, msg);
           }else {
             console.error(msg || 'request error');
-            reject(msg, code);
+            reject({msg, code});
           }
         }
       }
@@ -100,4 +100,23 @@ export function post( event_id , type, params){
   })
   p.abort = r.abort.bind(r);
   return p;
+}
+
+export function getSocketHeader(channel){
+  var data = {
+    "header": {
+      "token": "6bd0edbd0f34f232951df57f57f080df39563f24a7a4369bebc48996577270e2"
+    },
+    "data": {
+      "payload_type": "api",
+      "description": {
+        "type": "auth",
+        "id": "sys_notification_subscribe",
+        "params": {
+          "channel": channel
+        }
+      }
+    }
+  };
+  return data;
 }

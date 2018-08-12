@@ -1,5 +1,5 @@
-import createBrowserHistory from 'history/lib/createBrowserHistory'
-/*import createBrowserHistory from 'history/lib/createHashHistory'*/
+/*import createBrowserHistory from 'history/lib/createBrowserHistory'*/
+import createBrowserHistory from 'history/lib/createHashHistory'
 
 const history = createBrowserHistory();
 

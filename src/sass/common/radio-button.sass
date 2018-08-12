@@ -1,0 +1,38 @@
+.fl-radio-button
+  position: relative
+  display: inline-block
+  outline: none
+  &:first-child .fl-radio-button__inner
+    border-left: 1px solid #dcdfe6;
+    border-radius: 4px 0 0 4px;
+    box-shadow: none!important;
+  &:last-child .fl-radio-button__inner
+    border-radius: 0 4px 4px 0;
+.fl-radio-button__orig-radio
+  opacity: 0
+  outline: none
+  position: absolute
+  z-index: -1
+  &:checked.fl-radio-button__inner
+    color: #fff;
+    background-color: #409eff
+    border-color: #409eff
+    box-shadow: -1px 0 0 0 #409eff
+.fl-radio-button__inner
+  line-height: 1
+  white-space: nowrap
+  vertical-align: middle
+  background: #fff
+  border: 1px solid #dcdfe6
+  font-weight: 500
+  border-left: 0
+  color: #606266
+  -webkit-appearance: none
+  text-align: center
+  box-sizing: border-box
+  margin: 0
+  cursor: pointer
+  transition: all .3s cubic-bezier(.645,.045,.355,1)
+  padding: 12px 20px
+  font-size: 14px
+  border-radius: 0

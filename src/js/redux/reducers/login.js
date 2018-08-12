@@ -22,6 +22,7 @@ function Login(state = initial_state, action){
     case Actions.LOG_OUT:
       sessionStorage.removeItem('_udata');
       sessionStorage.removeItem('_udata_name');
+      sessionStorage.removeItem('_udata_accountid');
       return { ...state, login: false, user_name: "", token: ""};break;
     default:
       return state; break;

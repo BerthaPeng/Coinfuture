@@ -12,6 +12,8 @@ import history from 'history_instance';
 
 import intl from 'react-intl-universal';
 import { register } from 'locales/index.js';
+import LazyLoad from 'utils/lazy_load';
+import { Noty } from 'utils/utils';
 
 class Register extends Component{
   constructor(props){
@@ -31,14 +33,18 @@ class Register extends Component{
       country: '+86',
 
       submit_msg: '',
-      lang: 'en',
+
+      initDone: false,
+      btnText: '获取验证码',
+
     }
   }
   handleInputChange = (e, { name, value }) => this.setState({ [name]: value })
   render(){
     var { type, telError, tel, captcha, captchaError, pwd, pwdError, confirmpwd,
-      confirmpwdError, popupError, agreement, country, submit_msg, lang  } = this.state;
-    var { send_captcha_status, remain_time, submit_ing } = this.props;
+      confirmpwdError, popupError, agreement, country, submit_msg, lang, initDone,
+      btnText, isLineChange  } = this.state;
+    var { send_captcha_status, remain_time, submit_ing } = this.props.Register;
     var btnText = lang == 'en' ? 'Send' : '获取验证码';
     if(send_captcha_status === 'sent'){
       btnText = lang == 'en' ? ('Retry after ' +  remain_time ) : (remain_time   + '后重试');
@@ -47,12 +53,12 @@ class Register extends Component{
     }
     return (
       <div className="login">
-        <div className="box-container">
+        { initDone && <div className="box-container">
               <Grid style={{width: '330px'}}>
-                <Column width={8} textAlign="left"  verticalAlign="bottom"><h1>{intl.get('login')}</h1></Column>
+                <Column width={8} textAlign="left"  verticalAlign="bottom"><h1>注册</h1></Column>
                 <Column width={8} textAlign="right" verticalAlign="bottom">
-                  <span onClick={this.toggleType.bind(this, 'mobile')} className={` ${type == 'mobile' ? 'active' : ''}`} style={{paddingBottom: '5px', cursor: 'pointer'}}>{intl.get('tel')}</span>
-                  <span onClick={this.toggleType.bind(this, 'email')} className={` ${type == 'email' ? 'active' : ''}`}  style={{marginLeft: '10px', paddingBottom: '5px', cursor: 'pointer'}}>{intl.get('email')}</span>
+                  <span onClick={this.toggleType.bind(this, 'mobile')} className={` ${type == 'mobile' ? 'active' : ''}`} style={{paddingBottom: '5px', cursor: 'pointer'}}>手机号</span>
+                  <span onClick={this.toggleType.bind(this, 'email')} className={` ${type == 'email' ? 'active' : ''}`}  style={{marginLeft: '10px', paddingBottom: '5px', cursor: 'pointer'}}>邮件</span>
                 </Column>
               </Grid>
               {
@@ -66,7 +72,7 @@ class Register extends Component{
                   <Column width={12} style={{margin: 0, padding: 0}} >
                     <Popup
                       trigger={
-                        <Input value={tel} name="tel" placeholder={intl.get('tel_placeholder')} className="login-input"
+                        <Input value={tel} name="tel" placeholder="请输入手机号" className="login-input"
                           onChange={this.handleInputChange.bind(this)}
                           onBlur={this.onTelBlur.bind(this)}
                           style={{width: '100%'}}
@@ -82,7 +88,7 @@ class Register extends Component{
                   <Column width={10} style={{margin: 0, padding: 0}}>
                   <Popup
                     trigger={
-                      <Input style={{width: '100%'}} value={captcha} name="captcha" placeholder={intl.get('sms_placeholder')} className="login-input"
+                      <Input style={{width: '100%'}} value={captcha} name="captcha" placeholder="短信验证码" className="login-input"
                       onChange={this.handleInputChange.bind(this)}
                       error={captchaError} />
                     }
@@ -137,7 +143,7 @@ class Register extends Component{
               <div>
               <Checkbox name="agreement" onChange={this.handleInputChange.bind(this)} checked={agreement} className="checkbox" style={{verticalAlign: 'middle', color: ''}}/>
                 <span style={{verticalAlign: 'middle', marginLeft: '3px'}}>{intl.get('agreement_txt')}<Link>《XXXXXXX》</Link></span></div>
-              <Button disabled={submit_ing} loading={submit_ing} onClick={this.submit.bind(this)} className="login-btn">{intl.get('login')}</Button>
+              <Button disabled={submit_ing} loading={submit_ing} onClick={this.submit.bind(this)} className="login-btn">注册</Button>
               {
                 submit_msg != '' ?
                 <Message negative size="mini" style={{padding: '0.5em 1.5em'}}>
@@ -145,15 +151,15 @@ class Register extends Component{
               </Message>
               :null
             }
-        </div>
+        </div>}
       </div>
       )
   }
   componentDidMount(){
-    this.loadLocales(this.state.lang);
+    this.loadLocales('zh-CN');
+    LazyLoad('noty')
   }
   loadLocales(lang){
-    console.log(register);
     intl.init({
       currentLocale: lang,
       locales: register
@@ -209,10 +215,19 @@ class Register extends Component{
       clearInterval(this.updateTimer);
       delete this.updateTimer;
     }
+    if(this.props.Lang.lang != nextProps.Lang.lang){
+      /*intl.determineLocale({ currentLocale: nextProps.Lang.lang });*/
+      this.loadLocales(nextProps.Lang.lang);
+    }
   }
   submit(){
     var { captcha, telError, pwdError, confirmpwdError, agreement, tel, pwd, confirmpwd, country, remain_time } = this.state;
+    var { send_captcha_status } = this.props.Register;
     var valid = true;
+    if(send_captcha_status === 'primary'){
+      Noty('warning', '请先发送验证码');
+      valid = false;
+    }
     if(!UserCommon.telValidator(tel)){
       this.setState({ telError: true, popupError: 'tel'});
       valid = false;
@@ -239,9 +254,10 @@ class Register extends Component{
         verificode: captcha, pw:  pwd})
         .done( (msg) => {
           /*this.setState({ submit_msg : msg})*/
-          history.push('/')
+          Noty('success', '注册成功，请登录')
+          history.push('/login')
         })
-        .fail( (msg) => {
+        .fail( ({msg}) => {
           this.setState({ submit_msg : msg})
         })
     }else{
