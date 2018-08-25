@@ -251,7 +251,7 @@ class Register extends Component{
     if(valid){
       var pwd = UserCommon.encodePwdSync(pwd, tel);
       this.props.actions.register({ mobile_num: tel, country_code: country,
-        verificode: captcha, pw:  pwd})
+        verificode: Number(captcha), pw:  pwd})
         .done( (msg) => {
           /*this.setState({ submit_msg : msg})*/
           Noty('success', '注册成功，请登录')

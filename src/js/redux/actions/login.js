@@ -8,7 +8,7 @@ export const LOGIN_FAIL = 'LOGIN_FAIL';
 export function login(params){
   return dispatch => {
     dispatch({ type: LOGIN_ING});
-    return post(Url.login, 'app', params)
+    return post(201001, params)
       .done( data => {
         dispatch( { type: LOGIN_SUCCESS, data, uname: params.mobile })
       } )
@@ -22,7 +22,7 @@ export function login(params){
 export const LOG_OUT = 'LOG_OUT';
 export function logout(params){
   return dispatch => {
-    return post(Url.loginout, 'app', params)
+    return post(101002, params)
       .done( () => {
         dispatch({type: LOG_OUT})
       })

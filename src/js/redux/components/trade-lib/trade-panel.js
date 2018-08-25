@@ -4,6 +4,8 @@ import {Link} from 'react-router';
 import TipSelector from './tip-selector.js';
 const { Column } = Grid;
 import { Noty } from 'utils/utils';
+import intl from 'react-intl-universal';
+import { trade } from 'locales/index.js';
 
 class TradePanel extends Component{
   constructor(props){
@@ -62,14 +64,14 @@ class TradePanel extends Component{
            <Column width={8} style={{borderRight: '1px solid #eee'}}>
              <div className="wrapper">
              <div className="trade-panel-header">
-               <p>买入{coin}</p>
+               <p>{intl.get('tradebuy')}　{coin}</p>
              </div>
-              <TipSelector value={pay_coin} placeholder="选择支付币种" />
+              <TipSelector value={pay_coin} placeholder={intl.get('paycoin')} />
              {/*<Dropdown value={pay_coin} placeholder="选择支付币种" fluid selection options={exchange_available.map( m =>({text: m, value: m}))}/>*/}
              {/*<TipSelector options={exchange_available} value={pay_coin} placeholder="选择支付币种" onChange={this.onTradeCoinTypeChange.bind(this)} />*/}
              <p style={{width: '100%', fontSize: '10px', marginTop: '10px'}}>
-              <span style={{display: 'inline-block', float: 'left'}}>usdx余额</span>
-              <span style={{display: 'inline-block', float: 'right', color: '#2e6e92'}}>去充值</span>
+              <span style={{display: 'inline-block', float: 'left'}}>usdx{intl.get('availableAmount')}</span>
+              <span style={{display: 'inline-block', float: 'right', color: '#2e6e92'}}>{intl.get('gocharge')}</span>
              </p>
              {
                panel_type == 'limit' ?
@@ -81,7 +83,7 @@ class TradePanel extends Component{
                  value={ buy_price }
                  onChange={this.handlePanelInputChange}
                  style={{marginTop: '10px', width: '100%'}}
-                 placeholder="买入价"
+                 placeholder={intl.get('tradebuyprice')}
                  key="buy_price_input"
                  />,
                  <Input
@@ -91,7 +93,7 @@ class TradePanel extends Component{
                    value={ buy_amount }
                    onChange={this.handlePanelInputChange}
                    style={{marginTop: '10px', width: '100%'}}
-                   placeholder="购买金额"
+                   placeholder={intl.get('tradebuyamount')}
                    key="buy_amount_input"
                    />]
                :
@@ -100,7 +102,7 @@ class TradePanel extends Component{
                  labelPosition='right'
                  autoComplete="off"
                  disabled
-                 placeholder="市场最优价买入"
+                 placeholder={intl.get('marketbuypriceplaceholder')}
                  style={{marginTop: '10px', width: '100%'}}
                  />
              }
@@ -111,7 +113,7 @@ class TradePanel extends Component{
               value={ buy_count }
               onChange={this.handlePanelInputChange}
               style={{marginTop: '10px', width: '100%'}}
-              placeholder="买入量"
+              placeholder={intl.get('tradebuysum')}
               />
              {/*<p style={{width: '100%'}} className="light-grey-color">
               <span style={{display: 'inline-block', float: 'left'}}>实际买入量</span>
@@ -122,16 +124,16 @@ class TradePanel extends Component{
               disabled={!login}
               className="trade-btn btn-buy"
               loading={buy_submit_ing } disabled={buy_submit_ing}
-              onClick={this.onTrade.bind(this, {trade_type: 'buy_' + panel_type })}>购买</Button>
+              onClick={this.onTrade.bind(this, {trade_type: 'buy_' + panel_type })}>{intl.get('tradebuy').toUpperCase()}</Button>
              </div>
 
            </Column>
            <Column width={8}>
             <div className="wrapper">
               <div className="trade-panel-header">
-                <p>卖出{coin}</p>
+                <p>{intl.get('tradesell')}　{coin}</p>
               </div>
-              <p style={{textAlign: 'left', width: '100%', marginBottom: '10px', fontSize: '10px'}}>BTC持有数量：0.0098</p>
+              <p style={{textAlign: 'left', width: '100%', marginBottom: '10px', fontSize: '10px'}}>BTC{intl.get('availableSum')}：0.0098</p>
               {
                 panel_type == 'limit' ?
                 <Input
@@ -141,7 +143,7 @@ class TradePanel extends Component{
                   name="sell_price"
                   value={ sell_price }
                   onChange={ this.handlePanelInputChange }
-                  placeholder="卖出价"
+                  placeholder={intl.get('tradesellprice')}
                   style={{width: '100%'}}
                 />
                 :
@@ -149,7 +151,7 @@ class TradePanel extends Component{
                   label={{ basic: true, content: coin_type }}
                   labelPosition='right'
                   disabled
-                  placeholder="市场最优价卖出"
+                  placeholder={intl.get('marketsellpriceplaceholder')}
                   />
               }
               <Input
@@ -159,17 +161,17 @@ class TradePanel extends Component{
                 name="sell_count"
                 value={ sell_count }
                 onChange={ this.handlePanelInputChange }
-                placeholder="卖出数量"
+                placeholder={intl.get('tradesellsum')}
                 style={{width: '100%', marginBottom: '10px', marginTop: '10px'}}
                 />
-              <TipSelector className="select-coin"  value={pay_coin} placeholder="选择目标币种" onChange={this.onTradeCoinTypeChange.bind(this)} />
+              <TipSelector className="select-coin"  value={pay_coin} placeholder={intl.get('targetcoin')} onChange={this.onTradeCoinTypeChange.bind(this)} />
               { panel_type == 'limit' && <p style={{width: '100%', margin: '15px 0px 10px 0', fontSize: '10px'}}>
-                <span style={{display: 'inline-block', float: 'left'}}>实际到账</span>
+                <span style={{display: 'inline-block', float: 'left'}}>{intl.get('actualincome')}</span>
                 <span style={{display: 'inline-block', float: 'right'}}>{ sell_count * sell_price || 0}{pay_coin}</span>
              </p>}
               <Button disabled={!login}
                 className="trade-btn btn-sell" loading={sell_submit_ing} disabled={sell_submit_ing} style={{width: '100%', marginTop: '10px'}}
-                onClick = {this.onTrade.bind(this, {trade_type: 'sell_' + panel_type })}>卖出</Button>
+                onClick = {this.onTrade.bind(this, {trade_type: 'sell_' + panel_type })}>{intl.get('tradesell').toUpperCase()}</Button>
             </div>
            </Column>
          </Grid>
@@ -214,13 +216,32 @@ export default class TradePanelWrapper extends Component{
     const PanelInner= [
       /*{ menuItem: '限价交易', render: TradePanel( { ...props, panel_type: 'limit'} ) },
       { menuItem: '市价交易', render: TradePanel( { ...props, panel_type: 'market'} ) }*/
-      { menuItem: '限价交易', render: () => <TradePanel props={props } panel_type = 'limit' />  },
-      { menuItem: '市价交易', render: () => <TradePanel props={props} panel_type ='market'/> }
+      { menuItem: intl.get('limitorder'), render: () => <TradePanel props={props } panel_type = 'limit' />  },
+      { menuItem: intl.get('marketorder'), render: () => <TradePanel props={props} panel_type ='market'/> }
 
     ]
 
     return (
       <Tab menu={{ secondary: true, pointing: true }} panes={ PanelInner } />
       )
+  }
+  componentDidMount(){
+    this.loadLocales(this.props.lang);
+  }
+  componentWillReceiveProps(nextProps){
+    //切换语言
+    if(this.props.lang != nextProps.lang){
+      this.loadLocales(nextProps.lang);
+    }
+  }
+  //初始化语言脚本
+  loadLocales(lang){
+    intl.init({
+      currentLocale: lang || 'en-US',
+      locales: trade
+    })
+    .then( () => {
+      this.setState({ initDone: true })
+    })
   }
 }

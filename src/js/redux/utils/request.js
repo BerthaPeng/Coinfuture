@@ -2,6 +2,7 @@
 import $ from 'jquery';
 import req from 'superagent';
 import config from 'config/app.config';
+import history from 'history_instance';
 
 function Promise(async_task){
   if(typeof async_task == 'function'){
@@ -40,6 +41,10 @@ function _end_callback(resolve, reject) {
           if (code === 200 || code === 0) {
             resolve(data, msg);
           }else {
+            if(code === 400006){
+              sessionStorage.removeItem('_udata');
+              /*history.push('/login');*/
+            }
             console.error(msg || 'request error');
             reject({msg, code});
           }
@@ -76,21 +81,14 @@ export function get(url, data) {
 }*/
 
 
-export function post( event_id , type, params){
+export function post( api_id, params){
 
   var data ={
         header: {
-          token: sessionStorage.getItem("_udata") || ""
+          token: sessionStorage.getItem("_udata") || "",
+          api_id
         },
-        data: {
-          "payload_type": "api",
-          "description": {
-            "type": type||"app",
-            "id": event_id,
-            /*"market": '01',*/
-            "params": params,
-          }
-        }
+        data: params
     }
   var r;
   var p = new Promise(function(resolve, reject){
@@ -105,17 +103,11 @@ export function post( event_id , type, params){
 export function getSocketHeader(channel){
   var data = {
     "header": {
-      "token": "6bd0edbd0f34f232951df57f57f080df39563f24a7a4369bebc48996577270e2"
+      token: sessionStorage.getItem("_udata") || "",
+      api_id: 101055
     },
     "data": {
-      "payload_type": "api",
-      "description": {
-        "type": "auth",
-        "id": "sys_notification_subscribe",
-        "params": {
-          "channel": channel
-        }
-      }
+      "channel": channel
     }
   };
   return data;

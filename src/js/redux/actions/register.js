@@ -15,7 +15,7 @@ export const REGISTER_FAIL = 'REGISTER_FAIL';
 export function getPhoneCaptcha(params){
   return dispatch => {
     dispatch({ type: SEND_CAPTCHA_START});
-    return post( Url.getCaptcha, 'app', params)
+    return post( 201002, params)
       .done( () => {
         dispatch({ type: SEND_CAPTCHA_SUCCESS });
       })
@@ -32,7 +32,7 @@ export function register(params){
   return dispatch => {
     dispatch({ type: REGISTER_ING });
 
-    return post(Url.register, 'app', params)
+    return post(201003, params)
       .done( () => {
         dispatch({ type: REGISTER_SUCCESS })
       })

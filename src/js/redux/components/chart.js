@@ -15,6 +15,7 @@ import echartsData from 'config/market-data.js';
 import { getXtimeSpan } from 'utils/chart-utils.js';
 
 import optionConfig from 'config/echarts-option-config.js';
+import { getEchartsOptions } from 'config/echarts-option.js';
 
 var clone = require('clone');
 
@@ -36,7 +37,7 @@ export default class CandleCharts extends Component{
   }
   render() {
     return (
-      <div id="main" style={{ width: '100%', height: '300px' }}>
+      <div id="main" style={{ width: '100%', height: '390px' }}>
     {/*<ReactEcharts option={this.getOption()} />*/}
     </div>
     );
@@ -63,12 +64,16 @@ export default class CandleCharts extends Component{
     this.setState({Kdata});
     /*this.getXdata();*/
     /*var data0 = this.splitData(echartsData);*/
-    this.setEchartData(toSplitData)
+    if(toSplitData && toSplitData.length){
+      this.setEchartData(toSplitData)
+    }
   }
   componentWillReceiveProps(nextProps){
+    //线切换时
     if(this.props.line != nextProps.line){
       window.myChart.clear();
     }
+    //币切换时
     if(this.props.coin != nextProps.coin){
       window.myChart.clear();
     }
@@ -96,24 +101,47 @@ export default class CandleCharts extends Component{
       this.setEchartData(toSplitData);
     }
   }
+  //echart图形为非分时图时
   setEchartData(toSplitData){
-    var option = optionConfig;
+    //分时图的配置与其他线的配置不同
+    var option = getEchartsOptions(this.props.line);
     var data0 = this.splitData(toSplitData);
-    /*console.error(data0.categoryData);*/
-    var data5 = this.calculateMA(data0, 5);
-    var data10 = this.calculateMA(data0, 10);
-    var data30 = this.calculateMA(data0, 30);
-    option.xAxis.data = data0.categoryData;
-    option.series[0].data = data0.values;
-    option.series[1].data = data5;
-    option.series[2].data = data10;
-    option.series[3].data = data30;
+    console.warn(data0.categoryData || []);
+    if(this.props.line == 'timeline'){
+      option.xAxis[0].data = data0.categoryData;
+      option.xAxis[1].data = data0.categoryData;
+      option.series[0].data = data0.lastPrice;
+      option.series[1].data = data0.tradeVol;
+    }else{
+      var data5 = this.calculateMA(data0, 5);
+      var data10 = this.calculateMA(data0, 10);
+      var data30 = this.calculateMA(data0, 30);
+      option.xAxis.data = data0.categoryData || [];
+      option.series[0].data = data0.values;
+      option.series[1].data = data5;
+      option.series[2].data = data10;
+      option.series[3].data = data30;
+    }
     window.myChart.setOption(option);
   }
   splitData(rawData){
-    var categoryData = [];
-    var values = [];
-    for (var i = 0; i < rawData.length; i++) {
+    var categoryData = [], lastPrice = [], tradeVol = [], values = [];
+    if(this.props.line == 'timeline'){
+      for (var i = 0; i < rawData.length; i++) {
+        //splice 返回每组数组中被删除的第一项，即返回数组中被删除的日期
+        //alert(rawData[i].splice(0, 1)[0]);
+        //categoryData 日期 把返回的日期放到categoryData[]数组中
+        categoryData.push(rawData[i].splice(0, 1)[0]);
+        tradeVol.push(rawData[i].splice(-1)[0]);
+        lastPrice.push( rawData[i][1]);
+      }
+      return {
+        categoryData,
+        tradeVol,
+        lastPrice
+      }
+    }else{
+      for (var i = 0; i < rawData.length; i++) {
         //splice 返回每组数组中被删除的第一项，即返回数组中被删除的日期
         //alert(rawData[i].splice(0, 1)[0]);
         //categoryData 日期 把返回的日期放到categoryData[]数组中
@@ -121,6 +149,7 @@ export default class CandleCharts extends Component{
         //alert(categoryData);
         //数据数组，即数组中除日期外的数据
         // alert(rawData[i]);
+        rawData[i].splice(-1); //删除成交量
         values.push(rawData[i])
       }
       return {
@@ -128,6 +157,14 @@ export default class CandleCharts extends Component{
         values: values  //数组中的数据 y轴对应的数据
       };
     }
+  }
+  splitTimelineData(rawData){
+    var categoryData = []; //时间数组，现价数组，成交量数组
+    /*for(var i = 0; i < rawData.length; i++ ){
+      categoryData.push( rawData[i].splice(0, 1)[0]);
+      lastPrice
+    }*/
+  }
     //计算MA平均线，N日移动平均线=N日收盘价之和/N dayCount要计算的天数(5,10,20,30)
     /*calculateMA(data0, dayCount) {
       var result = [];
@@ -195,7 +232,7 @@ export default class CandleCharts extends Component{
     window._get_xdata_timer = setInterval(function () {
 
           self.addData(true);
-          var option = optionConfig;
+          var option = getEchartsOptions(self.props.line);;
           option.xAxis.data = self.state.Xdata;
           option.series[0].data = self.state.Ydata;
           console.warn(option)

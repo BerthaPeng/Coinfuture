@@ -8,7 +8,7 @@ export const GET_TRANSAC_FAIL = "GET_TRANSAC_FAIL"
 export function getTransacList(params){
   return dispatch => {
     dispatch({ type: GET_TRANSAC_ING });
-    return post(Url.transac_list, 'app', params)
+    return post(201006, params)
       .done( data => {
         dispatch({ type: GET_TRANSAC_SUCCESS, data})
       })
@@ -23,7 +23,7 @@ export const GET_TRANSAC_DETAIL_LIST = 'GET_TRANSAC_DETAIL_LIST'
 
 export function getTransacDetailList(params){
   return dispatch => {
-    return post(Url.get_transac_detail_list, 'app', params)
+    return post(201007, params)
       .done( data => {
         dispatch({ type: GET_TRANSAC_DETAIL_LIST, data})
       })

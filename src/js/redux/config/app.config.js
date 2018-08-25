@@ -1,7 +1,7 @@
 export default {
   SMS_COUNT: 50, //毫秒为单位
   ajax: "http://47.106.71.87:8020/kiop-privilege-management",
-  socket_url: 'ws://47.106.71.87:8020/',
+  socket_url: 'ws://47.106.71.87:8020/kiop-privilege-management',
   COUNTRY_CODE_LIST: [{
     key: '+86',
     value: '+86',

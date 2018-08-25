@@ -2,6 +2,8 @@ import { combineReducers } from 'redux';
 import * as Actions from 'actions/trade.js';
 import { timestampToTime, timestampToDate } from 'utils/utils.js';
 import marketData from 'config/market-data.js';
+import { FakeTrade } from './fake-trade.js';
+import { Lang } from './lang.js';
 
 var initial_state = {
   get_before_data_ing: false,
@@ -13,6 +15,8 @@ var initial_state = {
   coin_cate_list: [],
   origin_coin_cate_list: [],
   coin_list: [],
+
+  isFake: false,
 }
 
 function Trade(state = initial_state, action){
@@ -39,11 +43,11 @@ function Trade(state = initial_state, action){
       //line 为一天的时候
       var kline = [];
       if( line == '1d'){
-        kline = action.data.kline.map( k => ([timestampToDate(k.t * transUnit), k.o, k.c, k.l, k.h]))
+        kline = action.data.kline.map( k => ([timestampToDate(k.t * transUnit), k.o, k.c, k.l, k.h, Number(k.q)]))
       }else{
-        kline = action.data.kline.map( k => ([timestampToTime(k.t * transUnit), k.o, k.c, k.l, k.h]))
+        kline = action.data.kline.map( k => ([timestampToTime(k.t * transUnit), k.o, k.c, k.l, k.h, Number(k.q)]))
       }
-      return { ...state, get_before_data_ing: false, Kdata_list: kline.reverse().slice(-100)};break;
+      return { ...state, get_before_data_ing: false, Kdata_list: kline};break;
     case Actions.GET_BEFORE_MARKET_DATA_FAIL:
       return { ...state, get_before_data_ing: false };break;
     case Actions.GET_DAILY_MARKET:
@@ -193,6 +197,8 @@ function Transaction(state = transc_initial_state, action){
 }
 
 export default combineReducers({
+  Lang,
+  FakeTrade,
   Exchange,
   Trade,
   Transaction

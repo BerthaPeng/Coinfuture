@@ -21,13 +21,14 @@ const TransacDetailPane = (props) => {
           <Table.HeaderCell>方向</Table.HeaderCell>
           <Table.HeaderCell>成交价格</Table.HeaderCell>
           <Table.HeaderCell>成交数量</Table.HeaderCell>
+          <Table.HeaderCell>成交总额</Table.HeaderCell>
           <Table.HeaderCell>手续费</Table.HeaderCell>
         </Table.Row>
       </Table.Header>
       <Table.Body>
         {
-          transac_detail_list.map( m => {
-            return (<Table.Row key={m.order_id}>
+          transac_detail_list.map( (m, index) => {
+            return (<Table.Row key={m.order_id + '-' + index}>
               <Table.Cell>{m.order_id}</Table.Cell>
               <Table.Cell>{m.match_datetime}</Table.Cell>
               <Table.Cell>
@@ -38,8 +39,8 @@ const TransacDetailPane = (props) => {
               </Table.Cell>
               <Table.Cell>{ Number(m.fullfilled_price).toFixed(8)}</Table.Cell>
               <Table.Cell>{ Number(m.fullfilled_quantity).toFixed(8)}</Table.Cell>
-              <Table.Cell>{}</Table.Cell>
-              <Table.Cell></Table.Cell>
+              <Table.Cell>{ Number(m.amount).toFixed(8)}</Table.Cell>
+              <Table.Cell>{ Number(m.fee).toFixed(8) }</Table.Cell>
             </Table.Row>)
           })
         }
@@ -79,9 +80,9 @@ const TransacPane = (props) => {
               </Table.Cell>
               <Table.Cell>
                 <span className="primary-color">{m.trade_pair.replace('USDX', '/USDX')}</span></Table.Cell>
-              <Table.Cell>{ Number(m.limit_price).toFixed(8)}</Table.Cell>
+              <Table.Cell>{ (m.order_type == 1 || m.order_type == 3) ? '市价' : Number(m.limit_price).toFixed(8)}</Table.Cell>
               <Table.Cell>{ Number(m.quantity).toFixed(8)}</Table.Cell>
-              <Table.Cell>{}</Table.Cell>
+              <Table.Cell>{ Number(m.amount).toFixed(8)}</Table.Cell>
               <Table.Cell>{ Number(m.executed_quantity).toFixed(8)}</Table.Cell>
               <Table.Cell>{ Number(m.not_executed_quantity).toFixed(8)}</Table.Cell>
               <Table.Cell>{ config.ORDER_STATUS['status_' + m.order_status ] }</Table.Cell>
@@ -131,7 +132,7 @@ class Transaction extends Component{
                 <div>
                   <h3>订单记录</h3>
                 </div>
-                <div style={{position: 'absolute', right: 0, color: '#00b38c'}}>
+                <div style={{position: 'absolute', right: '20px', color: '#00b38c'}}>
                   <Dropdown inline options={order_filter_options} defaultValue={order_filter_options[0].value} onChange={this.handleTabChange.bind(this)} />
                 </div>
               </div>

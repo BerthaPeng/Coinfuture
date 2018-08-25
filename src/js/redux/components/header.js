@@ -4,6 +4,7 @@ import { Button, Dropdown, Icon, Popup } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as LoginActions from 'actions/login.js';
 import * as LangActions from 'actions/lang.js';
+import * as FakeTradeActions from 'actions/fake-trade.js';
 import { bindActionCreators } from 'redux';
 
 import intl from 'react-intl-universal';
@@ -24,8 +25,9 @@ class Header extends Component{
   render(){
     const options = [{key: 'ch', text: '中文-CH',value: 'ch'},
     {key: 'en', text: 'EN', value: 'en'}];
-  var { login, uname, lang, initDone, path_url } = this.state;
-  var { lang } = this.props.Lang;
+  var { login, uname, initDone, path_url } = this.state;
+  var lang = this.props.Lang.lang;
+  var { FakeTrade } = this.props.FakeTrade;
   return (
       <nav className="navbar header">
         {/*<div className="banner-header">
@@ -35,10 +37,10 @@ class Header extends Component{
           {/*<img src="http://fakeimg.pl/60x30?text=logo" width="60" height="30" />*/}
         </div>
         <div className="nav">
-          <Link to="/market" activeClassName="active"><div>行情</div></Link>
-          <Link to="/trade" activeClassName="active"><div>买卖</div></Link>
-          <Link to=""><div>资产</div></Link>
-          <Link to=""><div>帮助</div></Link>
+          <Link to="/market" activeClassName="active"><div>{intl.get('market')}</div></Link>
+          <Link to="/trade" activeClassName="active"><div>{intl.get('exchange_a')}</div></Link>
+          {/*<Link to=""><div>{intl.get('balances')}</div></Link>*/}
+          {/*<Link to=""><div>帮助</div></Link>*/}
           {/*<Link to="/coin-coin-exchange"><div>下单</div></Link>*/}
           {/*<Link to=""><div>{intl.get('market')}</div></Link>
           <Link to=""><div>{intl.get('otc')}</div></Link>
@@ -47,25 +49,30 @@ class Header extends Component{
         {
           login ?
           <div className="social-nav">
-            <Link to="/user/finance" activeClassName="active"><div className="finance-block"><Icon name="yen" />{intl.get('balances')}</div></Link>
-            <Link to="/transaction" activeClassName="active"><div className="finance-block"><Icon name="file text outline" />{intl.get('orders')}</div></Link>
+            <Link to="/user/finance" activeClassName="active">
+              <div className="finance-block"><Icon name="yen" />{intl.get('balances')}</div>
+            </Link>
+            <Link to="/transaction" activeClassName="active">
+              <div className="finance-block"><Icon name="file text outline" />{intl.get('Orders')}</div>
+            </Link>
             <Popup on="click" trigger = {<span className="uname"><Icon name="user outline"></Icon>{uname}<Icon name="caret down" /></span>}>
+              <div className="setting-menu" onClick={this.goTrade.bind(this)}><Icon name="chart bar" />模拟交易</div>
               <div className="setting-menu" onClick={this.logout.bind(this)}><Icon name="sign out" />{intl.get('logout')}</div>
             </Popup>
           </div>
           :
           <div className = "social-nav">
-            <Link to='/login'><Button className="login-btn" size="tiny">登录</Button></Link>
-            <Link to='/register'><Button className="register-btn" size="tiny">注册</Button></Link>
+            <Link to='/login'><Button className="login-btn" size="tiny">{intl.get('login')}</Button></Link>
+            <Link to='/register'><Button className="register-btn" size="tiny">{intl.get('signup')}</Button></Link>
             {/*<Dropdown text='中文-CH' options={options} />*/}
           </div>
         }
-        {/*<div className="lang-box">
+        <div className="lang-box">
           <ul>
             <li className={ lang == 'zh-CN' ? "current-lang" : ""} onClick={this.changeLang.bind(this, 'zh-CN')}><Link>ZH</Link></li>
             <li className={ lang == 'en-US' ? "current-lang" : ""} onClick={this.changeLang.bind(this, 'en-US')}><Link>EN</Link></li>
           </ul>
-        </div>*/}
+        </div>
       </nav>
       )
   }
@@ -82,7 +89,7 @@ class Header extends Component{
     }else{
       this.setState({ login: false})
     }
-    this.loadLocales(this.props.lang);
+    this.loadLocales(this.props.Lang.lang);
   }
   componentWillReceiveProps(nextProps){
     if(this.props.Lang.lang != nextProps.Lang.lang){
@@ -96,14 +103,19 @@ class Header extends Component{
       })
   }
   loadLocales(lang){
-    lang = 'zh-CN'
     intl.init({
       currentLocale: lang || 'en-us',
-      locales: header
+      locales: { ...header }
     })
     .then( () => {
       this.setState({ initDone: true })
     })
+  }
+  goTrade(){
+    /*if(!this.props.FakeTrade.isFake){
+      history.push('/trade');
+      this.props.actions.updateTrade();
+    }*/
   }
   changeLang(lang){
     this.props.actions.changeLang(lang);
@@ -123,7 +135,8 @@ function mapDispatchToProps(dispatch){
   return {
     actions:bindActionCreators({
       ...LoginActions,
-      ...LangActions
+      ...LangActions,
+      ...FakeTradeActions
     },dispatch)};
 }
 

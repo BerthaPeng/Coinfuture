@@ -8,12 +8,13 @@ export const GET_BEFORE_MARKET_DATA_FAIL = 'GET_BEFORE_MARKET_DATA_FAIL';
 
 //事先拉起K线数据
 export function getBeforeMarketData(params){
-  var url = Url.get_before_market_data + '.' + params.line;
+  /*var url = Url.get_before_market_data + '.' + params.line;*/
+  params.ktype = params.line === 'timeline' ? '1m' : params.line;
   var line = params.line;
   delete params.line;
   return dispatch => {
     dispatch({type: GET_BEFORE_MARKET_DATA_ING});
-    return post(url, 'app', params)
+    return post(201201, params)
       .done(data => {
         dispatch({type: GET_BEFORE_MARKET_DATA_SUCCESS, data, line: line });
       })
@@ -50,7 +51,7 @@ export function trade(params ){
         order_quantity = params.sell_count;break;
       default:;
     }
-    return post( 'trade', 'app', { limit_price, order_quantity, account_id, order_type, symbol: postid })
+    return post( 201004, { limit_price, order_quantity, account_id, order_type, symbol: postid })
       .done( () => {
         dispatch({ type: TRADE_SUCCESS, trade_type});
       })
@@ -63,7 +64,7 @@ export function trade(params ){
 export const GET_NEW_DEALS = 'GET_NEW_DEALS';
 export function getNewDeals(params){
   return dispatch => {
-    return post(Url.get_new_deal_list, 'app', params)
+    return post(201203, params)
       .done( (data) => {
         dispatch({ type: GET_NEW_DEALS, data});
       })
@@ -73,7 +74,7 @@ export function getNewDeals(params){
 export const GET_ORDER_LIST = 'GET_ORDER_LIST';
 export function getOrderList(params){
   return dispatch => {
-    return post(Url.get_order_list, 'app', params)
+    return post(201202, params)
       .done( data => {
         dispatch({ type: GET_ORDER_LIST, data});
       })
@@ -87,7 +88,7 @@ export const GET_TRANSAC_FAIL = "GET_TRANSAC_FAIL"
 export function getTransacList(params){
   return dispatch => {
     dispatch({ type: GET_TRANSAC_ING });
-    return post(Url.transac_list, 'app', params)
+    return post(201006, params)
       .done( data => {
         dispatch({ type: GET_TRANSAC_SUCCESS, data})
       })
@@ -101,7 +102,7 @@ export function getTransacList(params){
 export const GET_DAILY_MARKET = 'GET_DAILY_MARKET';
 export function getDailyMarket(params){
   return dispatch => {
-    return post(Url.get_daily_market, 'app', params)
+    return post(201204, params)
       .done(data => {
         dispatch({ type: GET_DAILY_MARKET, data});
       })
@@ -112,7 +113,7 @@ export function getDailyMarket(params){
 export const GET_COIN_CATEGORY_LIST = 'GET_COIN_CATEGORY_LIST';
 export function getCoinCategoryList(params){
   return dispatch => {
-    return post(Url.get_coin_cate_list, 'app', params)
+    return post(201008, params)
       .done(data => {
         dispatch({ type: GET_COIN_CATEGORY_LIST, data});
       })
@@ -123,9 +124,10 @@ export function getCoinCategoryList(params){
 export const GET_COIN_LIST = 'GET_COIN_LIST';
 export function getCoinList(params){
   return dispatch => {
-    return post(Url.get_coin_list_by_cate, 'app', params)
+    return post(201009, params)
       .done(data => {
         dispatch({ type: GET_COIN_LIST, data});
       })
   }
 }
+

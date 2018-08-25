@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Button, Table, Select, Dropdown, Icon, Pagination, Input, Checkbox, Message, Grid }  from 'semantic-ui-react';
+import { Button, Table, Select, Dropdown, Icon, Pagination, Input, Checkbox, Message, Grid, Menu }  from 'semantic-ui-react';
 import FLChart from './chart.js';
 import TradePanel from './trade-lib/trade-panel.js';
 import OrderRecordPanel from './trade-lib/order-record-panel.js';
@@ -11,6 +11,9 @@ import config from 'config/app.config.js';
 import { getSocketHeader } from 'utils/request.js';
 import LazyLoad from 'utils/lazy_load';
 import { Noty } from 'utils/utils';
+import intl from 'react-intl-universal';
+import { trade } from 'locales/index.js';
+
 var clone = require('clone')
 
 class newPriceQuene extends Component{
@@ -64,7 +67,9 @@ class Trade extends Component{
       active_cate: {},
       active_child_cate: {},
       active_cate_id: 0,   //用来声明是否有被选中cate
-      coin_quene_title: '热门虚拟币'
+      coin_quene_title: '热门虚拟币',
+
+      isFake: false, //是否为模拟交易
     }
     this.trade = this.trade.bind(this);
   }
@@ -75,18 +80,42 @@ class Trade extends Component{
     var { sell_submit_ing, buy_submit_ing, submit_status } = this.props.Exchange;
     var { addKdata, activeCoin, exchange_available, isNew, msg_color, msg_visible, new_deal_list,
       new_in_order_list, new_out_order_list, current_line, login, state_market_list, filter_market_list,
-      highest, lowest, commit, changeMoney, active_cate, active_child_cate, coin_quene_title, active_cate_id } = this.state;
+      highest, lowest, commit, changeMoney, active_cate, active_child_cate, coin_quene_title,
+      active_cate_id, isFake } = this.state;
     var { trade } = this;
     var coin_eng_name = config.coin_trade_pair.filter( m => m.name == this.state.activeCoin)[0].eng_name;
     var panelStyle = active_cate.id ? { display: 'inline'} : { display: 'none'};
+    //币的现价
+    var currentPrice = new_deal_list.length && new_deal_list[new_deal_list.length - 1].price;
+    //现价的locale价
+    var currentPriceLocale = this.props.Lang.lang == 'en-US' ? Number(currentPrice).toFixed(4) : (currentPrice * 6.69).toFixed(4);
     return (
       <div>
         <div className="fl-block gray-bg">
+          {
+            isFake ?
+            <Menu size="mini" style={{width: '100%'}} className="fake-trade-menu" >
+              <Menu.Item>模拟交易</Menu.Item>
+              <Menu.Item>交易场</Menu.Item>
+              <Menu.Item>账户信息</Menu.Item>
+              <Menu.Item>订单记录</Menu.Item>
+              <Menu.Item position="right">
+                <Dropdown item text='切换账户' size="mini">
+                  <Dropdown.Menu>
+                    <Dropdown.Item>English</Dropdown.Item>
+                    <Dropdown.Item>Russian</Dropdown.Item>
+                    <Dropdown.Item>Spanish</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </Menu.Item>
+            </Menu>
+            :null
+          }
           <div className="flex-wrapper">
             <div className="item-20-100" style={{paddingRight: '15px'}}>
               <div className="coin-market item-inner"  style={{height: '515px', padding: '10px 0'}}>
                 <div className="table-wrapper">
-                  <p className="table-title" style={{textAlign: 'center', marginBottom: '10px'}}>分类检索</p>
+                  <p className="table-title" style={{textAlign: 'center', marginBottom: '10px'}}>{intl.get('categories')}</p>
                   {
                     coin_cate_list.map( m => { return (<div className={`cate-item ${active_cate.id == m.id ? 'active':''}`}
                       onMouseOver={this.handleEnter.bind(this, m)}
@@ -119,9 +148,9 @@ class Trade extends Component{
                     <Table.Header>
                       <Table.Row>
                         <Table.HeaderCell></Table.HeaderCell>
-                        <Table.HeaderCell>币种</Table.HeaderCell>
-                        <Table.HeaderCell>最新价</Table.HeaderCell>
-                        <Table.HeaderCell>涨跌</Table.HeaderCell>
+                        <Table.HeaderCell>{intl.get('coin')}</Table.HeaderCell>
+                        <Table.HeaderCell>{intl.get('lastprice')}</Table.HeaderCell>
+                        <Table.HeaderCell>{intl.get('change')}</Table.HeaderCell>
                       </Table.Row>
                     </Table.Header>
                     <Table.Body>
@@ -139,14 +168,14 @@ class Trade extends Component{
               </div>
               <div className="coin-market item-inner latest-deals" style={{height: '490px', marginTop: '15px',padding: '10px 0'}}>
                 <div className="table-wrapper">
-                  <p className="table-title">最新成交</p>
+                  <p className="table-title">{intl.get('new')}</p>
                   <Table basic="very" textAlign="center" className="no-border-table">
                     <Table.Header>
                       <Table.Row>
-                        <Table.HeaderCell verticalAlign="top">时间</Table.HeaderCell>
-                        <Table.HeaderCell verticalAlign="top">类型</Table.HeaderCell>
-                        <Table.HeaderCell verticalAlign="top">成交价<br/>{config.CURRENCY}</Table.HeaderCell>
-                        <Table.HeaderCell verticalAlign="top">成交量<br />{activeCoin}</Table.HeaderCell>
+                        <Table.HeaderCell verticalAlign="top">{intl.get('time')}</Table.HeaderCell>
+                        <Table.HeaderCell verticalAlign="top">{intl.get('type')}</Table.HeaderCell>
+                        <Table.HeaderCell verticalAlign="top">{intl.get('price')}<br/>{config.CURRENCY}</Table.HeaderCell>
+                        <Table.HeaderCell verticalAlign="top">{intl.get('count')}<br />{activeCoin}</Table.HeaderCell>
                       </Table.Row>
                     </Table.Header>
                     <Table.Body>
@@ -176,8 +205,8 @@ class Trade extends Component{
                      <Icon name="circle" color="grey" size="large" />
                       {activeCoin}</span>
                     <span style={{marginLeft: '5px', fontSize: '10px'}}><a href={'http://47.106.71.87:8020/' + activeCoin + '.jpg'} target="_blank">{coin_eng_name}</a></span>
-                    <span style={{marginLeft: '5px'}} className="price-amount">{new_deal_list.length && new_deal_list[0].price}{config.CURRENCY}</span>
-                    <span style={{marginLeft: '5px', fontSize: '10px'}}>≈ {(new_deal_list.length && new_deal_list[new_deal_list.length - 1].price*6.69).toFixed(4)}元</span>
+                    <span style={{marginLeft: '5px'}} className="price-amount"> { currentPrice + config.CURRENCY}</span>
+                    <span style={{marginLeft: '5px', fontSize: '10px'}}>≈ {intl.get('currentpriceNum', { amount: (currentPriceLocale) })}</span>
                   </div>
                   <div className="item-3" style={{textAlign: 'right'}}>
                     <span className="light-grey-color">
@@ -190,7 +219,7 @@ class Trade extends Component{
                 </div>
                 <div style={{display: 'flex', width: '80%', margin: '20px auto 0 auto'}}>
                   <div className="item item-5 light-grey-color">
-                    <p>日涨跌</p>
+                    <p>{intl.get('daychange').toUpperCase()}</p>
                     {
                       Number(changeMoney) > 0 ?
                       <p className="color-up" style={{marginTop: '10px'}}>
@@ -203,15 +232,15 @@ class Trade extends Component{
                     }
                   </div>
                   <div className="item item-5 light-grey-color">
-                    <p>日最高</p>
+                    <p>{intl.get('highest').toUpperCase()}</p>
                     <p style={{marginTop: '10px'}}>{highest + config.CURRENCY}</p>
                   </div>
                   <div className="item item-5 light-grey-color">
-                    <p>日最低</p>
+                    <p>{intl.get('lowest').toUpperCase()}</p>
                     <p style={{marginTop: '10px'}}>{lowest + config.CURRENCY}</p>
                   </div>
                   <div className="item item-40-100 light-grey-color">
-                    <p>日成交量/金额</p>
+                    <p>{intl.get('dealcount').toUpperCase()}/{intl.get('amount').toUpperCase()}</p>
                     <p style={{marginTop: '10px'}}>{commit + config.CURRENCY}</p>
                   </div>
                 </div>
@@ -219,26 +248,28 @@ class Trade extends Component{
               <div className="market-k-chart item-inner">
                 <div className="line-guide-wrapper">
                   <ul>
-                    <li><div style={{border: 'none'}}>分时</div></li>
+                    <li className={`${current_line == 'timeline' ? 'active': ''}`}>
+                      <div onClick={this.onChangeLine.bind(this, 'timeline')}>{intl.get('line')}</div>
+                    </li>
                     <li className={`${current_line == '1m' ? 'active': ''}`}>
-                      <div onClick={this.onChangeLine.bind(this, '1m')}>1分钟</div></li>
+                      <div onClick={this.onChangeLine.bind(this, '1m')}>{intl.get('min')}</div></li>
                     <li className={`${current_line == '5m' ? 'active': ''}`}>
-                      <div onClick={this.onChangeLine.bind(this, '5m')}>5分钟</div>
+                      <div onClick={this.onChangeLine.bind(this, '5m')}>{intl.get('min5')}</div>
                     </li>
                     {/*<li className={`${current_line == '10m' ? 'active': ''}`}>
                       <div onClick={this.onChangeLine.bind(this, '10m')}>10分钟</div>
                     </li>*/}
                     <li className={`${current_line == '15m' ? 'active': ''}`}>
-                      <div onClick={this.onChangeLine.bind(this, '15m')}>15分钟</div>
+                      <div onClick={this.onChangeLine.bind(this, '15m')}>{intl.get('min15')}</div>
                     </li>
                     <li className={`${current_line == '30m' ? 'active': ''}`}>
-                      <div onClick={this.onChangeLine.bind(this, '30m')}>30分钟</div>
+                      <div onClick={this.onChangeLine.bind(this, '30m')}>{intl.get('min30')}</div>
                     </li>
                     <li className={`${current_line == '60m' ? 'active': ''}`}>
-                      <div onClick={this.onChangeLine.bind(this, '60m')}>1小时</div>
+                      <div onClick={this.onChangeLine.bind(this, '60m')}>{intl.get('hour')}</div>
                     </li>
                     <li className={`${current_line == '1d' ? 'active': ''}`}>
-                      <div onClick={this.onChangeLine.bind(this, '1d')}>一天</div>
+                      <div onClick={this.onChangeLine.bind(this, '1d')}>{intl.get('day')}</div>
                     </li>
                   </ul>
                 </div>
@@ -252,7 +283,8 @@ class Trade extends Component{
                     current_price: new_deal_list.length && new_deal_list[0].price,
                     submit_status,
                     buy_submit_ing,
-                    sell_submit_ing
+                    sell_submit_ing,
+                    lang: this.props.Lang.lang
                   }} />
               </div>
               {/*<div className="user-order-box item-inner">
@@ -262,19 +294,19 @@ class Trade extends Component{
             <div className="item-20-100" style={{paddingLeft: '15px'}}>
               <div className="coin-market item-inner" style={{height: 'auto', padding: '10px 0'}}>
                 <div className="table-wrapper">
-                    <p className="table-title">卖盘</p>
+                    <p className="table-title">{intl.get('sellquene')}</p>
                     <Table basic="very" textAlign="center" className="no-border-table">
                       <Table.Header>
                         <Table.Row>
                           <Table.HeaderCell></Table.HeaderCell>
-                          <Table.HeaderCell>价格({config. CURRENCY})</Table.HeaderCell>
-                          <Table.HeaderCell>数量({activeCoin})</Table.HeaderCell>
+                          <Table.HeaderCell>{intl.get('price')}({config. CURRENCY})</Table.HeaderCell>
+                          <Table.HeaderCell>{intl.get('quantity')}({activeCoin})</Table.HeaderCell>
                         </Table.Row>
                       </Table.Header>
                       <Table.Body>
                         {
                           new_out_order_list.map( (item, index) =><Table.Row key={index + '-order-list'}>
-                          <Table.Cell><span>卖{ chiNum[new_out_order_list.length-index -1]}</span></Table.Cell>
+                          <Table.Cell><span>{intl.get('sell') + ' '}{ new_out_order_list.length - index}</span></Table.Cell>
                           <Table.Cell><span className="color-down">{item.price}</span></Table.Cell>
                           <Table.Cell>{item.quantity}</Table.Cell>
                         </Table.Row> )
@@ -285,28 +317,28 @@ class Trade extends Component{
               </div>
               <div className="coin-market item-inner market-price" style={{height: '60px', marginTop: '15px'}}>
                 <div>
-                  <h5>现价　<span className="price-amount">
-                    {new_deal_list.length && new_deal_list[0].price}
+                  <h5>{intl.get('currentprice')}　<span className="price-amount">
+                    { currentPrice }
                     </span>
                   <span className="unit">{config.CURRENCY}</span></h5>
-                  <p> ≈ {(new_deal_list.length && new_deal_list[new_deal_list.length - 1].price * 6.69).toFixed(4)}元</p>
+                  <p> ≈ {intl.get('currentpriceNum', { amount: (currentPriceLocale) })}</p>
                 </div>
               </div>
               <div className="coin-market item-inner" style={{height: '460px', marginTop: '15px', padding: '10px 0px'}}>
               <div className="table-wrapper">
-                <p className="table-title">买盘</p>
+                <p className="table-title">{intl.get('buyquene')}</p>
                 <Table basic="very" textAlign="center" className="no-border-table">
                   <Table.Header>
                     <Table.Row>
                       <Table.HeaderCell></Table.HeaderCell>
-                      <Table.HeaderCell>价格({config.CURRENCY})</Table.HeaderCell>
-                      <Table.HeaderCell>数量({activeCoin})</Table.HeaderCell>
+                      <Table.HeaderCell>{intl.get('price')}({config.CURRENCY})</Table.HeaderCell>
+                      <Table.HeaderCell>{intl.get('quantity')}({activeCoin})</Table.HeaderCell>
                     </Table.Row>
                   </Table.Header>
                   <Table.Body>
                     {
                       new_in_order_list.map((m, index) => <Table.Row key={index+'_in_table'}>
-                      <Table.Cell><span>买{chiNum[index]}</span></Table.Cell>
+                      <Table.Cell><span>{intl.get('buy') + ' '}{ index + 1}</span></Table.Cell>
                       <Table.Cell><span className="color-up">{m.price}</span></Table.Cell>
                       <Table.Cell>{m.quantity}</Table.Cell>
                     </Table.Row>)
@@ -353,22 +385,30 @@ class Trade extends Component{
       window.socket.close();
     }
     this.dailySocketInit()
-    LazyLoad('noty')
-    /*LazyLoad('noty');*/
-    var symbol = this.state.activeCoin + config.CURRENCY;
-    //获取行情
-    this.props.actions.getDailyMarket({ symbol: config.CURRENCY})
-      .fail( ({msg}) => {
-        Noty('error', msg || '获取行情数据失败')
-      })
-    this.dataInit(symbol);
-    var account_id = sessionStorage.getItem('_udata_accountid');
-    if(account_id){
-      this.props.actions.getTransacList({ type: 0});
-      this.setState({ login: 1});
-    }
-    window.addEventListener('beforeunload', this.closeSocket);
-    this.props.actions.getCoinCategoryList({})
+    LazyLoad('noty', () => {
+      /*LazyLoad('noty');*/
+      var symbol = this.state.activeCoin + config.CURRENCY;
+      //获取行情
+      this.props.actions.getDailyMarket({ symbol: config.CURRENCY})
+        .fail( ({msg}) => {
+          Noty('error', msg || '获取行情数据失败')
+        })
+      this.dataInit(symbol);
+      /*var account_id = sessionStorage.getItem('_udata_accountid');
+      if(account_id){
+        this.props.actions.getTransacList({ type: 0})
+          .fail( ({msg}) => {
+            Noty('error', msg || '获取订单列表失败')
+          })
+        this.setState({ login: 1});
+      }*/
+      window.addEventListener('beforeunload', this.closeSocket);
+      this.props.actions.getCoinCategoryList({})
+        .fail( ({msg}) => {
+          Noty('error', msg || '获取币种分类失败')
+        })
+    })
+    this.loadLocales(this.props.Lang.lang);
   }
   componentWillReceiveProps(nextProps){
     if(this.props.Trade.market_list != nextProps.Trade.market_list){
@@ -386,6 +426,10 @@ class Trade extends Component{
         filter_market_list: nextProps.Trade.market_list});
 
     }
+    //切换语言
+    if(this.props.Lang.lang != nextProps.Lang.lang){
+      this.loadLocales(nextProps.Lang.lang);
+    }
   }
   getBeforeMarketData(line, symbol){
     var now = Number(new Date());
@@ -396,7 +440,7 @@ class Trade extends Component{
       fromtime = undefined;
       now = -1;
     }
-    this.props.actions.getBeforeMarketData({from: fromtime, to: now, line, symbol})
+    this.props.actions.getBeforeMarketData({from: -3, to: now, line, symbol, count: 100})
       .done( () => {
       })
       .fail( ({msg}) => {
@@ -436,7 +480,8 @@ class Trade extends Component{
     //type='deal' //为最新成交 type="order" //为买卖队列
     var socket;
     var self = this;
-    var transUnit = 60000; //1分钟=60000毫米
+    var transUnit = 60000; //1分钟=60000毫米   和timeline都是
+    line = line == 'timeline' ? '1m' : line; //分时取1m数据
     switch(line){
       case '5m':
         transUnit *= 5;break;
@@ -470,7 +515,7 @@ class Trade extends Component{
                 console.warn('非' + line + '内数据')
                 self.setState({isNew: true, last_t: kline.t});
               }
-              var record = [timestampToTime(kline.t * transUnit), kline.o, kline.c, kline.l, kline.h];
+              var record = [timestampToTime(kline.t * transUnit), kline.o, kline.c, kline.l, kline.h, Number(kline.q)];
               var { Kdata } = self.state;
               self.setState({ addKdata: record })
               console.warn(record);
@@ -792,6 +837,16 @@ class Trade extends Component{
   }
   clearCate(){
     this.setState({ active_cate_id : 0, active_cate: {}, coin_quene_title: '热门虚拟币'})
+  }
+  //初始化语言脚本
+  loadLocales(lang){
+    intl.init({
+      currentLocale: lang || 'en-us',
+      locales: trade
+    })
+    .then( () => {
+      this.setState({ initDone: true })
+    })
   }
 
 }

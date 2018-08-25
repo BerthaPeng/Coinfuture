@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import * as Actions from 'actions/login.js';
 import { Lang } from './lang.js';
+import { FakeTrade } from './fake-trade.js';
 
 var initial_state = {
   login: false,
@@ -14,9 +15,9 @@ function Login(state = initial_state, action){
     case Actions.LOGIN_ING:
       return { ...state, submit_ing: true };break;
     case Actions.LOGIN_SUCCESS:
-      sessionStorage.setItem('_udata', action.data.token);
+      sessionStorage.setItem('_udata', action.data[0].token);
       sessionStorage.setItem('_udata_name', action.uname);
-      return { ...state, submit_ing: false, token: action.data.token, user_name: action.uname, login: true };break;
+      return { ...state, submit_ing: false, token: action.data[0].token, user_name: action.uname, login: true };break;
     case Actions.LOGIN_FAIL:
       return { ...state, submit_ing: false };break;
     case Actions.LOG_OUT:
@@ -30,6 +31,7 @@ function Login(state = initial_state, action){
 }
 
 export default combineReducers({
+  FakeTrade,
   Lang: Lang,
   Login,
 })
