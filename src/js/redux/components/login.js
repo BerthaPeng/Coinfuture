@@ -67,14 +67,13 @@ class Login extends Component{
     }
   }
   loadLocales(lang){
-    lang='zh-CN';
-      intl.init({
-        currentLocale: lang || 'en',
-        locales: login,
-      })
-      .then( () => {
-        this.setState({ initDone: true })
-      })
+    intl.init({
+      currentLocale: lang || 'en-US',
+      locales: login,
+    })
+    .then( () => {
+      this.setState({ initDone: true })
+    })
   }
   submit(){
     var { uname, pwd } = this.state;

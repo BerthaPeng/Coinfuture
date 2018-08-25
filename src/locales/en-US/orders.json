@@ -11,5 +11,10 @@
   "total": "Total",
   "executed": "Executed",
   "unexecuted": "Unexecuted",
-  "action": "Action"
+  "action": "Action",
+  "orderid": "Order Id",
+  "ordertime": "Date",
+  "status": "Status",
+  "dealtime": "Date",
+  "fee": "Fee"
 }

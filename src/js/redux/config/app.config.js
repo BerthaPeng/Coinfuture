@@ -5,15 +5,18 @@ export default {
   COUNTRY_CODE_LIST: [{
     key: '+86',
     value: '+86',
-    text: '中国',
+    name_ch: '中国',
+    name_en: 'China'
   },{
     key: '+1',
     value: '+1',
-    text: '美国',
+    name_ch: '美国',
+    name_en: 'America'
   },{
     key: '+852',
     value: '+852',
-    text: '香港'
+    name_ch: '香港',
+    name_en: 'HongKong'
   }],
   TRADE_TYPE: {
     buy_market: 1, //市价买

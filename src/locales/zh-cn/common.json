@@ -1,5 +1,8 @@
 {
   "currency":"元",
   "buy": "买",
-  "sell": "卖"
+  "sell": "卖",
+  "balances": "钱包资产",
+  "orders": "订单记录",
+  "simulatedtrading": "模拟交易"
 }

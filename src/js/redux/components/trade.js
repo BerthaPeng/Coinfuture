@@ -353,7 +353,7 @@ class Trade extends Component{
         <div className="hover-cate-panel" style={ panelStyle } onMouseOut={this.handleOut.bind(this)}>
           <div className="innerBox">
             <div className="banner-line">
-              <span className="small-title">{active_cate.descrpt_ch}</span>
+              <span className="small-title">{ this.props.Lang.lang == 'en-US' ? active_cate.descrpt_en : active_cate.descrpt_ch}</span>
             </div>
             <div className="tag-box l">
               {
@@ -362,7 +362,7 @@ class Trade extends Component{
                   className={`${active_child_cate.id == n.id ? 'active' : ''}`}
                   key={n.id + '_cate'}
                   onMouseOver = {this.handleChildEnter.bind(this, n)}
-                  onClick={this.getCoinList.bind(this, n.id)}>{n.descrpt_ch}</span>))
+                  onClick={this.getCoinList.bind(this, n.id)}>{ this.props.Lang.lang == 'en-US' ? n.descrpt_en : n.descrpt_ch}</span>))
                 :null
               }
             </div>
@@ -371,7 +371,7 @@ class Trade extends Component{
               [
                 <div className="banner-line" style={{marginTop: '75px'}} key="div"></div>,
                 <div className="tag-box l" key="tag-box">
-                  {active_child_cate.children.map( n => (<span key={ 'span' + n.id} onClick={this.getCoinList.bind(this, n.id)}>{n.descrpt_ch}</span>))}
+                  {active_child_cate.children.map( n => (<span key={ 'span' + n.id} onClick={this.getCoinList.bind(this, n.id)}>{ this.props.Lang.lang == 'en-US' ? n.descrpt_en : n.descrpt_ch}</span>))}
                 </div>
               ]:null
             }
@@ -846,8 +846,6 @@ class Trade extends Component{
     })
     .then( () => {
       //设置分类的标题，先暂时在这里处理
-      console.error('hhhhhhhh');
-      console.error(intl.get('categoriestitle'))
       this.setState({coin_quene_title: intl.get('categoriestitle') })
     })
   }

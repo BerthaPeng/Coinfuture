@@ -53,10 +53,10 @@ class Header extends Component{
               <div className="finance-block"><Icon name="yen" />{intl.get('balances')}</div>
             </Link>
             <Link to="/transaction" activeClassName="active">
-              <div className="finance-block"><Icon name="file text outline" />{intl.get('Orders')}</div>
+              <div className="finance-block"><Icon name="file text outline" />{intl.get('orders')}</div>
             </Link>
             <Popup on="click" trigger = {<span className="uname"><Icon name="user outline"></Icon>{uname}<Icon name="caret down" /></span>}>
-              <div className="setting-menu" onClick={this.goTrade.bind(this)}><Icon name="chart bar" />模拟交易</div>
+              <div className="setting-menu" onClick={this.goTrade.bind(this)}><Icon name="chart bar" />{intl.get('simulatedtrading')}</div>
               <div className="setting-menu" onClick={this.logout.bind(this)}><Icon name="sign out" />{intl.get('logout')}</div>
             </Popup>
           </div>

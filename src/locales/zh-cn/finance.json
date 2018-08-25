@@ -4,5 +4,10 @@
   "available": "可用",
   "action": "操作",
   "onorders": "冻结",
-  "exchange": "交易"
+  "exchange": "交易",
+  "hidesmallbalances": "隐藏小额资产",
+  "estimatedvalue": "估值",
+  "withdraw": "提现",
+  "deposit": "充值",
+  "action": "操作"
 }

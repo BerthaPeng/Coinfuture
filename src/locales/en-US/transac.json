@@ -1,0 +1,10 @@
+{
+  "openorders": "Open Orders",
+  "orderhistory": "Order History",
+  "transactionhistory": "Transaction History",
+  "date": "Date",
+  "type": "Type",
+  "pairs": "Pairs",
+  "price": "Price",
+  "amount": "Amount",
+}

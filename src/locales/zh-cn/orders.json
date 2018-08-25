@@ -11,5 +11,10 @@
   "total": "委托总额",
   "executed": "已成交",
   "unexecuted": "未成交",
-  "action": "操作"
+  "action": "操作",
+  "orderid": "订单号",
+  "ordertime": "下单时间",
+  "status": "状态",
+  "dealtime": "成交时间",
+  "fee": "手续费"
 }

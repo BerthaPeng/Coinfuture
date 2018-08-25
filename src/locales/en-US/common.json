@@ -1,5 +1,8 @@
 {
   "currency":"RMB",
   "buy": "Buy",
-  "sell": "Sell"
+  "sell": "Sell",
+  "balances": "Balances",
+  "orders": "Orders",
+  "simulatedtrading": "Simulated trading"
 }

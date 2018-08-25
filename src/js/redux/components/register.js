@@ -42,23 +42,29 @@ class Register extends Component{
   handleInputChange = (e, { name, value }) => this.setState({ [name]: value })
   render(){
     var { type, telError, tel, captcha, captchaError, pwd, pwdError, confirmpwd,
-      confirmpwdError, popupError, agreement, country, submit_msg, lang, initDone,
+      confirmpwdError, popupError, agreement, country, submit_msg, initDone,
       btnText, isLineChange  } = this.state;
     var { send_captcha_status, remain_time, submit_ing } = this.props.Register;
-    var btnText = lang == 'en' ? 'Send' : '获取验证码';
+    var { lang } = this.props.Lang;
+    var country_code_list = config.COUNTRY_CODE_LIST;
+    country_code_list = country_code_list.map( m => {
+      m.text = lang == 'en-US' ? m.name_en : m.name_ch;
+      return m;
+    })
+    var btnText = lang == 'en-US' ? 'Send' : '获取验证码';
     if(send_captcha_status === 'sent'){
-      btnText = lang == 'en' ? ('Retry after ' +  remain_time ) : (remain_time   + '后重试');
+      btnText = lang == 'en-US' ? ('Retry after ' +  remain_time ) : (remain_time   + '后重试');
     }else if(send_captcha_status == 'timeout'){
-      btnText = lang == 'en' ? 'Retry' : '获取验证码';
+      btnText = lang == 'en-US' ? 'Retry' : '获取验证码';
     }
     return (
       <div className="login">
         { initDone && <div className="box-container">
               <Grid style={{width: '330px'}}>
-                <Column width={8} textAlign="left"  verticalAlign="bottom"><h1>注册</h1></Column>
+                <Column width={8} textAlign="left"  verticalAlign="bottom"><h1>{intl.get('signup')}</h1></Column>
                 <Column width={8} textAlign="right" verticalAlign="bottom">
-                  <span onClick={this.toggleType.bind(this, 'mobile')} className={` ${type == 'mobile' ? 'active' : ''}`} style={{paddingBottom: '5px', cursor: 'pointer'}}>手机号</span>
-                  <span onClick={this.toggleType.bind(this, 'email')} className={` ${type == 'email' ? 'active' : ''}`}  style={{marginLeft: '10px', paddingBottom: '5px', cursor: 'pointer'}}>邮件</span>
+                  <span onClick={this.toggleType.bind(this, 'mobile')} className={` ${type == 'mobile' ? 'active' : ''}`} style={{paddingBottom: '5px', cursor: 'pointer'}}>{intl.get('tel')}</span>
+                  <span onClick={this.toggleType.bind(this, 'email')} className={` ${type == 'email' ? 'active' : ''}`}  style={{marginLeft: '10px', paddingBottom: '5px', cursor: 'pointer'}}>{intl.get('email')}</span>
                 </Column>
               </Grid>
               {
@@ -66,13 +72,13 @@ class Register extends Component{
                 [
                 <Grid style={{width: '330px', margin: 0, padding: 0, marginTop: '50px'}}>
                   <Column width={4} style={{margin: 0, padding: 0}}>
-                    <Dropdown name="country" value={country} options={ config.COUNTRY_CODE_LIST}
+                    <Dropdown name="country" value={country} options={ country_code_list }
                       onChange={this.handleInputChange.bind(this)} />
                   </Column>
                   <Column width={12} style={{margin: 0, padding: 0}} >
                     <Popup
                       trigger={
-                        <Input value={tel} name="tel" placeholder="请输入手机号" className="login-input"
+                        <Input value={tel} name="tel" placeholder={intl.get('tel_placeholder')} className="login-input"
                           onChange={this.handleInputChange.bind(this)}
                           onBlur={this.onTelBlur.bind(this)}
                           style={{width: '100%'}}
@@ -88,7 +94,7 @@ class Register extends Component{
                   <Column width={10} style={{margin: 0, padding: 0}}>
                   <Popup
                     trigger={
-                      <Input style={{width: '100%'}} value={captcha} name="captcha" placeholder="短信验证码" className="login-input"
+                      <Input style={{width: '100%'}} value={captcha} name="captcha" placeholder={intl.get('sms_placeholder')} className="login-input"
                       onChange={this.handleInputChange.bind(this)}
                       error={captchaError} />
                     }
@@ -131,7 +137,7 @@ class Register extends Component{
               />
               <Popup
                 trigger = {
-                  <Input name="confirmpwd" className="login-input" type="password" placeholder={intl.get('pw2_placeholder')}                    value={confirmpwd}
+                  <Input name="confirmpwd" className="login-input" type="password" placeholder={intl.get('pw2_placeholder')} value={confirmpwd}
                     onChange={this.handleInputChange.bind(this)}
                     onBlur={this.onConfirmpwdBlur.bind(this)}
                     error={confirmpwdError}/>
@@ -143,7 +149,7 @@ class Register extends Component{
               <div>
               <Checkbox name="agreement" onChange={this.handleInputChange.bind(this)} checked={agreement} className="checkbox" style={{verticalAlign: 'middle', color: ''}}/>
                 <span style={{verticalAlign: 'middle', marginLeft: '3px'}}>{intl.get('agreement_txt')}<Link>《XXXXXXX》</Link></span></div>
-              <Button disabled={submit_ing} loading={submit_ing} onClick={this.submit.bind(this)} className="login-btn">注册</Button>
+              <Button disabled={submit_ing} loading={submit_ing} onClick={this.submit.bind(this)} className="login-btn">{intl.get('signup')}</Button>
               {
                 submit_msg != '' ?
                 <Message negative size="mini" style={{padding: '0.5em 1.5em'}}>
@@ -156,12 +162,12 @@ class Register extends Component{
       )
   }
   componentDidMount(){
-    this.loadLocales('zh-CN');
+    this.loadLocales(this.props.Lang.lang);
     LazyLoad('noty')
   }
   loadLocales(lang){
     intl.init({
-      currentLocale: lang,
+      currentLocale: lang || 'en-US',
       locales: register
     })
     .then( () => {

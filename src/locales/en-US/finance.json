@@ -4,5 +4,10 @@
   "available": "Available",
   "action": "Action",
   "onorders": "On Orders",
-  "exchange": "Exchange"
+  "exchange": "Exchange",
+  "hidesmallbalances": "Hide small balances",
+  "estimatedvalue": "Estimated Value",
+  "withdraw": "Withdraw",
+  "deposit": "Deposit",
+  "action": "Action"
 }

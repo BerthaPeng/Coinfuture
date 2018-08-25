@@ -15,14 +15,14 @@ const TransacDetailPane = (props) => {
     <Table basic="very" className="no-border-table gray-header-table main-table">
       <Table.Header>
         <Table.Row>
-          <Table.HeaderCell>订单号</Table.HeaderCell>
-          <Table.HeaderCell>成交时间</Table.HeaderCell>
-          <Table.HeaderCell>交易对</Table.HeaderCell>
-          <Table.HeaderCell>方向</Table.HeaderCell>
-          <Table.HeaderCell>成交价格</Table.HeaderCell>
-          <Table.HeaderCell>成交数量</Table.HeaderCell>
-          <Table.HeaderCell>成交总额</Table.HeaderCell>
-          <Table.HeaderCell>手续费</Table.HeaderCell>
+          <Table.HeaderCell>{intl.get('orderid')}</Table.HeaderCell>
+          <Table.HeaderCell>{intl.get('dealtime')}</Table.HeaderCell>
+          <Table.HeaderCell>{intl.get('pairs')}</Table.HeaderCell>
+          <Table.HeaderCell>{intl.get('type2')}</Table.HeaderCell>
+          <Table.HeaderCell>{intl.get('price')}</Table.HeaderCell>
+          <Table.HeaderCell>{intl.get('amount')}</Table.HeaderCell>
+          <Table.HeaderCell>{intl.get('total')}</Table.HeaderCell>
+          <Table.HeaderCell>{intl.get('fee')}</Table.HeaderCell>
         </Table.Row>
       </Table.Header>
       <Table.Body>
@@ -55,18 +55,18 @@ const TransacPane = (props) => {
     <Table basic="very" className="no-border-table gray-header-table main-table">
       <Table.Header>
         <Table.Row>
-          <Table.HeaderCell>订单号</Table.HeaderCell>
-          <Table.HeaderCell>下单时间</Table.HeaderCell>
-          <Table.HeaderCell>交易类型</Table.HeaderCell>
-          <Table.HeaderCell>交易对</Table.HeaderCell>
+          <Table.HeaderCell>{intl.get('orderid')}</Table.HeaderCell>
+          <Table.HeaderCell>{intl.get('ordertime')}</Table.HeaderCell>
+          <Table.HeaderCell>{intl.get('type')}</Table.HeaderCell>
+          <Table.HeaderCell>{intl.get('pairs')}</Table.HeaderCell>
           {/*<Table.HeaderCell>方向</Table.HeaderCell>*/}
-          <Table.HeaderCell>价格</Table.HeaderCell>
-          <Table.HeaderCell>数量</Table.HeaderCell>
-          <Table.HeaderCell>委托总额</Table.HeaderCell>
-          <Table.HeaderCell>已成交</Table.HeaderCell>
-          <Table.HeaderCell>未成交</Table.HeaderCell>
-          <Table.HeaderCell>状态</Table.HeaderCell>
-          <Table.HeaderCell>操作</Table.HeaderCell>
+          <Table.HeaderCell>{intl.get('price')}</Table.HeaderCell>
+          <Table.HeaderCell>{intl.get('amount')}</Table.HeaderCell>
+          <Table.HeaderCell>{intl.get('total')}</Table.HeaderCell>
+          <Table.HeaderCell>{intl.get('executed')}</Table.HeaderCell>
+          <Table.HeaderCell>{intl.get('unexecuted')}</Table.HeaderCell>
+          <Table.HeaderCell>{intl.get('status')}</Table.HeaderCell>
+          <Table.HeaderCell>{intl.get('action')}</Table.HeaderCell>
         </Table.Row>
       </Table.Header>
       <Table.Body>
@@ -114,9 +114,9 @@ class Transaction extends Component{
     transac_list = transac_list.map( m => { m.created_datetime = dateFormat( new Date(m.created_datetime), 'yyyy-MM-dd hh:mm:ss'); return m;})
     transac_detail_list = transac_detail_list.map( m => { m.match_datetime = dateFormat( new Date(m.match_datetime), 'yyyy-MM-dd hh:mm:ss'); return m;})
     const order_filter_options = [
-      { text: '当前委托', value: 1},
-      { text: '委托历史', value: 2},
-      { text: '成交明细', value: 'detail'},
+      { text: intl.get('openorders'), value: 1},
+      { text: intl.get('orderhistory'), value: 2},
+      { text: intl.get('transactionhistory'), value: 'detail'},
     ]
     return (
       <div className="fl-block gray-bg">
@@ -130,7 +130,7 @@ class Transaction extends Component{
             <div className="item-inner" style={{minHeight: '100%'}}>
               <div className="finance-header" style={{position: 'relative'}}>
                 <div>
-                  <h3>订单记录</h3>
+                  <h3>{intl.get('orders')}</h3>
                 </div>
                 <div style={{position: 'absolute', right: '20px', color: '#00b38c'}}>
                   <Dropdown inline options={order_filter_options} defaultValue={order_filter_options[0].value} onChange={this.handleTabChange.bind(this)} />
@@ -152,7 +152,7 @@ class Transaction extends Component{
   }
   componentDidMount(){
     this.getTransacList(1)
-    this.loadLocales('zh-CN');
+    this.loadLocales(this.props.Lang.lang);
   }
 
   componentWillReceiveProps(nextProps){

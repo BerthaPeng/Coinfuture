@@ -44,5 +44,6 @@
   "gocharge": "go charge",
   "actualincome": "Amount",
   "categoriestitle": "Hot coins",
-  "support": "support"
+  "support": "support",
+  "kline": "K Line"
 }

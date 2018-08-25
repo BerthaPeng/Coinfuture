@@ -1,6 +1,6 @@
 const commonEn = require('./en-us/common.json');
 const commonCn = require('./zh-cn/common.json');
-const common = { 'en-US': headerEn, 'zh-CN': headerCn };
+const common = { 'en-US': commonEn, 'zh-CN': commonCn };
 
 const headerEn = require('./en-us/header.json');
 const headerCn = require('./zh-cn/header.json');

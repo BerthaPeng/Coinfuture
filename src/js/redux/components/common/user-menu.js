@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import { Menu } from 'semantic-ui-react';
 import history from 'history_instance';
-
+import intl from 'react-intl-universal';
+import { common } from 'locales/index';
 export default class UserMenu extends Component{
   constructor(props){
     super(props);
@@ -13,24 +14,24 @@ export default class UserMenu extends Component{
     var { activeMenu } = this.state;
     return (
       <Menu text vertical>
-        <Menu.Item
+        {/*<Menu.Item
           name="userCenter"
-          active={activeMenu == 'userCenter'} disabled>用户中心</Menu.Item>
+          active={activeMenu == 'userCenter'} disabled>用户中心</Menu.Item>*/}
         <Menu.Item
           name="pocket"
           active = {activeMenu == 'pocket'}
-          onClick={this.handleMenuClick.bind(this, 'pocket')}>钱包资产</Menu.Item>
+          onClick={this.handleMenuClick.bind(this, 'pocket')}>{intl.get('balances')}</Menu.Item>
         <Menu.Item
           name="order-record"
           active = {activeMenu == 'order-record'}
-          onClick={this.handleMenuClick.bind(this, 'order-record')}>订单记录</Menu.Item>
-        <Menu.Item>模拟交易</Menu.Item>
-        <Menu.Item disabled>个人资料</Menu.Item>
+          onClick={this.handleMenuClick.bind(this, 'order-record')}>{intl.get('orders')}</Menu.Item>
+        <Menu.Item>{intl.get('simulatedtrading')}</Menu.Item>
+        {/*<Menu.Item disabled>个人资料</Menu.Item>
         <Menu.Item disabled>优惠卡券</Menu.Item>
         <Menu.Item disabled>安全中心</Menu.Item>
         <Menu.Item disabled>消息中心</Menu.Item>
         <Menu.Item disabled>推荐返利</Menu.Item>
-        <Menu.Item disabled>其他设置</Menu.Item>
+        <Menu.Item disabled>其他设置</Menu.Item>*/}
       </Menu>
       )
   }
