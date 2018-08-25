@@ -42,6 +42,7 @@
   "availableSum": "available",
   "availableAmount": "available",
   "gocharge": "go charge",
-  "acturalincome": "Amount",
-  "categoriestitle": "Hot coins"
+  "actualincome": "Amount",
+  "categoriestitle": "Hot coins",
+  "support": "support"
 }

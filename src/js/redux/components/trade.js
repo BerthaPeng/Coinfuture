@@ -123,7 +123,7 @@ class Trade extends Component{
                       onClick={this.getCoinList.bind(this, m.id)}
                       key={m.id + '-coin-cate'}
                     >
-                      <span>{m.descrpt_ch}</span>
+                      <span>{this.props.Lang.lang == 'en-US' ? m.descrpt_en : m.descrpt_ch}</span>
                       <i className = 'arrow'><img src="images/arrow-right-32.png"/></i>
                       </div>) })
                   }
@@ -210,7 +210,7 @@ class Trade extends Component{
                   </div>
                   <div className="item-3" style={{textAlign: 'right'}}>
                     <span className="light-grey-color">
-                      交易支持货币
+                      {intl.get('support')}
                     </span>
                     <Icon name="circle" color='grey' />
                     <Icon name="circle" color='grey' />
@@ -845,7 +845,10 @@ class Trade extends Component{
       locales: trade
     })
     .then( () => {
-      this.setState({ initDone: true })
+      //设置分类的标题，先暂时在这里处理
+      console.error('hhhhhhhh');
+      console.error(intl.get('categoriestitle'))
+      this.setState({coin_quene_title: intl.get('categoriestitle') })
     })
   }
 
