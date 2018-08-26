@@ -381,10 +381,13 @@ class Trade extends Component{
       )
   }
   componentDidMount(){
-    if(window.socket){
+    /*if(window.socket){
       window.socket.close();
     }
-    this.dailySocketInit()
+    this.dailySocketInit()*/
+    if(window.mySocket){
+      window.mySocket.close();
+    }
     LazyLoad('noty', () => {
       /*LazyLoad('noty');*/
       var symbol = this.state.activeCoin + config.CURRENCY;
@@ -393,7 +396,8 @@ class Trade extends Component{
         .fail( ({msg}) => {
           Noty('error', msg || '获取行情数据失败')
         })
-      this.dataInit(symbol);
+        this.socketInitX();
+        this.dataInit(symbol);
       /*var account_id = sessionStorage.getItem('_udata_accountid');
       if(account_id){
         this.props.actions.getTransacList({ type: 0})
@@ -449,11 +453,16 @@ class Trade extends Component{
   }
   onChangeLine(line){
     if(line != this.state.current_line){
-      this.setState({current_line: line, suscribe_success: false});
+      this.setState({current_line: line});
+      //订阅后修改
+      /*this.setState({current_line: line, suscribe_success: false});*/
       var symbol = this.state.activeCoin + config.CURRENCY;
       this.getBeforeMarketData(line, symbol);
-      window.socket.close();
-      this.socketInit(line, symbol);
+      /*window.socket.close();*/
+      /*this.socketInit(line, symbol);*/
+
+      //重新订阅一个数据
+      this.socketOpen(mySocket, 'market.' + symbol +'.kline.' + line );
     }
   }
   //数据初始化
@@ -470,10 +479,211 @@ class Trade extends Component{
           new_out_order_list: this.props.Trade.out_order_list
         })
       })
-    this.socketInit(this.state.current_line, symbol);
+    /*this.socketInit(this.state.current_line, symbol);
     this.dealSocketInit(symbol);
-    this.orderSocketInit(symbol);
+    this.orderSocketInit(symbol);*/
 
+  }
+  socketOpen(socket, channel){
+    console.log('websocket连接打开');
+    var data = getSocketHeader(channel);
+    data = JSON.stringify(data);
+    this.waitForConnection( () => {
+      console.warn('send data:' + data)
+      socket.send(data);
+    }, socket, 5000);
+  }
+  //初始化订阅时需要订阅的频道
+  socketOpenInit(){
+    //订阅daily;
+    this.socketOpen(window.mySocket, 'market.' +config.CURRENCY + '.kline.daily')
+  }
+  waitForConnection(callback, socket, interval) {
+      if (socket.readyState === 1) {
+          callback();
+      } else {
+          var that = this;
+          // optional: implement backoff for interval here
+          console.warn('still connecting');
+          setTimeout(function () {
+              that.waitForConnection(callback, socket, interval);
+          }, interval);
+      }
+  }
+  socketInitX(){
+    if(window.WebSocket){
+      var mySocket;
+      var self = this;
+      var symbol = this.state.activeCoin + config.CURRENCY;
+      if(!window.mySocket){
+        mySocket = new WebSocket(config.socket_url);
+        mySocket.onopen = function(){
+          self.socketOpen(mySocket, 'market.' +config.CURRENCY + '.kline.daily');
+          self.socketOpen(mySocket, 'market.' + symbol + '.trade.detail');
+          self.socketOpen(mySocket, 'market.' + symbol + '.depth.step0');
+          self.socketOpen(mySocket, 'market.' + symbol +'.kline.' + self.state.current_line );
+        }
+        mySocket.onclose = function (event) {
+            console.log("webSocket 连接关闭");
+        };
+        mySocket.onmessage = function(event){
+          // 如果服务端是写的二进制数据，则此处的blob也是一个二进制对象，提取数据时需要Blob类和FileReader类配合使用
+          var blob = event.data;
+          blob = JSON.parse(blob);
+          self.handleSocketData(blob);
+        }
+        window.mySocket = mySocket;
+      }else{
+        mySocket = window.mySocket;
+      }
+    }else{
+      Noty('warning',"你的浏览器不支持websocket");
+    }
+  }
+  handleSocketData(blob){
+    var symbol = this.state.activeCoin + config.CURRENCY;
+    if(this.state.suscribe_success){
+      switch(blob.channel){
+        case 'market.' +config.CURRENCY + '.kline.daily':
+          this.handleDaily(blob);break;
+        case 'market.' + symbol + '.trade.detail':
+          this.handleDeal(blob);break;
+        case 'market.' + symbol + '.depth.step0':
+          this.handleOrder(blob);break;
+        case 'market.' + symbol +'.kline.' + this.state.current_line:
+          var transUnit = 60000; //1分钟=60000毫米   和timeline都是
+          var { current_line } = this.state
+          var line = current_line == 'timeline' ? '1m' : current_line; //分时取1m数据
+          switch(line){
+            case '5m':
+              transUnit *= 5;break;
+            case '10m':
+              transUnit *= 10;break;
+            case '15m':
+              transUnit *= 15;break;
+            case '30m':
+              transUnit *= 30;break;
+            case '60m':
+              transUnit *= 60;break;
+            case '1d':
+              transUnit *= 24 * 60;break;
+            default:;break;
+          }
+          this.handleKline(blob, transUnit);break;
+        default:;break;
+      }
+    }else{
+      if( blob.result.code === 0){
+        this.setState({ suscribe_success: true});
+      }else{
+        Noty('error', blob.result.msg || '订阅失败！');
+      }
+    }
+
+  }
+  //处理行情订阅的数据
+  handleDaily(blob){
+    var dailyArr = blob.data.daily;
+    dailyArr = dailyArr.map( m => {
+      var data = { name: m.s, price: parseFloat(m.c).toFixed(4), change: m.cg,
+        highest: parseFloat(m.h).toFixed(4),
+        lowest: parseFloat(m.l).toFixed(4),
+        commit: parseFloat(m.a).toFixed(4),
+        changeMoney: (parseFloat(m.c) - parseFloat(m.o)).toFixed(4),
+      };
+      if(m.cg.indexOf('-') != -1){
+        data.direction = 'down'
+      }else{
+        data.direction = 'up';
+      }
+      return data;
+    })
+    var currentCoinInfo = dailyArr.filter(m => m.name == this.state.activeCoin);
+    var highest = 0, lowest = 0, commit = 0, changeMoney = 0;
+    if(currentCoinInfo && currentCoinInfo.length){
+      currentCoinInfo = currentCoinInfo[0];
+      highest = currentCoinInfo.highest;
+      lowest = currentCoinInfo.lowest;
+      commit = currentCoinInfo.commit;
+      changeMoney = currentCoinInfo.changeMoney;
+      this.setState({ highest, lowest, commit, changeMoney});
+    }
+    console.warn('daily数据：')
+    console.warn(dailyArr);
+    var { coin_list } = this.props.Trade;
+    var new_coin_list = [];
+    if(this.state.active_cate_id){
+      new_coin_list = coin_list.map( m => {
+        var index = dailyArr.findIndex( n => n.name + 'USDX' == m.symbol);
+        return dailyArr[index];
+      })
+    }else{
+      new_coin_list = dailyArr;
+    }
+    this.setState({ state_market_list: dailyArr, filter_market_list: new_coin_list })
+  }
+  //处理成交订阅的数据
+  handleDeal(blob){
+    var blobData = blob.data;
+    var data = { id: blobData.d, price: Number(blobData.p).toFixed(4), quantity: blobData.q, time: timestampToTime(blobData.t),type: blobData.m ? 'in' : 'out'}
+    var { new_deal_list } = this.state;
+    new_deal_list=[data, ...new_deal_list];
+    new_deal_list.pop(); //删除数组的最后一个元素，最后一个元素为最久的数据
+    console.warn('成交数据：')
+    console.warn(data);
+    this.setState({ new_deal_list })
+  }
+  //处理订单订阅的数据
+  handleOrder(blob){
+    var { asks, bids } = blob.data;
+    //卖盘数据
+    asks = asks.map ( m => {
+      var item = m ;
+      try{
+        item[0] = parseFloat(item[0]).toFixed(4);
+        item[1] = parseFloat(item[1]).toFixed(4);
+      }catch(e){
+        console.warn(e);
+      }
+      return { quantity: item[1], price: item[0]};
+    })
+    bids = bids.map( m => {
+      var item = m ;
+      try{
+        item[0] = parseFloat(item[0]).toFixed(4);
+        item[1] = parseFloat(item[1]).toFixed(4);
+      }catch(e){
+        console.warn(e);
+      }
+      return { quantity: item[1], price: item[0]};
+    })
+    var { new_in_order_list, new_out_order_list } = this.state;
+    //第一个数据为最新的数据，第十个数据为最老的数据
+    new_out_order_list = asks.slice(0, 10).reverse();
+    new_in_order_list = bids.slice(0, 10);
+    console.warn('订单数据一条');
+    console.warn('买盘数据：' );
+    console.warn(new_in_order_list);
+    console.warn('卖盘数据：')
+    console.warn(new_out_order_list);
+    this.setState({ new_in_order_list, new_out_order_list})
+  }
+  //处理K线数据
+  handleKline(blob, transUnit){
+    //blob.ts 为发送数据的时间， blob.kline.t 为成交时间
+    var kline = blob.data.kline;
+    //一条记录： 开盘价（open）,收盘价（close）,最低价（lowest）,最高价（highest)
+    if(this.state.last_t && (blob.data.ts - this.state.last_t * transUnit) < transUnit){
+      console.warn(this.state.current_line + '内数据')
+      this.setState({isNew: false});
+    }else{
+      console.warn('非' + this.state.current_line + '内数据')
+      this.setState({isNew: true, last_t: kline.t});
+    }
+    var record = [timestampToTime(kline.t * transUnit), kline.o, kline.c, kline.l, kline.h, Number(kline.q)];
+    var { Kdata } = this.state;
+    this.setState({ addKdata: record })
+    console.warn(record);
   }
   //获取K线图数据
   socketInit(line, symbol){
@@ -506,7 +716,7 @@ class Trade extends Component{
             blob = JSON.parse(blob);
             if(self.state.suscribe_success){
               //blob.ts 为发送数据的时间， blob.kline.t 为成交时间
-              var kline = blob.kline;
+              var kline = blob.data.kline;
               //一条记录： 开盘价（open）,收盘价（close）,最低价（lowest）,最高价（highest)
               if(self.state.last_t && (blob.ts - self.state.last_t * transUnit) < transUnit){
                 console.warn(line + '内数据')
@@ -538,27 +748,6 @@ class Trade extends Component{
         alert("你的浏览器不支持websocket");
     }
   }
-  socketOpen(socket, channel){
-    console.log('websocket连接打开');
-    var data = getSocketHeader(channel);
-    data = JSON.stringify(data);
-    this.waitForConnection( () => {
-      console.warn('send data:' + data)
-      socket.send(data);
-    }, socket, 5000);
-  }
-  waitForConnection(callback, socket, interval) {
-      if (socket.readyState === 1) {
-          callback();
-      } else {
-          var that = this;
-          // optional: implement backoff for interval here
-          console.warn('still connecting');
-          setTimeout(function () {
-              that.waitForConnection(callback, socket, interval);
-          }, interval);
-      }
-  }
   dealSocketInit(symbol){
     var dealSocket;
     var self = this;
@@ -570,6 +759,7 @@ class Trade extends Component{
             var blob = event.data;
             blob = JSON.parse(blob);
             if(self.state.deal_suscribe_success){
+              debugger
               var data = { id: blob.d, price: blob.p, quantity: blob.q, time: timestampToTime(blob.t),type: blob.m ? 'in' : 'out'}
               var { new_deal_list } = self.state;
               new_deal_list=[data, ...new_deal_list];
@@ -580,6 +770,8 @@ class Trade extends Component{
             }else{
               if( blob.result.code === 0){
                 self.setState({ deal_suscribe_success: true});
+              }else{
+                Noty('error', blob.result.msg || '成交队列订阅失败')
               }
             }
         };
@@ -594,7 +786,6 @@ class Trade extends Component{
     }else{
         alert("你的浏览器不支持websocket");
     }
-
   }
   dailySocketInit(initial){
     var dailySocket;
@@ -606,7 +797,7 @@ class Trade extends Component{
             // 如果服务端是写的二进制数据，则此处的blob也是一个二进制对象，提取数据时需要Blob类和FileReader类配合使用
             var blob = event.data;
             blob = JSON.parse(blob);
-            var dailyArr = blob.daily;
+            var dailyArr = blob.data.daily;
             if(self.state.daily_suscribe_success ){
               dailyArr = dailyArr.map( m => {
                 var data = { name: m.s, price: parseFloat(m.c).toFixed(4), change: m.cg,
@@ -648,6 +839,8 @@ class Trade extends Component{
             }else{
               if( blob.result.code === 0){
                 self.setState({ daily_suscribe_success: true});
+              }else{
+                Noty('error', blob.result.msg || '行情订阅失败');
               }
             }
         };
@@ -668,14 +861,18 @@ class Trade extends Component{
     var orderSocket;
     var self = this;
     if(window.WebSocket){
-        orderSocket = new WebSocket(config.socket_url);
+        if(window.dailySocket){
+          orderSocket = window.dailySocket
+        }else{
+          orderSocket = new WebSocket(config.socket_url);
+        }
         // websocket收到消息
         orderSocket.onmessage = function(event){
             // 如果服务端是写的二进制数据，则此处的blob也是一个二进制对象，提取数据时需要Blob类和FileReader类配合使用
             var blob = event.data;
             blob = JSON.parse(blob);
             if(self.state.order_suscribe_success){
-              var { asks, bids } = blob;
+              var { asks, bids } = blob.data;
               //卖盘数据
               asks = asks.map ( m => {
                 var item = m ;
@@ -706,6 +903,8 @@ class Trade extends Component{
             }else{
               if( blob.result.code === 0){
                 self.setState({ order_suscribe_success: true});
+              }else{
+                Noty('error', blob.result.msg || '买卖盘队列订阅失败')
               }
             }
         };
@@ -739,10 +938,12 @@ class Trade extends Component{
   }
   chooseCoin(coin){
     var trade_pair = config.coin_trade_pair;
-    var exchange_available = trade_pair.filter(m => m.name == coin)[0].exchange_available
-    this.setState({ activeCoin: coin, exchange_available, current_line: '1m',
+    var exchange_available = trade_pair.filter(m => m.name == coin)[0].exchange_available;
+    //订阅数据格式改变时改动
+    this.setState({ activeCoin: coin, exchange_available, current_line: '1m' })
+    /*this.setState({ activeCoin: coin, exchange_available, current_line: '1m',
       suscribe_success: false, order_suscribe_success: false, deal_suscribe_success: false
-    });
+    });*/
     //设置日最高等参数
     var currentCoinInfo = this.state.filter_market_list.filter(m => m.name == coin);
     var highest = 0, lowest = 0, commit = 0, changeMoney = 0;
@@ -755,10 +956,13 @@ class Trade extends Component{
       this.setState({ highest, lowest, commit, changeMoney});
     }
     var symbol = coin + config.CURRENCY;
-    window.socket.close();
+    /*window.socket.close();
     window.dealSocket.close();
-    window.orderSocket.close();
+    window.orderSocket.close();*/
     this.dataInit(symbol);
+    this.socketOpen(mySocket, 'market.' + symbol + '.trade.detail');
+    this.socketOpen(mySocket, 'market.' + symbol + '.depth.step0');
+    this.socketOpen(mySocket, 'market.' + symbol +'.kline.' + this.state.current_line );
   }
   componentWillUnmount(){
     if(window.socket){

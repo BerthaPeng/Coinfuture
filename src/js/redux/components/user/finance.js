@@ -8,6 +8,8 @@ import intl from 'react-intl-universal';
 import { finance } from 'locales/index';
 import UserMenu from '../common/user-menu.js';
 import BalancesTable from '../common/balances-table.js';
+import { Noty } from 'utils/utils';
+import LazyLoad from 'utils/lazy_load';
 
 class Finance extends Component{
   constructor(props){
@@ -41,8 +43,8 @@ class Finance extends Component{
                 <div style={{padding: '10px 40px'}}><Button size="mini">{intl.get('deposit')}</Button><Button style={{marginLeft: '10px'}} size="mini">{intl.get("withdraw")}</Button></div>
               </div>
               <div className="finance-body" style={{marginTop: '20px'}}>
-                {/*<BalancesTable lang = {this.props.Lang.lang} list = {user_coin_list} />*/}
-                <Table basic="very" textAlign="center" className="no-border-table gray-header-table" style={{margin: '0px'}} textAlign="left">
+                <BalancesTable lang = {this.props.Lang.lang} list = {user_coin_list} getDepositAddress={this.getDepositAddress.bind(this)} />
+                {/*<Table basic="very" textAlign="center" className="no-border-table gray-header-table" style={{margin: '0px'}} textAlign="left">
                   <Table.Header>
                     <Table.Row>
                       <Table.HeaderCell verticalAlign="top">{intl.get('coin')}</Table.HeaderCell>
@@ -65,7 +67,7 @@ class Finance extends Component{
                       })
                     }
                   </Table.Body>
-                </Table>
+                </Table>*/}
               </div>
             </div>
           </div>
@@ -74,6 +76,7 @@ class Finance extends Component{
       )
   }
   componentDidMount(){
+    LazyLoad('noty')
     this.props.actions.getUserCoinList({})
       .done( data => {
         var usd = data.filter( m => m.coin_name_english.trim() == 'USDX');
@@ -94,6 +97,12 @@ class Finance extends Component{
       currentLocale: lang,
       locales: finance,
     })
+  }
+  getDepositAddress(coin_id){
+    return this.props.actions.getDepositAddress({ coin_id })
+      .fail(({msg}) => {
+        Noty('error', msg || '获取充值地址失败！')
+      })
   }
 }
 

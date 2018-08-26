@@ -11,3 +11,10 @@ export function getUserCoinList(params){
       })
   }
 }
+
+//获取币种的充值地址
+export function getDepositAddress(params){
+  return dispatch => {
+    return post(201010, params);
+  }
+}

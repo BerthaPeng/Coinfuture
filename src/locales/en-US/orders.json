@@ -16,5 +16,7 @@
   "ordertime": "Date",
   "status": "Status",
   "dealtime": "Date",
-  "fee": "Fee"
+  "fee": "Fee",
+  "cancel": "Cancel",
+  "detail": "Detail"
 }

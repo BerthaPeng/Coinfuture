@@ -29,3 +29,11 @@ export function getTransacDetailList(params){
       })
   }
 }
+
+//撤单
+export const WITHDRAW = 'WITHDRAW';
+export function withdraw(params){
+  return dispatch => {
+    return post(201011, params)
+  }
+}

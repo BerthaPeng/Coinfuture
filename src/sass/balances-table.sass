@@ -4,22 +4,70 @@
     padding: 0 10px;
     width: 100%;
     display: table;
-    >dt
+    >dt,>dd
       float: left;
       font-size: 12px;
       height: 40px;
       line-height: 40px;
       text-align: right;
-      width: 150px;
+      width: 25%;
       white-space: nowrap;
       text-overflow: ellipsis;
-  #table_list
-    >dd
-      float: left;
-      font-size: 12px;
+.cf-table
+  .body_list>dt
+    font-size: 14px;
+    color: #82abba;
+  .body_list>dd
+    border-bottom: 1px solid rgba(0, 0 ,0, .05);
+    white-space: nowrap;
+    .action-btn
+      width: auto;
+      display: inline-block;
+      padding: 0 5px;
       height: 40px;
       line-height: 40px;
-      text-align: right;
-      width: 150px;
+      font-size: 12px;
+      background-color: transparent;
+.action-box
+  clear: both;
+  border-radius: 3px;
+  margin: 0 -10px;
+  position: relative;
+  .table-inner
+    border: 1px solid rgba(0, 0 ,0, .05);
+    padding: 15px 20px 20px;
+    margin-top: -1px;
+  .describe
+    font-size: 12px;
+    color: #82abba;
+  .address_table
+    margin-top: 20px;
+    font-size: 20px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    color: #00b38c;
+    .copy
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text;
+      word-break: break-all;
+      line-height: 28px;
+    .body_group
       white-space: nowrap;
-      text-overflow: ellipsis;
+      overflow: visible;
+    .table_body
+      display: inline-block;
+      vertical-align: top;
+      overflow: hidden;
+      word-wrap: break-word;
+      max-width: 60%;
+    .link-copy
+      font-size: 14px;
+      margin-left: 20px;
+      text-decoration: none;
+      color: #7a98f7;
+      transition: all .2s ease-in-out;
+      cursor: pointer;

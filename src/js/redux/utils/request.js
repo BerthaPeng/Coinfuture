@@ -103,8 +103,21 @@ export function post( api_id, params){
 export function getSocketHeader(channel){
   var data = {
     "header": {
-      token: sessionStorage.getItem("_udata") || "",
+      token: "",
       api_id: 101055
+    },
+    "data": {
+      "channel": channel
+    }
+  };
+  return data;
+}
+//取消成交队列
+export function getCancelSocketHeader(channel){
+  var data = {
+    "header": {
+      token: sessionStorage.getItem("_udata") || "",
+      api_id: 101056
     },
     "data": {
       "channel": channel

@@ -16,5 +16,7 @@
   "ordertime": "下单时间",
   "status": "状态",
   "dealtime": "成交时间",
-  "fee": "手续费"
+  "fee": "手续费",
+  "cancel": "撤单",
+  "detail": "详情"
 }

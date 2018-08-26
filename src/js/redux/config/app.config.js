@@ -42,6 +42,12 @@ export default {
     type_3: 'sell_market',
     type_4: 'sell_limit'
   },
+  ORDER_TYPE_EN: {
+    type_1: 'Buy on market price',
+    type_2: 'Buy on limit price',
+    type_3: 'Sell on market price',
+    type_4: 'Sell on limit price'
+  },
   ORDER_TYPE_CN: {
     type_1: '市价买入',
     type_2: '限价买入',

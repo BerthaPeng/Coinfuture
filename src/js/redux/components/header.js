@@ -104,8 +104,8 @@ class Header extends Component{
   }
   loadLocales(lang){
     intl.init({
-      currentLocale: lang || 'en-us',
-      locales: { ...header }
+      currentLocale: lang || 'en-US',
+      locales: header
     })
     .then( () => {
       this.setState({ initDone: true })
