@@ -454,6 +454,7 @@ class Trade extends Component{
   onChangeLine(line){
     if(line != this.state.current_line){
       this.setState({current_line: line});
+      line = line == 'timeline' ? '1m': line;
       //订阅后修改
       /*this.setState({current_line: line, suscribe_success: false});*/
       var symbol = this.state.activeCoin + config.CURRENCY;
@@ -517,11 +518,13 @@ class Trade extends Component{
       var symbol = this.state.activeCoin + config.CURRENCY;
       if(!window.mySocket){
         mySocket = new WebSocket(config.socket_url);
+        var line = self.state.current_line;
+        line = line == 'timeline' ? '1m' : line; //分时取1m数据
         mySocket.onopen = function(){
           self.socketOpen(mySocket, 'market.' +config.CURRENCY + '.kline.daily');
           self.socketOpen(mySocket, 'market.' + symbol + '.trade.detail');
           self.socketOpen(mySocket, 'market.' + symbol + '.depth.step0');
-          self.socketOpen(mySocket, 'market.' + symbol +'.kline.' + self.state.current_line );
+          self.socketOpen(mySocket, 'market.' + symbol +'.kline.' + line );
         }
         mySocket.onclose = function (event) {
             console.log("webSocket 连接关闭");
@@ -542,6 +545,8 @@ class Trade extends Component{
   }
   handleSocketData(blob){
     var symbol = this.state.activeCoin + config.CURRENCY;
+    var { current_line } = this.state
+    var line = current_line == 'timeline' ? '1m' : current_line; //分时取1m数据
     if(this.state.suscribe_success){
       switch(blob.channel){
         case 'market.' +config.CURRENCY + '.kline.daily':
@@ -550,10 +555,8 @@ class Trade extends Component{
           this.handleDeal(blob);break;
         case 'market.' + symbol + '.depth.step0':
           this.handleOrder(blob);break;
-        case 'market.' + symbol +'.kline.' + this.state.current_line:
+        case 'market.' + symbol +'.kline.' + line:
           var transUnit = 60000; //1分钟=60000毫米   和timeline都是
-          var { current_line } = this.state
-          var line = current_line == 'timeline' ? '1m' : current_line; //分时取1m数据
           switch(line){
             case '5m':
               transUnit *= 5;break;
@@ -977,6 +980,9 @@ class Trade extends Component{
     if(window.dailySocket){
       window.dailySocket.close();
     }
+    if(window.mySocket){
+      window.mySocket.close();
+    }
     if(window.myChart){
       window.myChart.clear();
       window.myChart.dispose();
@@ -1018,12 +1024,12 @@ class Trade extends Component{
     if(cateFiltered.length){
       var cate = cateFiltered[0];
       var level = cate.level;
-      var titleStr = cate.descrpt_ch;
+      var titleStr = this.props.Lang.lang == 'en-US'? cate.descrpt_en : cate.descrpt_ch;
       var parent_id = cate.parent;
       while(parent_id){
         cate = cate_list.filter( m => m.id == parent_id )[0];
         parent_id = cate.parent;
-        titleStr = cate.descrpt_ch + ' | ' + titleStr;
+        titleStr = (this.props.Lang.lang == 'en-US'? cate.descrpt_en : cate.descrpt_ch) + ' | ' + titleStr;
       }
       this.setState({ coin_quene_title: titleStr});
     }
@@ -1040,7 +1046,8 @@ class Trade extends Component{
       })
   }
   clearCate(){
-    this.setState({ active_cate_id : 0, active_cate: {}, coin_quene_title: '热门虚拟币'})
+    var str = this.props.Lang.lang == 'en-US' ? 'Hot coins' : '热门虚拟币';
+    this.setState({ active_cate_id : 0, active_cate: {}, coin_quene_title:  str})
   }
   //初始化语言脚本
   loadLocales(lang){
