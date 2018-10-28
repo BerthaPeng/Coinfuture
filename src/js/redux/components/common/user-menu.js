@@ -25,7 +25,11 @@ export default class UserMenu extends Component{
           name="order-record"
           active = {activeMenu == 'order-record'}
           onClick={this.handleMenuClick.bind(this, 'order-record')}>{intl.get('orders')}</Menu.Item>
-        <Menu.Item>{intl.get('simulatedtrading')}</Menu.Item>
+        <Menu.Item
+          name="simulated-trading"
+          active = { activeMenu == 'simulated-trading'}
+          onClick = {this.handleMenuClick.bind(this, 'simulated-trading')}
+          >{intl.get('simulatedtrading')}</Menu.Item>
         {/*<Menu.Item disabled>个人资料</Menu.Item>
         <Menu.Item disabled>优惠卡券</Menu.Item>
         <Menu.Item disabled>安全中心</Menu.Item>
@@ -44,7 +48,20 @@ export default class UserMenu extends Component{
       case 'order-record':
         this.setState({activeMenu: 'order-record'});
         history.push('/transaction');break;
+      case 'simulated-trading':
+        this.setState({ activeMenu: 'simulated-trading'});
+        history.push('/user/fake-trade');break;
       default:;break;
+    }
+  }
+  componentDidMount(){
+    if(this.props.active){
+      this.setState({ activeMenu: this.props.active});
+    }
+  }
+  componentWillReceiveProps(nextProps){
+    if(this.props.active != nextProps.active){
+      this.setState({ activeMenu : nextProps.active});
     }
   }
 }

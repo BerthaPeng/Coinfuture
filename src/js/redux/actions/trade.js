@@ -2,6 +2,8 @@ import { post } from 'utils/request'; //Promise
 import Url from 'config/url';
 import config from 'config/app.config';
 
+
+
 export const GET_BEFORE_MARKET_DATA_ING = 'GET_BEFORE_MARKET_DATA_ING';
 export const GET_BEFORE_MARKET_DATA_SUCCESS = 'GET_BEFORE_MARKET_DATA_SUCCESS';
 export const GET_BEFORE_MARKET_DATA_FAIL = 'GET_BEFORE_MARKET_DATA_FAIL';
@@ -99,6 +101,28 @@ export function getTransacList(params){
 }
 
 
+//撤单
+export const WITHDRAW = 'WITHDRAW';
+export function withdraw(params){
+  return dispatch => {
+    return post(201011, params)
+  }
+}
+
+
+export const GET_COIN_CONFIG_LIST = 'GET_COIN_CONFIG_LIST';
+//获取需要展示的币对信息，包括显示的币对及小数位
+export function getCoinConfigList(params){
+  var { coin } = params;
+  delete params.coin;
+  return dispatch => {
+    return post(201018, params)
+      .done( data => {
+        dispatch({ type: GET_COIN_CONFIG_LIST, data: {data, coin}})
+      })
+  }
+}
+
 export const GET_DAILY_MARKET = 'GET_DAILY_MARKET';
 export function getDailyMarket(params){
   return dispatch => {
@@ -109,11 +133,18 @@ export function getDailyMarket(params){
   }
 }
 
+export const CHOOSE_COIN = 'CHOOSE_COIN';
+export function chooseCoin(coin){
+  return dispatch => {
+    dispatch({ type: CHOOSE_COIN, coin})
+  }
+}
+
 //获取币的分类列表
 export const GET_COIN_CATEGORY_LIST = 'GET_COIN_CATEGORY_LIST';
 export function getCoinCategoryList(params){
   return dispatch => {
-    return post(201008, params)
+    return post(201019, params)
       .done(data => {
         dispatch({ type: GET_COIN_CATEGORY_LIST, data});
       })
@@ -128,6 +159,35 @@ export function getCoinList(params){
       .done(data => {
         dispatch({ type: GET_COIN_LIST, data});
       })
+  }
+}
+
+export const GET_COIN_LIST_BY_ATTR = 'GET_COIN_LIST_BY_ATTR';
+export function getCoinListByAttr(params){
+  return dispatch => {
+    return post( 201021, params)
+      .done( data => {
+        dispatch({ type: GET_COIN_LIST_BY_ATTR, data})
+      })
+  }
+}
+
+//获取公共属性列表
+export const GET_COMMON_ATTR_LIST = 'GET_COMMON_ATTR_LIST';
+export function getCommonAttrList(params){
+  return dispatch => {
+    return post(201020, params)
+      .done(data => {
+        dispatch({ type: GET_COMMON_ATTR_LIST, data })
+      })
+  }
+}
+
+//展开或收缩分类
+export const TRIGGER_OPEN_CATE = 'TRIGGER_OPEN_CATE';
+export function triggerOpenCate(data){
+  return dispatch => {
+    dispatch({ type: TRIGGER_OPEN_CATE, data});
   }
 }
 

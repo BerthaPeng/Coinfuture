@@ -1,11 +1,15 @@
 {
   "market": "行情",
   "otc": "法币交易",
-  "exchange_a": "币币交易",
+  "exchange_a": "交易",
   "login": "登录",
   "signup": "注册",
   "balances": "资产",
   "orders": "订单",
   "logout": "登出",
-  "simulatedtrading": "模拟交易"
+  "simulatedtrading": "模拟交易",
+  "zh": "中",
+  "en": "英",
+  "sitename": "船舶资产交易数字化平台",
+  "companyname": "船舶资产交易数字化平台有限公司"
 }

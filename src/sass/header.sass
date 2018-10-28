@@ -1,6 +1,6 @@
 .header
   color: #303133
-  background-color: $block-bg-color
+  background-color: rgba(255, 255, 255, .6)
   height: 50px
   width: 100vw
   display: -webkit-box
@@ -13,6 +13,9 @@
   top: 0
   z-index: 1000
   box-shadow: 0 4px 8px 0 rgba(0,0,0,.1)
+  .logo
+    color: $theme-primary-color
+    min-width: 150px;
   .social-nav
     margin-right: 25px
   .ui.login-btn,.ui.register-btn
@@ -28,6 +31,9 @@
     background-color: $theme-default-color;
     color: $font-color;
     border: 1px solid #fff
+.bg-bg
+  width: 100%;
+  height: 500px;
 .nav
   display: flex
   margin-right: auto
@@ -44,11 +50,13 @@
     div
       margin-right: 72px
       line-height: 48px
-      border-bottom: 2px solid #fff
+      border-bottom: 2px solid rgba(255,255,255, .6)
   >a.active
     div
       color: $theme-primary-color
       border-bottom: 2px solid $theme-primary-color
+.lang-box
+  margin-right: 20px;
 .lang-box ul li
     display: inline-block;
     list-style: none;
@@ -60,6 +68,10 @@
       border-radius: 50%;
       opacity: .9;
       font-size: 11px
+      display: inline-block;
+      width: 25px;
+      height: 25px;
+      text-align: center;
 .lang-box ul li.current-lang a
     background-color: $theme-primary-color;
     color: #fff

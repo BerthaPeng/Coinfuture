@@ -7,6 +7,9 @@ import FinanceData from './user-finance.js';
 import RegisterData from './register.js';
 import TransacData from './transaction.js';
 import TradeData from './trade.js';
+import FakeTradeData from './fake-trade.js';
+import PageIndexData from './page-index.js';
+import MarketData from './market.js';
 
 const rootReducer = combineReducers({
   routing: routeReducer,
@@ -15,7 +18,10 @@ const rootReducer = combineReducers({
   FinanceData,
   RegisterData,
   TransacData,
-  TradeData
+  TradeData,
+  FakeTradeData,
+  PageIndexData,
+  MarketData
 })
 
 export default rootReducer;

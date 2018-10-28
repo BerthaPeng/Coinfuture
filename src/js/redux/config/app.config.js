@@ -1,7 +1,7 @@
 export default {
   SMS_COUNT: 50, //毫秒为单位
-  ajax: "http://47.106.71.87:8020/kiop-privilege-management",
-  socket_url: 'ws://47.106.71.87:8020/kiop-privilege-management',
+  ajax: "http://112.74.51.97:8020/futurechain-base",
+  socket_url: 'ws://112.74.51.97:8020/futurechain-base',
   COUNTRY_CODE_LIST: [{
     key: '+86',
     value: '+86',
@@ -69,4 +69,13 @@ export default {
     { name: 'HAAM', exchange_available: ['USDX'], chinese_name: 'HHI船币', eng_name: 'MV HAMMONIA AMERICA'}
   ],
   CURRENCY: 'USDX',
+  ORG_ID: 81230,
+  AGE_CATE: [
+    { id: 41, descrpt_en: 'Newbuilding project', descrpt_ch: '新生'},
+    { id: 42, descrpt_en: '1-5 years old', descrpt_ch: '1-5岁'},
+    { id: 43, descrpt_en: '6- 10 years old', descrpt_ch: '6-10岁'},
+    { id: 44, descrpt_en: '11– 15 years old', descrpt_ch: '11-15岁'},
+    { id: 45, descrpt_en: '16 – 20 years old', descrpt_ch: '16-20岁'},
+    { id: 46, descrpt_en: '20 years old plus', descrpt_ch: '20岁及以上'},
+  ]
 }

@@ -36,7 +36,10 @@ class Login extends Component{
           <Input name="uname" value={uname} onChange={this.handleInputChange.bind(this)} className="login-input" placeholder="手机号/邮箱" style={{marginTop: '50px'}} />
           <Input name="pwd" value={pwd} onChange={this.handleInputChange.bind(this)} className="login-input" placeholder="密码" type="password"/>
           <Button loading={submit_ing} disabled={submit_ing} onClick={this.submit.bind(this)} className="login-btn">{intl.get("btn_txt")}</Button>
-          <p className="info">{intl.get('register_guide')}<Link to="/register">{intl.get('register_btn_txt')}</Link></p>
+          <div className="guide-btns">
+            {/*<div style={{display: 'inline-block', float: 'left'}}>修改密码</div>*/}
+            <div style={{display: 'inline-block', float: 'right'}}><Link to="/register">{intl.get('register_btn_txt')}</Link></div>
+          </div>
           {
             submit_msg != '' ?
             <Message negative size="mini" style={{padding: '0.5em 1.5em'}}>
@@ -50,6 +53,10 @@ class Login extends Component{
   }
   componentDidMount(){
     this.loadLocales(this.props.Lang.lang);
+    document.addEventListener("keydown",this.handleEnterKey);
+  }
+  componentWillUmount(){
+    document.removeEventListener("keydown",this.handleEenterKey);
   }
   componentWillReceiveProps(nextProps){
     if(this.props.Lang.lang != nextProps.Lang.lang){
@@ -91,6 +98,11 @@ class Login extends Component{
         })
     }else{
       this.setState({ submit_msg: '用户名或密码错误'})
+    }
+  }
+  handleEnterKey = (e) => {
+    if(e.keyCode === 13){
+      this.submit();
     }
   }
 }

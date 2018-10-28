@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 // 引入 ECharts 主模块
-import echarts from 'echarts/lib/echarts';
+import echarts from 'echarts'; //import echarts from 'echarts/lib/echarts';
 // 引入柱状图
 import  'echarts/lib/chart/bar';
 // 引入提示框和标题组件
@@ -9,12 +9,8 @@ import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/title';
 import 'echarts/lib/chart/candlestick';
 
-import ReactEcharts from 'echarts-for-react';
-
-import echartsData from 'config/market-data.js';
 import { getXtimeSpan } from 'utils/chart-utils.js';
 
-import optionConfig from 'config/echarts-option-config.js';
 import { getEchartsOptions } from 'config/echarts-option.js';
 
 var clone = require('clone');
@@ -37,7 +33,7 @@ export default class CandleCharts extends Component{
   }
   render() {
     return (
-      <div id="main" style={{ width: '100%', height: '390px' }}>
+      <div id="main" style={{ width: '100%', height: '300px' }}>
     {/*<ReactEcharts option={this.getOption()} />*/}
     </div>
     );
@@ -54,6 +50,13 @@ export default class CandleCharts extends Component{
       myChart = echarts.init(document.getElementById('main'));
       window.myChart = myChart;
       window.myChart.clear();
+      myChart.showLoading({
+          text : '数据获取中……',
+          textColor: '#404040',
+          effect: 'whirling',
+          textStyle : {fontSize : '20'},
+          maskColor: '#000000',
+      });
     }else{
       myChart.clear();
       window.myChart = myChart
@@ -103,6 +106,7 @@ export default class CandleCharts extends Component{
   }
   //echart图形为非分时图时
   setEchartData(toSplitData){
+    window.myChart.hideLoading();
     //分时图的配置与其他线的配置不同
     var option = getEchartsOptions(this.props.line);
     var data0 = this.splitData(toSplitData);

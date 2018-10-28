@@ -13,7 +13,7 @@ import history from 'history_instance';
 import intl from 'react-intl-universal';
 import { register } from 'locales/index.js';
 import LazyLoad from 'utils/lazy_load';
-import { Noty } from 'utils/utils';
+import Toast from './common/Toast.js';
 
 class Register extends Component{
   constructor(props){
@@ -163,7 +163,6 @@ class Register extends Component{
   }
   componentDidMount(){
     this.loadLocales(this.props.Lang.lang);
-    LazyLoad('noty')
   }
   loadLocales(lang){
     intl.init({
@@ -231,7 +230,7 @@ class Register extends Component{
     var { send_captcha_status } = this.props.Register;
     var valid = true;
     if(send_captcha_status === 'primary'){
-      Noty('warning', '请先发送验证码');
+      Toast.warning('请先发送验证码！');
       valid = false;
     }
     if(!UserCommon.telValidator(tel)){
@@ -259,8 +258,7 @@ class Register extends Component{
       this.props.actions.register({ mobile_num: tel, country_code: country,
         verificode: Number(captcha), pw:  pwd})
         .done( (msg) => {
-          /*this.setState({ submit_msg : msg})*/
-          Noty('success', '注册成功，请登录')
+          Toast.success('注册成功，请登录')
           history.push('/login')
         })
         .fail( ({msg}) => {

@@ -18,5 +18,14 @@
   "dealtime": "成交时间",
   "fee": "手续费",
   "cancel": "撤单",
-  "detail": "详情"
+  "detail": "详情",
+  "dealamount": "成交额",
+  "startDate": "开始时间",
+  "endDate": "结束时间",
+  "transactime": "交易时间",
+  "and": "至",
+  "search": "搜索",
+  "marketprice": "市价",
+  "buy": "买入",
+  "sell": "卖出"
 }

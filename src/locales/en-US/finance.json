@@ -1,6 +1,7 @@
 {
   "balances": "BALANCES",
   "coin": "Coin",
+  "symbol": "Symbol",
   "available": "Available",
   "action": "Action",
   "onorders": "On Orders",
@@ -9,5 +10,6 @@
   "estimatedvalue": "Estimated Value",
   "withdraw": "Withdraw",
   "deposit": "Deposit",
-  "action": "Action"
+  "action": "Action",
+  "withdrawaddress": "Withdraw Address"
 }

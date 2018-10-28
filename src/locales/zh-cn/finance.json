@@ -1,5 +1,6 @@
 {
   "balances": "资产",
+  "symbol": "简称",
   "coin": "币种",
   "available": "可用",
   "action": "操作",
@@ -9,5 +10,6 @@
   "estimatedvalue": "估值",
   "withdraw": "提现",
   "deposit": "充值",
-  "action": "操作"
+  "action": "操作",
+  "withdrawaddress": "提币地址"
 }

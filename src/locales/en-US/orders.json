@@ -18,5 +18,14 @@
   "dealtime": "Date",
   "fee": "Fee",
   "cancel": "Cancel",
-  "detail": "Detail"
+  "detail": "Detail",
+  "dealamount": "Total",
+  "startDate": "From",
+  "endDate": "To",
+  "transactime": "Date",
+  "and": "and",
+  "search": "Go",
+  "marketprice": "Market Price",
+  "buy": "Buy",
+  "sell": "Sell"
 }

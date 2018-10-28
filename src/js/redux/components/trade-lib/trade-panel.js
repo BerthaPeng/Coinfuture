@@ -3,9 +3,9 @@ import { Tab, Grid, Input, Button, Message, Icon, Menu, Dropdown } from 'semanti
 import {Link} from 'react-router';
 import TipSelector from './tip-selector.js';
 const { Column } = Grid;
-import { Noty } from 'utils/utils';
 import intl from 'react-intl-universal';
 import { trade } from 'locales/index.js';
+import Toast from '../common/Toast.js';
 
 class TradePanel extends Component{
   constructor(props){
@@ -50,7 +50,7 @@ class TradePanel extends Component{
     var { coin, exchange_available, market, coin_type, login, buy_submit_ing, sell_submit_ing ,
       submit_msg,
       submit_status,
-      actions, current_price } = this.props.props;
+      actions, current_price, currency_available, active_coin_available } = this.props.props;
     var { buy_price, buy_count, sell_count, sell_price, buy_amount } = this.state;
     var { panel_type } = this.props;
     actions = {}
@@ -60,7 +60,7 @@ class TradePanel extends Component{
     coin_type = "USDX"
     return(
       <Tab.Pane attached={false} className="fl-trade-panel">
-         <Grid>
+         <Grid style={{paddingBottom: '20px'}}>
            <Column width={8} style={{borderRight: '1px solid #eee'}}>
              <div className="wrapper">
              <div className="trade-panel-header">
@@ -70,8 +70,8 @@ class TradePanel extends Component{
              {/*<Dropdown value={pay_coin} placeholder="选择支付币种" fluid selection options={exchange_available.map( m =>({text: m, value: m}))}/>*/}
              {/*<TipSelector options={exchange_available} value={pay_coin} placeholder="选择支付币种" onChange={this.onTradeCoinTypeChange.bind(this)} />*/}
              <p style={{width: '100%', fontSize: '10px', marginTop: '10px'}}>
-              <span style={{display: 'inline-block', float: 'left'}}>usdx{intl.get('availableAmount')}</span>
-              <span style={{display: 'inline-block', float: 'right', color: '#2e6e92'}}>{intl.get('gocharge')}</span>
+              <span style={{display: 'inline-block', float: 'left'}}>usdx {intl.get('availableAmount')} {Number(currency_available) || 0}</span>
+              <Link to="/user/finance"><span style={{display: 'inline-block', float: 'right', color: '#2e6e92'}}>{intl.get('gocharge')}</span></Link>
              </p>
              {
                panel_type == 'limit' ?
@@ -133,7 +133,7 @@ class TradePanel extends Component{
               <div className="trade-panel-header">
                 <p>{intl.get('tradesell')}　{coin}</p>
               </div>
-              <p style={{textAlign: 'left', width: '100%', marginBottom: '10px', fontSize: '10px'}}>BTC{intl.get('availableSum')}：0.0098</p>
+              <p style={{textAlign: 'left', width: '100%', marginBottom: '10px', fontSize: '10px'}}>{coin} {intl.get('availableSum')}：{ Number(active_coin_available) || 0}</p>
               {
                 panel_type == 'limit' ?
                 <Input
@@ -187,6 +187,21 @@ class TradePanel extends Component{
     var { coin } = this.props.props;
     var account_id = parseInt(sessionStorage.getItem('_udata_accountid'));
     if(account_id){
+      var { currency_available, active_coin_available } = this.props.props;
+      currency_available = Number(currency_available);
+      active_coin_available = Number(active_coin_available);
+      if(trade_type == 'buy_limit' ){
+        if(buy_amount > currency_available){
+          Toast.warning('您的' + pay_coin + '余额不足！');
+          return;
+        }
+      }else if(trade_type == 'sell_limit' || trade_type == 'sell_market'){
+        if(sell_count > active_coin_available){
+          Toast.warning('您持有的' + coin + '数量不足！');
+          return;
+        }
+      }
+
       this.props.props.actions.trade({buy_price, buy_count :buy_count.toString(),
           sell_price, sell_count,
           trade_type, market: pay_coin, coin_type: coin})
@@ -201,7 +216,7 @@ class TradePanel extends Component{
          })
       })
     }else{
-      Noty('warning', '用户未登录，请登录后购买')
+      Toast.warning('用户未登录，请登录后购买');
     }
   }
   componentDidMount(){

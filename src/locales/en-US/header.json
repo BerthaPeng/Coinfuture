@@ -6,5 +6,9 @@
   "signup": "Sign Up ",
   "balances": "Balances",
   "orders": "Orders",
-  "logout": "Log Out"
+  "logout": "Log Out",
+  "zh": "ZH",
+  "en": "EN",
+  "sitename": "Marine Digital Republic",
+  "companyname": "Marine Digital Republic Limited",
 }

@@ -1,4 +1,5 @@
-var setting =  {  
+var setting =  {
+  backgroundColor: '#000000',  
   tooltip: { //提示框
           trigger: 'axis', //触发类型：坐标轴触发
           axisPointer: { //坐标轴指示器配置项 
@@ -9,7 +10,7 @@ var setting =  {  
           show : true,
           feature : {
                   mark : {show: true},
-                  dataZoom : {show: true},
+                  dataZoom : {show: false},
                   dataView : {show: true, readOnly: false},
                   magicType: {show: true, type: ['line', 'bar']},
                   restore : {show: true},
@@ -39,11 +40,15 @@ var setting =  {  
     axisLine: {
       onZero: false,
       lineStyle: {
-        color: '#606266',
+        color: '#404040',
+        width: '1',
       }
     },
     axisLabel: {
       interval: 4,
+      textStyle: {
+        color: 'hsla(0,0%,100%,.3)'
+      }
     },
     splitLine: {
       show: false
@@ -64,9 +69,16 @@ var setting =  {  
     },
     axisLine: {
       lineStyle: {
-        color: '#606266',
+        color: '#404040',
+        width: '1'
       } 
-    }
+    },
+    axisLabel: {
+      interval: 4,
+      textStyle: {
+        color: 'hsla(0,0%,100%,.3)',
+      }
+    },
   },
   dataZoom: [{  //用于区域缩放  
       filterMode: 'filter', //当前数据窗口外的数据被过滤掉来达到数据窗口缩放的效果 默认值filter
@@ -79,22 +91,24 @@ var setting =  {  
       type: 'slider', //滑动条型数据区域缩放组件
       y: '90%',
       start: 50,
-      end: 100  
+      end: 100,
+      borderColor:"#404040"
   }],
   series: [{ //图表类型
     name: 'K线',
     type: 'candlestick', //K线图
+    barMaxWidth: 10,
     data: [], //y轴对应的数据  后期传入
     itemStyle: {
       normal: {
-        color: '#ae4e54', //阳线颜色
-        color0: '#589065', //阴线颜色
-        borderColor: '#ae4e54',
-        borderColor0: '#589065',
+        color: '#ee6560', //阳线颜色
+        color0: '#4db872', //阴线颜色
+        borderColor: '#ee6560',
+        borderColor0: '#4db872',
         lineStyle: {
           width: 2,
-          color: '#ae4e54',
-          color0: '#589065', //阴线边框颜色
+          color: '#ee6560',
+          color0: '#4db872', //阴线边框颜色
         }
       }
     },
@@ -115,22 +129,27 @@ var setting =  {  
   { //MA5 5天内的收盘价之和/5
          
     name: 'MA5',
-       type: 'line',
-       data: [],
-       smooth: true,
-       lineStyle: {   
+    type: 'line',
+    symbol: 'none',  //默认为空心圆
+    data: [],
+    smooth: true,
+    lineStyle: {   
       normal: {
-        opacity: 0.5
+        width: 1,
+        opacity: 0.5,
+        type: 'solid'
       }   
     }  
   },
   {   
     name: 'MA10',
     type: 'line',
+    symbol: 'none',
     data: [],
     smooth: true,
     lineStyle: { //标线的样式
     normal: {
+        width: 1,
         opacity: 0.5
       }   
     }  
@@ -138,10 +157,12 @@ var setting =  {  
   {   
     name: 'MA30',
     type: 'line',
+    symbol: 'none',
     data: [],
     smooth: true,
     lineStyle: {   
       normal: {
+        width: 1,
         opacity: 0.5
       }   
     }  
@@ -262,6 +283,6 @@ export function getEchartsOptions(type){
                   }
             ];
   return type === 'timeline' ?
-    { ...setting, axisPointer, grid, dataZoom, legend, color, calculable, xAxis, yAxis, series}
+    { ...setting, axisPointer, grid, legend, color, calculable, xAxis, yAxis, series}
     :setting;
 }

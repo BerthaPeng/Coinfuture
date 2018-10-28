@@ -39,10 +39,12 @@ function _end_callback(resolve, reject) {
           }
         }else if(code != undefined){
           if (code === 200 || code === 0) {
-            resolve(data, msg);
+            resolve(data);
           }else {
             if(code === 400006){
               sessionStorage.removeItem('_udata');
+              sessionStorage.removeItem('_udata_accountid');
+              location.reload()
               /*history.push('/login');*/
             }
             console.error(msg || 'request error');

@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux';
 import * as Actions from 'actions/login.js';
 import { Lang } from './lang.js';
-import { FakeTrade } from './fake-trade.js';
 
 var initial_state = {
   login: false,
@@ -31,7 +30,6 @@ function Login(state = initial_state, action){
 }
 
 export default combineReducers({
-  FakeTrade,
   Lang: Lang,
   Login,
 })

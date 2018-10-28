@@ -37,9 +37,9 @@ class Footer extends Component{
     var { initDone } = this.state;
     return(
        <div className="footer">
-        { initDone && <div className="doc_root_wrap">
+        {/*{ initDone && <div className="doc_root_wrap">
           <dl>
-            <dt>飞链feilian</dt>
+            <dt>海洋数字交易feilian</dt>
             <dd>The Global Coin Exchange</dd>
             <dd className="icons"></dd>
           </dl>
@@ -62,8 +62,8 @@ class Footer extends Component{
             <dd><Link to="">{intl.get('help')}</Link></dd>
           </dl>
         </div>}
-        <Divider className="footer-divider" />
-        <div className="year-last">2014-2018 xxxx.com. All Rights Reserved</div>
+        <Divider className="footer-divider" />*/}
+        <div className="year-last">© {intl.get('companyname')} All Rights Reserved.</div>
       </div>
       )
   }

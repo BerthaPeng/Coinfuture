@@ -3,13 +3,14 @@ import { Button, Dropdown, Icon, Table, Menu, Radio } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import * as FinanceActions from 'actions/user-finance.js';
 import { bindActionCreators } from 'redux';
+import {Link} from 'react-router';
 
 import intl from 'react-intl-universal';
 import { finance } from 'locales/index';
 import UserMenu from '../common/user-menu.js';
 import BalancesTable from '../common/balances-table.js';
-import { Noty } from 'utils/utils';
 import LazyLoad from 'utils/lazy_load';
+import Toast from '../common/Toast.js';
 
 class Finance extends Component{
   constructor(props){
@@ -27,19 +28,21 @@ class Finance extends Component{
         <div className="flex-wrapper">
           <div className="item-20-100">
             <div className="item-inner" style={{minHeight: '100%'}}>
-              <UserMenu lang={this.props.Lang.lang} />
+              <UserMenu lang={this.props.Lang.lang} active="pocket" />
             </div>
           </div>
           <div className="item-80-100" style={{marginLeft: '15px'}}>
             <div className="item-inner" style={{minHeight: '100%'}}>
               <div className="finance-header">
-                <div><h3>{intl.get('balances')}</h3></div>
-                <div style={{marginLeft: '20px'}}>
+                <div><span style={{fontSize: '16px'}}>{intl.get('balances')}</span></div>
+                <div style={{marginLeft: '20px', fontSize: '14px'}}>
                   <span>{intl.get('hidesmallbalances')}　　</span>
-                  <Radio toggle style={{marginLeft: '10px', verticalAlign: 'middle'}}/></div>
+                  <Radio toggle style={{marginLeft: '10px', verticalAlign: 'middle'}}/>
+                </div>
+                <Link to="/user/withdraw-address"><div className="primary-color withdraw-address-btn">{intl.get('withdrawaddress')}</div></Link>
               </div>
               <div style={{padding: '10px 40px'}}>
-                <p><Icon name="circle" /><span>USDX</span><span>{intl.get('available')}：{current_usd}  ，{intl.get('onorders')}：0，{intl.get("estimatedvalue")}：{parseFloat(current_usd) * 6.5}CNY</span></p>
+                <p><Icon name="circle" /><span>USDX </span><span>{intl.get('available')}：{current_usd}  ，{intl.get('onorders')}：0，{intl.get("estimatedvalue")}：{parseFloat(current_usd) * 6.5}CNY</span></p>
                 <div style={{padding: '10px 40px'}}><Button size="mini">{intl.get('deposit')}</Button><Button style={{marginLeft: '10px'}} size="mini">{intl.get("withdraw")}</Button></div>
               </div>
               <div className="finance-body" style={{marginTop: '20px'}}>
@@ -76,10 +79,9 @@ class Finance extends Component{
       )
   }
   componentDidMount(){
-    LazyLoad('noty')
     this.props.actions.getUserCoinList({})
       .done( data => {
-        var usd = data.filter( m => m.coin_name_english.trim() == 'USDX');
+        var usd = data.filter( m => m.symbol.trim() == 'USDX');
         if(usd && usd.length){
           this.setState({ current_usd: usd[0].balance})
         }
@@ -101,7 +103,7 @@ class Finance extends Component{
   getDepositAddress(coin_id){
     return this.props.actions.getDepositAddress({ coin_id })
       .fail(({msg}) => {
-        Noty('error', msg || '获取充值地址失败！')
+        Toast.error( msg || '获取充值地址失败！')
       })
   }
 }

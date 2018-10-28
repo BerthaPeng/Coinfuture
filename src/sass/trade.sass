@@ -1,8 +1,11 @@
 .fl-block.gray-bg
   background-color: #f7f7f7
-  padding: 15px 0
+  padding: 10px 0
 .item-20-100
   width: 20%
+  min-height: 5px
+.item-25-100
+  width: 25%
   min-height: 5px
 .item-60-100
   width: 60%
@@ -10,29 +13,27 @@
 .item-80-100
   width: 80%
   min-height: 5px
+.item-70-100
+  width: 70%;
+  min-height: 5px;
+.item-30-100
+  width: 30%;
+  min-height: 5px;
 .item-3
   width: 30%
 .item-7
   width: 70%
 .coin-current-info
-  height: 140px
   width: 100%
 .item-inner
   background-color: #fff
   padding: 7.5px
   color: $font-color
 .market-k-chart
-  height: 450px
-  margin-top: 15px
+  margin-top: 10px
+  background-color: #000;
 .trade-box
-  height: 370px
-  margin-top: 15px
-  .ui.secondary.pointing.menu
-    border-bottom: 1px solid #eee
-    .active.item
-      color: $theme-primary-color
-      border-color: $theme-primary-color
-      font-weight: inherit
+  margin-top: 10px
   .ui.basic.label
     color: #909399
     font-weight: 300
@@ -40,11 +41,23 @@
     color: $theme-primary-color
   .ui.input>input
     color: $theme-primary-color
+  .cost
+    font-size: 10px;
+    width: 100%;
+    margin-top: 10px;
+.trade-box,.user-order-box
+  .ui.secondary.pointing.menu
+    border-bottom: 1px solid #eee
+    .active.item
+      color: $theme-primary-color
+      border-color: $theme-primary-color
+      font-weight: inherit
+      border-bottom-width: 2px;
 .user-order-box
   height: 200px
   margin-top: 15px
 .coin-market
-  height: 500px
+  height: auto;
   width: 100%
 .flex-wrapper
   display: flex
@@ -53,11 +66,15 @@
   border: none; */
 .table-wrapper
   /* padding: 0px 20px; */
+
 .no-border-table.ui.table
+  font-family: Avenir Next,-apple-system,Roboto,Helvetica Neue,Arial,sans-serif;
+  margin-top: 0px;
   tr td, tr th
     border: none
     border: 0px
     color: $font-color
+    font-size: 8px;
     .color-up
       text-transform: lowercase;
       color: $green-color
@@ -65,28 +82,53 @@
       color: $red-color;
       margin-bottom: 10px
   thead
-    background-color: rgba(46,110,146,.08);
+    /* background-color: rgba(46,110,146,.08); */
     border-bottom: none;
     tr th
       font-weight: normal;
-      color: #303133;
-      padding-top: none;
+      font-size: 10px;
+      color: rgba(0,0,0,.25);
+      /* color: #303133; */
+      /* padding-top: none; */
     tr:first-child>th:first-child
       border-radius: 0;
   tr
-    th:first-child,td:first-child
-      text-align: right;
+    /* th:first-child,td:first-child
+      text-align: right; */
     th:last-child, td:last-child
-      text-align: left;
+      /* text-align: left; */
   tbody
     tr td
-      border-bottom: 1px solid #eee;
-    tr:hover td
-      border-color: rgba(130,171,186,.3)
+      height: 36px;
+      line-height: 36px;
+      font-size: 14px;
+      padding: 0;
+      color: rgba(0, 0, 0, .65);
+    tr:hover
+      background-color: #f1f5ff !important;
+      color: $theme-primary-color !important;
+      border-left: 2px solid $theme-primary-color;
+    tr.active
+      background-color: #f1f5ff !important;
+      td:first-child
+        border-left: 2px solid $theme-primary-color;
+      span
+        color: $theme-primary-color!important;
   tr:first-child td, tr:first-child th
-    padding-left: 10px
+    /* padding-left: 10px */
 .no-border-table.ui[class*="very basic"].table:not(.sortable):not(.striped) thead tr:first-child th
   padding-top: 8px;
+.thin-table.no-border-table.ui.table
+  thead
+    tr th
+      padding: 5px;
+  tbody
+    tr td
+      line-height: 2;
+      font-size: 12px;
+      font-weight: 400;
+      height: auto;
+      color: rgba(0, 0, 0, .65);
 .market-price
   text-align: center
   h5
@@ -111,6 +153,11 @@
   font-size: 12px
 .item-40-100
   width: 40%
+.order-record .fl-trade-panel.ui.segment
+  overflow-y: scroll;
+  height: 220px;
+  overflow-x: hidden;
+  border-radius: 2px;
 .fl-trade-panel.ui.segment
   box-shadow: none;
   -webket-box-shadow: none;
@@ -153,22 +200,22 @@
   left: calc(50% - 100px)
 .line-guide-wrapper
   font-size: 12px;
-  margin-top: 10px;
+  height: 29px;
+  background: #232323;
+  border-bottom: 1px solid #404040;
   ul
-    display: inline-block
-    height: 100%
+    padding-left: 5px;
+    padding-right: 11px;
     li
-      float: left;
+      display: inline-block;
       >div
-        padding: 2px 8px;
-        border: 1px solid #ccc;
-        border-radius: 15px;
-        margin-right: 10px;
+        display: inline-block;
+        padding: 4px;
         cursor: pointer
+        color: $theme-primary-color;
   ul>li:hover>div,
   ul>li.active>div
-    border: 1px solid $theme-primary-color
-    color: $theme-primary-color
+    color: #ffac00;
 .ui.button.trade-btn.btn-buy
   background-color: $red-color
   color: #fff
@@ -179,17 +226,37 @@
   font-weight: 600
   font-size: 14px
   text-align: center
+.cate-call-wrapper
+  position: absolute;
+  top: 9px;
+  left: 180px;
+  z-index: 1001;
+  .ui.button
+    background-color: #fff;
+    border: 1px solid #cdcdcd;
+    border-radius: 44px;
+    height: 30px;
+    line-height: 30px;
+    width: 74px;
+    padding: 0;
+.cate-item-grandson-block,.cate-item-child-block
+  display: none;
 .cate-item
-  height: 60px;
-  line-height: 60px;
+  height: 36px;
+  line-height: 36px;
   cursor: pointer;
   font-size: 14px;
-  color: $theme-primary-color;
+  color: rgba(0,0,0,.65);
   padding-left: 12px;
   position: relative;
+  box-sizing: border-box;
   &:hover,&.active
-    color: #fff;
-    background-color : rgba(59, 147, 125, .5);
+    color: $theme-primary-color;
+    background-color : #f1f5ff;
+    i.icon.item-check
+      display: inline-block;
+  &.active
+    border-left: 3px solid $theme-primary-color;
   .arrow
     position: absolute;
     right: 8px;
@@ -198,11 +265,30 @@
     img
       height: 16px;
       width: 16px;
+  span
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    -webkit-line-clamp: 1;
+    text-indent: 2em;
+    -webkit-box-orient: vertical;
+    word-break: break-all;
+    display: inline-block;
+    box-sizing: border-box;
+    position: absolute;
+    right: 0;
+    left: 12px;
+.ceil-box
+  .open > .cate-item-child-block
+      display: block;
+.cate-item-child-block
+  .open > .cate-item-grandson-block
+      display: block;
 .hover-cate-panel
-  height: 250px;
+  height: 350px;
   position: absolute;
-  top: 100px;
-  left: calc(20% - 15px);
+  top: 60px;
+  left: calc(20% - 10px);
   width: 500px;
   background-color: #fff;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,.1);
@@ -215,7 +301,7 @@
     .banner-line
       position: relative;
       height: 1px;
-      margin: 35px 0 23px;
+      margin: 40px 0 23px;
       background-color: rgba(77,85,93,.08);
       .small-title
         position: absolute;
@@ -230,7 +316,7 @@
 .tag-box
   font-size: 0;
   span
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     font-size: 14px;
     color: #4D555D;
     line-height: 22px;
@@ -268,5 +354,409 @@
         border-radius: 0;
         font-size: 18px;
         color: $red-color;
+.order-book-table.no-border-table.ui.table tbody tr:nth-child(5) td
+  border-bottom: 2px solid #82abba
+.no-login-tips
+  text-align: center;
+  p
+    color: $theme-primary-color;
+  .ui.login-btn,.ui.register-btn
+    font-family: Nexa-Book;
+    border-radius: 18px;
+    font-size: 14px;
+    color: #fff;
+    margin-right: 10px
+  .ui.login-btn
+    border: 1px solid #fff;
+    background-color: $theme-primary-color
+  .ui.register-btn
+    background-color: $theme-default-color;
+    color: $font-color;
+    border: 1px solid #fff
+.msg-type
+  font-weight: bold;
+  color: $green-color;
+  font-size: 18px;
+  text-align: center;
+  border-bottom: 1px solid #b2b2b2;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+.balance-block
+  background-color: $theme-primary-color;
+  color: #fff;
+  padding: 15px 10px;
+  text-align: center;
+  .ft-b
+    font-size: 16px;
+    font-weight: 500;
+    padding-bottom: 6px;
+    text-align: center;
+    border-bottom: 1px solid #b2b2b2;
+.msg-price-detail
+  font-weight: 200;
+  font-size: 18px;
+  margin-bottom: 15px;
+  text-align: center;
+  line-height: 1.4;
+.fl-trade-panel
+  .modal-dialog
+    width: 400px;
+    .ui.table
+      border-radius: 0;
+  .modal-body
+    padding-top: 0;
+  .modal-header
+    padding-bottom: 0px;
+    .ui.circular.button
+      padding: 8px;
+      margin-top: -2px;
+    .ui.table td
+      padding: 6px;
+.text-align-right
+  text-align: right;
+.buySellInfo
+  /* padding: 0 2rem; */
+.lineItem
+  padding: 0 6px;
+  height: 25px;
+  .key,.value
+    display: inline-block
+  .key
+    float: left;
+  .value
+    float: right;
+.contractDetail.ui.grid
+  background-color: $theme-primary-color;
+  width: 100%;
+  margin: 0;
+  color: #fff;
+  padding: 10px 0;
+  font-size: 12px;
+  .ui.grid
+    margin: 0;
+    width: 100%;
+    text-align: center;
+  .trade-panel-header
+    font-size: 14px;
+    border-bottom: 1px solid #999;
+    height: 25px !important;
+    width: 100%;
+  .contractStats
+    font-size: 10px;
+//改版css
+.trade-container
+  -webkit-box-direction: normal;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex: auto;
+  -ms-flex-direction: row;
+  -webkit-box-flex: 1;
+  -webkit-box-orient: horizontal;
+  flex: auto;
+  flex-direction: row;
+  min-height: 550px;
+  .full-left
+    -webkit-box-direction: normal;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    -webkit-box-orient: vertical;
+    flex-direction: column;
+    margin-right: 4px;
+    width: 63%;
+    .full-left-top
+      -ms-flex-positive: 1;
+      -webkit-box-flex: 1;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      flex-grow: 1;
+      margin-bottom: 4px;
+      .fullline
+        -ms-flex: 1;
+        -webkit-box-flex: 1;
+        flex: 1;
+    .full-left-bottom
+      height: 265px;
+      margin-bottom: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+  .full-right
+    -webkit-box-flex: 1;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    flex: 1;
+    .full-right-left
+      -ms-flex: 1;
+      -webkit-box-flex: 1;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      flex: 1;
+      -ms-flex-direction: column;
+      -ms-flex-wrap: wrap;
+      -webkit-box-direction: normal;
+      -webkit-box-orient: vertical;
+      flex-direction: column;
+      flex-wrap: wrap;
+      margin-right: 4px;
+      min-width: 290px;
+    .full-right-right
+      -ms-flex: 1;
+      -webkit-box-flex: 1;
+      flex: 1;
+.spot-place-order-container
+  background: #1c283e;
+  margin-left: 0;
+  margin-top: 4px;
+  width: 100%;
+.trade-depth-table
+  height: 358px;
+  font-family: Avenir Next,-apple-system,Roboto,Helvetica Neue,Arial,sans-serif;
+  font-weight: 400;
+  .caption
+    color: rgba(0, 0, 0, .65);
+    height: 18px;
+    margin-top: 10px;
+    position: relative;
+    font-size: 12px;
+    margin-bottom: 4px;
+    .amount
+      position: absolute;
+      top: 0;
+      right: 10px;
+  .ceil-box
+    height: 330px
+    overflow: auto;
+    .list
+      color: rgba(0, 0, 0, .65);
+      font-size: 12px;
+      li
+        height: 20px;
+        position: relative;
+        line-height: 20px;
+        cursor: pointer;
+        .amount
+          position: absolute;
+          top: 0;
+          right: 10px;
+
+  .ceil-block
+    position: relative;
+    width: 100%;
+    height: 100%;
+    .ceil-scroll-box
+      overflow-y: scroll;
+      width: 100%;
+      height: 100%;
+      .ceil-top-list
+        min-height: 140px;
+.ceil-box::-webkit-scrollbar
+  width: 4px;
+.ceil-box::-webkit-scrollbar-thumb
+  background-color:rgba(0,0,0,.43)
+  border-radius: 0;
+.ceil-box::-webkit-scrollbar-track
+  background-color: #f8f8f8;
+.full-deal-list-box
+  overflow: hidden;
+  height: 100%;
+  .full-deal-title
+    border-bottom: 1px solid #8080804f;
+    height: 27px;
+    line-height: 27px;
+    text-align: left;
+    font-size: 12px;
+    padding-left: 5px;
+    padding-right: 8px;
+  .full-deal-title.caption
+    span
+      display: inline-block;
+      width: 33.3%;
+      text-align: left;
+      &.align-right
+        text-align: right
+  .deal-list-box
+    overflow: auto;
+    .deal-ul
+      padding: 0 5px;
+      li
+        height: 16px;
+        line-height: 16px;
+        cursor: pointer;
+        span
+          display: inline-block;
+          width: 33.3%;
+          text-align: left;
+          font-size: 12px;
+          &.align-right
+            text-align: right;
+.deal-wrapper
+  flex: 1;
+  overflow: hidden;
+  height: 100%;
+  color: rgba(0,0,0,.65);
+  font-family: Avenir Next,-apple-system,Roboto,Helvetica Neue,Arial,sans-serif;
+.deal-list-box,.order-record .fl-trade-panel.ui.segment
+  &::-webkit-scrollbar
+    width: 4px;
+  &::-webkit-scrollbar-thumb
+    background-color:rgba(0,0,0,.43)
+    border-radius: 0;
+  &::-webkit-scrollbar-track
+    background-color: #f8f8f8;
+.trade-page
+  .modal-dialog
+    width: 90%
+
+.filter-block
+  .attrs
+    border: 1px solid #e0e0e0
+    .propAttrs
+      border-top: 1px solid #D1CCC7;
+      margin-top: -1px
+      .attr
+        &:last-child
+          border-bottom: none
+    .attr
+      background-color: #F7F5F5;
+      border-color: #E6E2E1 #E6E2E1 #D1CCC7;
+      border-style: solid solid dotted;
+      border-width: 0 1px 1px;
+      border-left: none;
+      border-right: none
+      &:after
+        display: block;
+        height: 0
+        content: ' ';
+        clear: both;
+      .attrKey
+        float: left;
+        padding: 7px 0 0;
+        width: 10%;
+        color: #B0A59F;
+        text-indent: 13px
+        span
+          display: block;
+          height: 16px;
+          line-height: 16px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap
+.attrValues
+  position: relative;
+  background-color: #FFF;
+  width: 90%;
+  padding: 4px 0 0;
+  overflow: hidden
+  ul
+    margin: 0;
+    padding: 0;
+    position: relative;
+    height: auto;
+    display: block;
+    overflow: hidden;
+    li
+      width: 20%;
+      margin: 1px 0 3px;
+      display: block;
+      overflow: hidden;
+      height: 22px;
+      line-height: 22px;
+      cursor: position
+.action-btn, .boat
+  cursor: pointer;
+.boat
+  &:after
+    content: ' ';
+    clear: both;
+    content: ' ';
+    clear: both;
+.attrValues ul li span
+  cursor: pointer
+.attrValues
+  ul
+    li
+      &:hover
+        span
+        color: #B10000
+
+.attrValues
+  ul
+    li
+      span
+        position: relative;
+        color: #806F66;
+        display: inline-block;
+        line-height: 20px;
+        height: 20px;
+        padding: 1px 20px 1px 4px;
+        white-space: nowrap
+
+.attrValues ul li span i.icon
+  display: none
+
+.attrValues ul li.active span
+  color: #B10000
+
+.attrValues ul li.active span i.icon
+  color: #B10000;
+  display: inline-block
+.attrValues, .attrValues ul li, .boat, .l, .line-guide-wrapper ul li
+  float: left;
+.search-block
+  text-align: right;
+  margin-top: 10px;
+.cate-table
+  padding: 0;
+  height: 388px;
+  .caption
+     border-bottom: 1px solid #ebedf0;
+     height: 30px;
+     line-height: 30px;
+     text-align: center;
+     font-weight: 400;
+     margin-bottom: 10px;
+  .ceil-box
+    height: 310px;
+    overflow: auto;
+  .ceil-block
+    position: relative;
+    width: 100%;
+    height: 100%;
+.cate-item-child
+  height: 36px;
+  line-height: 36px;
+  cursor: pointer;
+  font-size: 14px;
+  color: rgba(0,0,0,.65);
+  padding-left: 12px;
+  position: relative;
+  box-sizing: border-box;
+  span
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    word-break: break-all;
+    display: inline-block;
+    box-sizing: border-box;
+    position: absolute;
+    right: 0;
+    left: 24px;
+.attr-btn.ui.button
+  margin-bottom: 10px;
+  margin-left: 5px;
+i.icon.item-check
+  position: absolute;
+  right: 10px;
+  display: none;
+.chosen-cate
+  padding: 10px;
+
 
 
