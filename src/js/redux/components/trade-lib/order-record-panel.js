@@ -52,7 +52,7 @@ class OrderRecordPanel extends Component{
                         </span>
                       </Table.Cell>
                       <Table.Cell>
-                        <span className="primary-color">{m.trade_pair.replace('USDX', '/USDX')}</span></Table.Cell>
+                        <span className="primary-color">{m.trade_pair}</span></Table.Cell>
                       <Table.Cell>{ (m.order_type == 1 || m.order_type == 3) ? intl.get('marketprice') : Number(m.limit_price).toFixed(8)}</Table.Cell>
                       <Table.Cell>{ Number(m.quantity).toFixed(8)}</Table.Cell>
                       <Table.Cell>{ Number(m.amount).toFixed(8)}</Table.Cell>
@@ -62,7 +62,7 @@ class OrderRecordPanel extends Component{
                       <Table.Cell>
                         {
                           this.props.panel_type == 'current' ?
-                          <span className="primary-color action-btn border-btn" onClick={this.withdraw.bind(this, m.trade_pair, m.id)}>
+                          <span style={{border: 'none'}} className="action-btn border-btn" onClick={this.withdraw.bind(this, m.trade_pair, m.id)}>
                             {intl.get('cancel')}
                           </span>
                           :
@@ -77,7 +77,7 @@ class OrderRecordPanel extends Component{
               </Table>
               :
               <div className="no-login-tips">
-                <p style={{marginTop: '30px'}}>您必须先登录才能查看此内容</p>
+                <p style={{marginTop: '30px'}}>{intl.get('logintips')}</p>
                 <div style={{marginTop: '10px'}}>
                   <Link to='/login'><Button className="login-btn" size="tiny">{intl.get('login')}</Button></Link>
                   <Link to='/register'><Button className="register-btn" size="tiny">{intl.get('signup')}</Button></Link>
@@ -97,8 +97,8 @@ export default class OrderRecordPanelWrapper extends Component{
     var { props } = this;
     var { activeIndex } = this.state;
     const PanelInner= [
-      { menuItem: '当前委托', render: () => <OrderRecordPanel props={props} panel_type="current" /> },
-      { menuItem: '交易记录', render: () => <OrderRecordPanel props={props} panel_type="before" /> }
+      { menuItem: intl.get('openorders'), render: () => <OrderRecordPanel props={props} panel_type="current" /> },
+      { menuItem: intl.get('orderhistory'), render: () => <OrderRecordPanel props={props} panel_type="before" /> }
     ]
     return(
       <Tab activeIndex={activeIndex} className="order-record" menu={{ secondary: true, pointing: true }} panes={ PanelInner } style={{marginBottom: '0px'}} onTabChange = {this.handleTabChange.bind(this)} />

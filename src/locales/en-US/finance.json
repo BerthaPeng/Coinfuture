@@ -1,6 +1,6 @@
 {
   "balances": "BALANCES",
-  "coin": "Coin",
+  "coin": "Ship Token",
   "symbol": "Symbol",
   "available": "Available",
   "action": "Action",
@@ -11,5 +11,10 @@
   "withdraw": "Withdraw",
   "deposit": "Deposit",
   "action": "Action",
-  "withdrawaddress": "Withdraw Address"
+  "withdrawaddress": "Withdraw Address",
+  "MSG_creatOrderfail": "Fail to create order",
+  "MSG_depositwarning": "Deposit amount must at least be 0.01 usd",
+  "MSG_paysuccess": "Pay successfully",
+  "MSG_payfail": "Fail to pay",
+  "MSG_getDepositAddress": "Fail to get deposit address"
 }

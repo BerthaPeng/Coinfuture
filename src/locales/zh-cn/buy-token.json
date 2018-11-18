@@ -1,0 +1,11 @@
+{
+  "quantity": "购入数量",
+  "price": "价格",
+  "exchangeamount": "交易额",
+  "buynow": "立即购买",
+  "cannotbuy": "当前船币不可认购!",
+  "buyok": "认购成功!",
+  "buyfail": "认购失败!",
+  "quantityreg": "Q请输入正整数!",
+  "coininfoerror": "获取船币信息失败！"
+}

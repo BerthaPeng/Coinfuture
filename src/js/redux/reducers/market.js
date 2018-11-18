@@ -47,7 +47,8 @@ function Market(state = initial_state, action){
       data = data.map( m => { m.items = JSON.parse(m.items); return m;})
       return { ...state, coin_attr_list: data};break;
     case Actions.GET_COIN_LIST_BY_ATTR_MARKET:
-      return { ...state, filter_coin_list: action.data};break;
+      var coin_list = action.data.map( m => { m.cate_chain = JSON.parse( m.cate_chain); return m;})
+      return { ...state, filter_coin_list: coin_list};break;
     default:
       return state;break;
   }

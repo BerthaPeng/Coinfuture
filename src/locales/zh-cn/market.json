@@ -1,0 +1,22 @@
+{
+  "tips": "币圈小常识",
+  "investment": "投资分析",
+  "rankings": "排行榜",
+  "news": "币圈动态",
+  "token": "全部船币",
+  "search": "搜索",
+  "searchplaceholder": "输入想查找的船币",
+  "categories": "船型",
+  "age": "船龄",
+  "shipname": "船币",
+  "type": "船型",
+  "total": "发行量",
+  "sold": "已认购",
+  "action": "操作",
+  "exchange": "去交易",
+  "nodata": "没有数据",
+  "price": "价格",
+  "MSG_getCoinListByAttr": "获取船币队列失败",
+  "notforsale": "不可认购",
+  "buy": "认购"
+}

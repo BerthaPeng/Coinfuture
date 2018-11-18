@@ -4,5 +4,9 @@
   "sell": "卖",
   "balances": "钱包资产",
   "orders": "订单记录",
-  "simulatedtrading": "模拟交易"
+  "simulatedtrading": "模拟交易",
+  "currentorderlist": "Open Orders",
+  "openorders": "当前委托",
+  "orderhistory": "委托历史",
+  "transactionhistory": "成交明细"
 }

@@ -33,8 +33,8 @@ class Login extends Component{
       <div className="login">
         { initDone && <div className="box-container">
           <h1>{intl.get('title')}</h1>
-          <Input name="uname" value={uname} onChange={this.handleInputChange.bind(this)} className="login-input" placeholder="手机号/邮箱" style={{marginTop: '50px'}} />
-          <Input name="pwd" value={pwd} onChange={this.handleInputChange.bind(this)} className="login-input" placeholder="密码" type="password"/>
+          <Input name="uname" value={uname} onChange={this.handleInputChange.bind(this)} className="login-input" placeholder={intl.get('account_placeholder')} style={{marginTop: '50px'}} />
+          <Input name="pwd" value={pwd} onChange={this.handleInputChange.bind(this)} className="login-input" placeholder={intl.get('pwd_placeholder')} type="password"/>
           <Button loading={submit_ing} disabled={submit_ing} onClick={this.submit.bind(this)} className="login-btn">{intl.get("btn_txt")}</Button>
           <div className="guide-btns">
             {/*<div style={{display: 'inline-block', float: 'left'}}>修改密码</div>*/}
@@ -94,10 +94,10 @@ class Login extends Component{
           location.reload();
         })
         .fail( ({msg} ) => {
-          this.setState({submit_msg:  msg || '用户名或密码错误'})
+          this.setState({submit_msg:  msg || intl.get('loginfail')})
         })
     }else{
-      this.setState({ submit_msg: '用户名或密码错误'})
+      this.setState({ submit_msg: intl.get('loginfail')})
     }
   }
   handleEnterKey = (e) => {

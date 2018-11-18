@@ -1,0 +1,19 @@
+{
+  "rank": "Top 5",
+  "marineinfo": "Marine Market",
+  "aboutus": "About Us",
+  "help": "Contact Us",
+  "publish": "Publish Apply",
+  "guide": "Guide",
+  "change": "24hr Change",
+  "low": "24hr Low",
+  "high": "24hr High",
+  "vol": "24hr Vol",
+  "action": "Action",
+  "price": "Price",
+  "rank2": "Rank",
+  "token": "Ship Token",
+  "news": "News",
+  "marketoverview": "Market Overview",
+  "MSG_getDailyMarket": "Fail to get market data"
+}

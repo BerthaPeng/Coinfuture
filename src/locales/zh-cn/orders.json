@@ -27,5 +27,8 @@
   "search": "搜索",
   "marketprice": "市价",
   "buy": "买入",
-  "sell": "卖出"
+  "sell": "卖出",
+  "logintips": "您必须先登录才能查看此内容",
+  "MSG_withdrawok": "撤单申请成功",
+  "MSG_withdrawfail": "撤单申请失败"
 }

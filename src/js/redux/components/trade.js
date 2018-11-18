@@ -114,8 +114,9 @@ class FilterModal extends Component{
             </div>
           </div>
           <div className="search-block">
-            <Button icon onClick={this.getCoinListByAttr.bind(this)}>搜索
+            <Button icon onClick={this.getCoinListByAttr.bind(this)}>{intl.get('search')}
               <Icon name="search" />
+            }
             </Button>
           </div>
             <div className="boats">
@@ -200,8 +201,13 @@ class Trade extends Component{
       currency_available: 0, //货币余额
       active_coin_available: 0, //当前货币的持有数量
       isOpen: false,
+
+      get_coin_ing: false, //
+
+      search_ship_name: '',
     }
     this.trade = this.trade.bind(this);
+    this.getUserCoinList = this.getUserCoinList.bind(this);
     this.getTransacList = this.getTransacList.bind(this);
     this.withdraw = this.withdraw.bind(this);
     this.chooseCate = this.chooseCate.bind(this);
@@ -213,16 +219,16 @@ class Trade extends Component{
   }
   render(){
     var tradePanelProps = { actions: {}};
-    var { Kdata_list, market_list, coin_cate_list, coin_attr_list, activeCoin, filter_coin_list } = this.props.Trade;
+    var { Kdata_list, market_list, coin_cate_list, coin_attr_list, activeCoin, filter_coin_list, coin_info_arr, coin_info } = this.props.Trade;
     var { transac_list } = this.props.Transaction;
     var { sell_submit_ing, buy_submit_ing, submit_status } = this.props.Exchange;
     var { addKdata, exchange_available, isNew, msg_color, msg_visible, new_deal_list,
       new_in_order_list, new_out_order_list, current_line, login, state_market_list, filter_market_list,
       highest, lowest, commit, changeMoney, active_cate, active_child_cate, coin_quene_title,
       active_cate_id, isFake, currency_available, active_coin_available, active_grand_child_cate,
-      active_attr_arr , isOpen } = this.state;
+      active_attr_arr , isOpen, get_coin_ing, search_ship_name } = this.state;
     var { trade, getTransacList, withdraw, chooseCate, chooseChildCate, chooseGrandsonCate, chooseAttr,
-     getCoinListByAttr, chooseCoin } = this;
+     getCoinListByAttr, chooseCoin, getUserCoinList } = this;
     /*var coin_eng_name = config.coin_trade_pair.filter( m => m.name == this.state.activeCoin)[0].eng_name;*/
     var panelStyle = active_cate.id ? { display: 'inline'} : { display: 'none'};
     //币的现价
@@ -241,84 +247,84 @@ class Trade extends Component{
         {/*<div className="bg-bg" style={{background: "url(images/bg.jpg) no-repeat center", backgroundSize: '100% 100%'}}></div>*/}
         <div className="fl-block gray-bg">
           <div className="flex-wrapper">
-            <div className="item-20-100" style={{padding: '0 10px'}}>
-              <div className="coin-market item-inner cate-table">
-                <div className="caption">Category</div>
-                <div className="ceil-box">
-                  {
-                    coin_cate_list.map( m => { return (<div className={` ${m.isOpen ? 'open': ''}`}>
-                      <div className={`cate-item ${active_cate.id == m.id ? 'active':''}`}
-                      onClick={this.triggerOpenCate.bind(this, m.id, 0)}
-                      key={m.id + '-coin-cate'}
-                    >
-                      {
-                        m.children.length ?
-                        <Icon name={`angle ${m.isOpen ? 'down': 'right'}`} />:null
-                      }
-                      <span>{m.descrpt_en}</span>
-                      <Icon className="item-check" name="check" onClick={this.chooseCate.bind(this, m)} />
-                    </div>
+            <div className="item-25-100" style={{padding: '0 10px', width: '25%'}}>
+              <div className="coin-market item-inner">
+                <div className="cate-table" style={{height: '240px'}}>
+                  <div className="caption">{intl.get('categories')}</div>
+                  <div className="ceil-box" style={{height: '210px'}}>
                     {
-                        m.children.length ?
-                          <div className="cate-item-child-block">
-                            {
-                              m.children.map( mc => (<div className={`${mc.isOpen ? 'open': ''}`} >
-                                    <div className={`cate-item ${active_cate.id == mc.id ? 'active':''}`} key={ 'cate-item-child-' + mc.id} style={{height: '32px', lineHeight: '32px'}}
-                                      onClick={this.triggerOpenCate.bind(this, mc.id, 1, m.id)}
-                                    >
+                      coin_cate_list.map( m => { return (<div className={` ${m.isOpen ? 'open': ''}`}>
+                        <div className={`cate-item ${active_cate.id == m.id ? 'active':''}`}
+                        onClick={this.triggerOpenCate.bind(this, m, 0)}
+                        key={m.id + '-coin-cate'}
+                      >
+                        {
+                          m.children.length ?
+                          <Icon name={`angle ${m.isOpen ? 'down': 'right'}`} />:null
+                        }
+                        <span>{m.descrpt_en}</span>
+                      </div>
+                      {
+                          m.children.length ?
+                            <div className="cate-item-child-block">
+                              {
+                                m.children.map( mc => (<div className={`${mc.isOpen ? 'open': ''}`} >
+                                      <div className={`cate-item ${active_cate.id == mc.id ? 'active':''}`} key={ 'cate-item-child-' + mc.id} style={{height: '32px', lineHeight: '32px'}}
+                                        onClick={this.triggerOpenCate.bind(this, mc, 1, m.id)}
+                                      >
+                                        {
+                                          mc.children.length ?
+                                          <Icon name={`angle ${mc.isOpen ? 'down': 'right'}`} style={{marginLeft: '5px'}} />
+                                          :null
+                                        }
+                                        <span style={{left: '24px'}}>{mc.descrpt_en}</span>
+                                      </div>
                                       {
                                         mc.children.length ?
-                                        <Icon name={`angle ${mc.isOpen ? 'down': 'right'}`} style={{marginLeft: '5px'}} />
+                                        mc.children.map( mg => (
+                                          <div className="cate-item-grandson-block">
+                                            <div onClick={this.chooseCate.bind(this, mg)} className={`cate-item ${active_cate.id == mg.id ? 'active':''}`} key={ 'cate-item-grandson-' + mg.id} style={{height: '32px', lineHeight: '32px'}}>
+                                              <span style={{left: '36px'}}>{mg.descrpt_en}</span>
+                                            </div>
+                                          </div>
+                                        ))
                                         :null
                                       }
-                                      <span style={{left: '24px'}}>{mc.descrpt_en}</span>
-                                      <Icon className="item-check" name="check" onClick={this.chooseCate.bind(this, mc)} />
                                     </div>
-                                    {
-                                      mc.children.length ?
-                                      mc.children.map( mg => (
-                                        <div className="cate-item-grandson-block">
-                                          <div className={`cate-item ${active_cate.id == mg.id ? 'active':''}`} key={ 'cate-item-grandson-' + mg.id} style={{height: '32px', lineHeight: '32px'}}>
-                                            <span style={{left: '36px'}}>{mg.descrpt_en}</span>
-                                            <Icon className="item-check" name="check" onClick={this.chooseCate.bind(this, mg)} />
-                                          </div>
-                                        </div>
-                                      ))
-                                      :null
-                                    }
-                                  </div>
-                                  ))
-                            }
-                          </div>
-                        :null
-                    }
-                    </div>
-                    ) })
-                  }
-                  {
-                    coin_attr_list.map( attr => (<div key={'attr-' + attr.id}>
-                      <div className="caption" style={{borderTop: '1px dotted #eee', marginTop: '10px'}}>{ attr.descrpt_en }</div>
-                      {
-                        attr.items.map( m => (<Button color={`${active_attr_arr.some( n => n.id == m.id ) ? 'red': ''}`} basic className="attr-btn" size="mini" key={'attr-item-' + m.id}
-                          onClick={this.chooseAttr.bind(this, m)}>{ m.descrpt_en }</Button>))
+                                    ))
+                              }
+                            </div>
+                          :null
                       }
+                      </div>
+                      ) })
+                    }
+                  </div>
+                </div>
+                  {
+                    coin_attr_list.map( attr => (<div key={'attr-' + attr.id}  className="cate-table" style={{height: '120px'}}>
+                      <div className="caption" style={{borderTop: '1px dotted #eee', marginTop: '10px'}}>{ lang == 'en-US' ?  attr.descrpt_en : attr.descrpt_ch }</div>
+                      <div className="ceil-box" style={{height: '80px'}}>
+                        {
+                          attr.items.map( m => (<Button basic
+                            className={`${active_attr_arr.some( n => n.id == m.id ) ? "active attr-btn": "attr-btn"}`} size="mini" key={'attr-item-' + m.id}
+                            onClick={this.chooseAttr.bind(this, m)}>{ m.descrpt_en }</Button>))
+                        }
+                      </div>
                     </div>))
                   }
-                </div>
               </div>
             </div>
-            <div className="item-80-100" style={{paddingRight: '10px'}}>
+            <div className="item-75-100" style={{paddingRight: '10px', width: '75%'}}>
               <div className="flex-wrapper">
-                <div className="item-80-100">
-                  <div className="coin-current-info item-inner" style={{paddingLeft: 0, paddingRight: 0,backgroundColor: '#000'}}>
-                    <div style={{height: '45px', padding: '0px 20px 0px 20px', display: 'flex'}}>
-                      <div className="item-40-100" style={{paddingTop: '10px'}}>
-                        <span style={{fontSize: '18px', color: '#fff'}}>
-                          { activeCoin}</span>
+                <div className="item-75-100" style={{width: '75%'}}>
+                  <div className="coin-current-info item-inner" style={{paddingLeft: 0, paddingRight: 0, borderBottom: '1px solid #ebedf0'}}>
+                    <div style={{height: '25px', padding: '0px 20px 0px 20px', borderBottom: '1px solid #ebedf0'}}>
+                        <span style={{fontSize: '18px', color: '#ffac00'}}>
+                          { coin_info.name }</span>
                         <span style={{marginLeft: '5px'}} className="price-amount"> { currentPrice + config.CURRENCY}</span>
                         <span style={{marginLeft: '5px', fontSize: '10px'}}>≈ {intl.get('currentpriceNum', { amount: (currentPriceLocale) })}</span>
-                      </div>
-                      <div className="item-60-100" style={{textAlign: 'right'}}>
+                      {/*<div className="item-60-100" style={{textAlign: 'right'}}>
                         <div style={{display: 'flex', width: '100%'}}>
                           <div className="item item-5 light-grey-color">
                             <p>{intl.get('daychange').toUpperCase()}</p>
@@ -346,6 +352,33 @@ class Trade extends Component{
                             <p style={{marginTop: '5px'}}>{commit + config.CURRENCY}</p>
                           </div>
                         </div>
+                      </div>*/}
+                    </div>
+                    <div style={{ height: '40px', padding: '0px 20px 0px 20px', display: 'flex', marginTop: '10px'}}>
+                      <div className="item item-5 light-grey-color">
+                        <p>{intl.get('daychange').toUpperCase()}</p>
+                        {
+                          Number(changeMoney) > 0 ?
+                          <p className="color-up" style={{marginTop: '5px'}}>
+                          {  '+' + changeMoney }
+                          </p>
+                          :
+                          <p className="color-down" style={{marginTop: '5px'}}>
+                          {   changeMoney }
+                          </p>
+                        }
+                      </div>
+                      <div className="item item-5 light-grey-color">
+                        <p>{intl.get('highest').toUpperCase()}</p>
+                        <p style={{marginTop: '5px'}}>{highest + config.CURRENCY}</p>
+                      </div>
+                      <div className="item item-5 light-grey-color">
+                        <p>{intl.get('lowest').toUpperCase()}</p>
+                        <p style={{marginTop: '5px'}}>{lowest + config.CURRENCY}</p>
+                      </div>
+                      <div className="item item-40-100 light-grey-color">
+                        <p>{intl.get('dealcount').toUpperCase()}/{intl.get('amount').toUpperCase()}</p>
+                        <p style={{marginTop: '5px'}}>{commit + config.CURRENCY}</p>
                       </div>
                     </div>
                   </div>
@@ -377,13 +410,18 @@ class Trade extends Component{
                     <FLChart { ...{ Kdata: Kdata_list, addKdata, isNew, line: current_line, coin: activeCoin}} />
                   </div>
                 </div>
-                <div className="item-20-100" style={{paddingLeft: '10px'}}>
+                <div className="item-25-100" style={{paddingLeft: '10px', width: '25%'}}>
                   <div className="coin-market item-inner" style={{height: 'auto', padding: '10px'}}>
                     <div className="table-wrapper">
                         <div className="trade-depth-table">
-                          <div className="caption">
-                            <div className="price">{intl.get('price')}({config. CURRENCY})</div>
-                            <div className="amount">{intl.get('quantity')}({activeCoin})</div>
+                          <div className="caption" style={{display: 'flex'}}>
+                            <div className="quene-index" style={{width: '33.3%'}}></div>
+                            <div className="price" style={{width: '33.3%'}}>{intl.get('price')}
+                            {/*({config. CURRENCY})*/}
+                            </div>
+                            <div style={{width: '33.3%',display: 'inline-block'}}>{intl.get('quantity')}
+                            {/*({activeCoin})*/}
+                            </div>
                           </div>
                           <div className="ceil-box">
                             <div className="ceil-block">
@@ -391,7 +429,7 @@ class Trade extends Component{
                                 <ul className="list ceil-top-list">
                                   {
                                     new_out_order_list.map( (item, index) => <li key={index + '-out-order-list'}>
-                                        <div>{intl.get('sell') + ' '}{ new_out_order_list.length - index}</div>
+                                        <div className="quene-index">{intl.get('sell') + ' '}{ new_out_order_list.length - index}</div>
                                         <div className="price color-down">{item.price}</div>
                                         <div className="amount">{item.quantity}</div>
                                       </li>)
@@ -400,7 +438,7 @@ class Trade extends Component{
                                 <ul className="list">
                                   {
                                     new_in_order_list.map( (item, index) => <li key={index + '-in-order-list'}>
-                                        <div>{intl.get('buy') + ' '}{ index + 1}</div>
+                                        <div className="quene-index">{intl.get('buy') + ' '}{ index + 1}</div>
                                         <div className="price color-up">{item.price}</div>
                                         <div className="amount">{item.quantity}</div>
                                       </li>)
@@ -417,43 +455,43 @@ class Trade extends Component{
             </div>
           </div>
           <div className="flex-wrapper"  style={{width: '100%'}}>
-            <div className="item-20-100" style={{width: '20%', padding: '10px 10px 0 10px'}}>
+            <div className="item-25-100" style={{width: '25%', padding: '10px 10px 0 10px'}}>
               <div className="coin-market item-inner">
-                <div className="chosen-cate" style={{height: '150px'}}>
+                <div className="chosen-cate" style={{height: '120px'}}>
                   {
                     active_cate.id ?
-                    <Button icon size="mini" labelPosition="right" color="red"
+                    <Button className="active attr-btn" basic icon size="mini" labelPosition="right"
                       onClick={this.chooseCate.bind(this, {})}
                       style={{marginBottom: '5px'}}>
                       { active_cate.descrpt_en }
-                      <Icon name ="close" style={{color: '#fff'}} />
+                      <Icon name ="close" style={{color: '#0d1319'}} />
                     </Button>:null
                   }
                   {
-                    active_attr_arr.map( m => (<Button key={'atrr-' + m.id} icon size="mini"
+                    active_attr_arr.map( m => (<Button  className="active attr-btn" basic key={'atrr-' + m.id} icon size="mini"
                       onClick={this.clearAttr.bind(this)}
-                      labelPosition="right" color="red"
+                      labelPosition="right"
                       style={{marginBottom: '5px'}}>
                       { m.descrpt_en }
-                      <Icon name ="close" style={{color: '#fff'}} />
+                      <Icon name ="close" style={{color: '#0d1319'}} />
                     </Button>))
                   }
                   {
                     !active_cate.id && active_attr_arr.length == 0 ?
                     <Message positive>
                         {/*<Message.Header>选择上面的分类进行筛选</Message.Header>*/}
-                        <p>选择上面的分类进行筛选</p>
+                        <p style={{textAlign: 'center'}}>{intl.get('searchtips')}</p>
                     </Message>:null
                   }
-                  <Popup trigger={<Button basic size="mini" style={{width: '100%'}}
+                  {/*<Popup trigger={<Button basic size="mini" style={{width: '100%'}}
                   onClick={this.getCoinListByAttr.bind(this)}
-                  >搜索</Button>}
+                  >{intl.get('search')}</Button>}
                   on="click" position="right center"
                   open={isOpen}
                   style={{ width: '300px'}}
                   >
                     <div className="cate-table" style={{border: "none"}}>
-                    <div className="caption">船币</div>
+                    <div className="caption">{intl.get('token')}</div>
                       <div className="ceil-box" style={{border: 'none', height: '340px'}}>
 
                         <Table basic className="market-table">
@@ -468,11 +506,30 @@ class Trade extends Component{
                       </div>
                     </div>
                   </Popup>
+*/}                  
+              <div style={{width: '100%', textAlign: 'center'}}><Button basic size="mini" style={{width: '100px'}}
+                    onClick={this.getCoinListByAttr.bind(this)}
+                    loading={get_coin_ing}
+                    >{intl.get('search')}</Button></div>
                 </div>
               </div>
               <div style={{marginTop: '10px'}}>
-                <div className="coin-market item-inner cate-table" style={{height: '220px'}}>
-                  <div className="ceil-box">
+                <div className="coin-market item-inner cate-table" style={{height: '424px', borderRadius: '5px 5px 0 0 '}}>
+                  <div className="search-wrap">
+                    <div className="ui left icon input" style={{width: '100%', borderRadius: 0}}>
+                      <input type="text" value={search_ship_name}
+                        placeholder={intl.get('searchplaceholder')}
+                       onKeyDown={this.handleEnterKey.bind(this)}
+                        onChange={this.onChangeSearchShipName.bind(this)} />
+                      <i aria-hidden="true" className="search icon"></i>
+                    </div>
+                   {/* <Input value={ search_ship_name } icon="search"
+                      placeholder={intl.get('searchplaceholder')}
+                      iconPosition="left" style={{width: '100%', borderRadius: 0}}
+                      onKeydown={this.handleEnterKey.bind(this)}
+                      onChange={this.onChangeSearchShipName.bind(this)} />*/}
+                  </div>
+                  <div className="ceil-box" style={{height: '372px'}}>
                     <div className="table-wrapper">
                       <Table basic="very" textAlign="center" className="no-border-table thin-table">
                         <Table.Header>
@@ -487,7 +544,7 @@ class Trade extends Component{
                             filter_market_list.map( c => <Table.Row key={c.name + '_maket_table'} active={activeCoin == c.name} onClick={this.chooseCoin.bind(this, c.name)}>
                               <Table.Cell><span>{c.name}</span></Table.Cell>
                               <Table.Cell><span className={'color-' + c.direction}>{c.price}</span></Table.Cell>
-                              <Table.Cell><span className={'color-' + c.direction}>{ c.direction === 'up' ? '+' + c.change : c.change}</span></Table.Cell>
+                              <Table.Cell><span className={'color-' + c.direction}>{ c.direction === 'up' && c.change != '/' ? '+' + c.change : c.change}</span></Table.Cell>
                             </Table.Row>)
                           }
                         </Table.Body>
@@ -497,92 +554,195 @@ class Trade extends Component{
                 </div>
               </div>
             </div>
-            <div className="item-60-100" style={{width: '60%'}}>
-              <div className="trade-box item-inner" style={{padding: 0}}>
-                <TradePanel
-                  {...{ exchange_available,
-                    coin: activeCoin,
-                    contract_id: activeCoin,
-                    actions: {trade},
-                    current_price: new_deal_list.length && new_deal_list[0].price,
-                    submit_status,
-                    buy_submit_ing,
-                    sell_submit_ing,
-                    currency_available,
-                    active_coin_available,
-                    lang: this.props.Lang.lang
-                  }} />
-              </div>
-            </div>
-            <div className="item-20-100" style={{ padding: '10px 10px 0 10px', width: '20%'}}>
-              <div className="deal-wrapper item-inner">
-                <div className="full-deal-list-box">
-                  <div className="full-deal-title">{intl.get('new')}</div>
-                  <div className="full-deal-title caption">
-                    <span>
-                      {intl.get('price')}
-                      {/*({config.CURRENCY})*/}
-                    </span>
-                    <span className="align-right">{intl.get('count')}
-                      {/*({activeCoinInfo.coin_name_en})*/}
-                    </span>
-                    <span className="align-right">{intl.get('time')}</span>
-                  </div>
-                  <div className="deal-list-box" style={{height: '300px'}}>
-                    <ul className="deal-ul">
-                      {
-                        new_deal_list.map( (m, index) => <li key={index + '-latest-deals'}>
-                          <span className={`${m.type == 'in' ? 'color-up':'color-down'}`}>{m.price}</span>
-                          <span className="align-right">{m.quantity}</span>
-                          <span className="align-right">{m.time}</span>
-                        </li> )
-                      }
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              {/*<div className="coin-market item-inner latest-deals" style={{padding: '10px 0'}}>
-                <div className="table-wrapper">
-                  <p className="table-title">{intl.get('new')}</p>
-                  <div className="ceil-block">
-                    <div className="ceil-scrol-box">
-                      <Table basic="very" textAlign="center" className="no-border-table thin-table">
-                        <Table.Header>
-                          <Table.Row>
-                            <Table.HeaderCell verticalAlign="top">{intl.get('time')}</Table.HeaderCell>
-                            <Table.HeaderCell verticalAlign="top">{intl.get('price')}({config.CURRENCY})</Table.HeaderCell>
-                            <Table.HeaderCell verticalAlign="top">{intl.get('count')}({activeCoinInfo.coin_name_en})</Table.HeaderCell>
-                          </Table.Row>
-                        </Table.Header>
-                        <Table.Body>
-                          {
-                            new_deal_list.map( (m, index) => <Table.Row key={index + '-latest-deals'}>
-                              <Table.Cell>{m.time}</Table.Cell>
-                              <Table.Cell>
-                                <span className={`${m.type == 'in' ? 'color-up':'color-down'}`}>{m.price}</span>
-                              </Table.Cell>
-                              <Table.Cell>{m.quantity}</Table.Cell>
-                            </Table.Row>)
-                          }
-                        </Table.Body>
-                      </Table>
+            <div style={{width: '75%'}}>
+              <div className="flex-wrapper cate-table" style={{width: '100%', marginTop: '10px', paddingRight: '10px', height: '168px'}}>
+                  <div style={{background: '#fff', width: '30%', position: 'relative'}}>
+                    {/*<div className="vesselheader" style={{position: 'absolute', background: 'rgba(2,15,39,.5)', padding: '10px 20px 10px 26px', height: 'auto'}}>
+                      <strong>{coin_info.name}</strong>
+                    </div>*/}
+                    <div className="image">
+                      <img src={coin_info.url} style={{height: '150px', width: 'auto', marginTop: '10px', marginLeft: '10px'}} />
                     </div>
                   </div>
-                </div>
-              </div>*/}
-            </div>
+                  <div style={{background: '#fff',width: '70%', paddingTop: '10px'}}>
+                    <div className="cate-table" style={{height: '168px'}}>
+                      <strong style={{fontSize: '14px'}}>{coin_info.name}</strong>
+                      <div className="ceil-box" style={{height: '130px', fontSize: '12px'}}>
+                        <ul className="token-property">
+                          <li>
+                            <span>NAME　</span>
+                            <span><strong>{coin_info.name}</strong></span>
+                          </li>
+                          <li>
+                            <span>TYPE　</span>
+                            <span><strong>container</strong></span>
+                          </li>
+                          <li>
+                            <span>YEAR OF BUILD　</span>
+                            <span><strong>{coin_info.built}</strong></span>
+                          </li>
+                          <li>
+                            <span>SHIPBUILDER　</span>
+                            <span><strong>{coin_info.ship_builder}</strong></span>
+                          </li>
+                          <li>
+                            <span>TEU　</span>
+                            <span><strong>{coin_info.teu}</strong></span>
+                          </li>
+                          <li>
+                            <span>TEU X 14 TONS　</span>
+                            <span><strong>{coin_info.teux}</strong></span>
+                          </li>
+                          <li style={{width: '100%'}}>
+                            <span>REEFER　</span>
+                            <span><strong>{coin_info.reefer}</strong></span>
+                          </li>
+                          <li>
+                            <span>LOA(M)　</span>
+                            <span><strong>{coin_info.loa}</strong></span>
+                          </li>
+                          <li>
+                            <span>LBP(M)　</span>
+                            <span><strong>{coin_info.lbp}</strong></span>
+                          </li>
+                          <li>
+                            <span>BREADTH(M)　</span>
+                            <span><strong>{coin_info.breadth}</strong></span>
+                          </li>
+                          <li>
+                            <span>DEPTH(M)　</span>
+                            <span><strong>{coin_info.depth}</strong></span>
+                          </li>
+                          <li>
+                            <span>DRAFT(M)　</span>
+                            <span><strong>{coin_info.draft}</strong></span>
+                          </li>
+                          <li>
+                            <span>SERVICE SPEED(KNOTS)　</span>
+                            <span><strong>{coin_info.service_speed}</strong></span>
+                          </li>
+                          <li>
+                            <span>MAIN ENGINE　</span>
+                            <span><strong>{coin_info.me}</strong></span>
+                          </li>
+                          <li>
+                            <span>POWER　</span>
+                            <span><strong>{coin_info.power}</strong></span>
+                          </li>
+                          <li>
+                            <span>MAKER　</span>
+                            <span><strong>{coin_info.maker}</strong></span>
+                          </li>
+                          <li>
+                            <span>CONSUMPTION(TON/DAY)　</span>
+                            <span><strong>{coin_info.consumption}</strong></span>
+                          </li>
 
-          </div>
-          <div className="flex-wrapper" style = {{ width: '100%', padding: '0 10px' }}>
-            <div className="user-order-box item-inner" style={{width: '100%', height: '270px', marginTop: '10px', padding: '0px', position: 'relative'}}>
-              {
-                login ?
-                <Link to="/transaction"><div style={{ position: 'absolute', top: 10, right: 10}}>更多>></div></Link>
-                :null
-              }
-              <OrderRecordPanel { ...{login, transac_list, lang: this.props.Lang.lang, getTransacList, withdraw}} />
+                            {/*coin_info_arr.map( m => <li key={m.key}>
+                            <span>{m.key.toUpperCase()}：</span>
+                            <span><strong>{m.value}</strong></span>
+                          </li>)*/}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              <div className="flex-wrapper" style={{width: '100%'}}>
+                <div style={{width: '70%'}}>
+                  <div className="trade-box item-inner" style={{padding: 0}}>
+                    <TradePanel
+                      {...{ exchange_available,
+                        coin_name: coin_info.name,
+                        coin: activeCoin,
+                        contract_id: activeCoin,
+                        actions: {trade, getUserCoinList},
+                        current_price: new_deal_list.length && new_deal_list[0].price,
+                        submit_status,
+                        buy_submit_ing,
+                        sell_submit_ing,
+                        currency_available,
+                        active_coin_available,
+                        price_decimal,
+                        quantity_decimal,
+                        lang: this.props.Lang.lang
+                      }} />
+                  </div>
+                </div>
+                <div style={{ padding: '10px 10px 0 10px', width: '30%'}}>
+                  <div className="deal-wrapper item-inner">
+                    <div className="full-deal-list-box">
+                      <div className="full-deal-title">{intl.get('new')}</div>
+                      <div className="full-deal-title caption">
+                        <span>
+                          {intl.get('price')}
+                          {/*({config.CURRENCY})*/}
+                        </span>
+                        <span className="align-right">{intl.get('count')}
+                          {/*({activeCoinInfo.coin_name_en})*/}
+                        </span>
+                        <span className="align-right">{intl.get('time')}</span>
+                      </div>
+                      <div className="deal-list-box" style={{height: '300px'}}>
+                        <ul className="deal-ul">
+                          {
+                            new_deal_list.map( (m, index) => <li key={index + '-latest-deals'}>
+                              <span className={`${m.type == 'in' ? 'color-up':'color-down'}`}>{m.price}</span>
+                              <span className="align-right">{m.quantity}</span>
+                              <span className="align-right">{m.time}</span>
+                            </li> )
+                          }
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  {/*<div className="coin-market item-inner latest-deals" style={{padding: '10px 0'}}>
+                    <div className="table-wrapper">
+                      <p className="table-title">{intl.get('new')}</p>
+                      <div className="ceil-block">
+                        <div className="ceil-scrol-box">
+                          <Table basic="very" textAlign="center" className="no-border-table thin-table">
+                            <Table.Header>
+                              <Table.Row>
+                                <Table.HeaderCell verticalAlign="top">{intl.get('time')}</Table.HeaderCell>
+                                <Table.HeaderCell verticalAlign="top">{intl.get('price')}({config.CURRENCY})</Table.HeaderCell>
+                                <Table.HeaderCell verticalAlign="top">{intl.get('count')}({activeCoinInfo.coin_name_en})</Table.HeaderCell>
+                              </Table.Row>
+                            </Table.Header>
+                            <Table.Body>
+                              {
+                                new_deal_list.map( (m, index) => <Table.Row key={index + '-latest-deals'}>
+                                  <Table.Cell>{m.time}</Table.Cell>
+                                  <Table.Cell>
+                                    <span className={`${m.type == 'in' ? 'color-up':'color-down'}`}>{m.price}</span>
+                                  </Table.Cell>
+                                  <Table.Cell>{m.quantity}</Table.Cell>
+                                </Table.Row>)
+                              }
+                            </Table.Body>
+                          </Table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>*/}
+                </div>
+              </div>
+
             </div>
           </div>
+          {
+            login ?
+            <div className="flex-wrapper" style = {{ width: '100%', padding: '0 10px' }}>
+              <div className="user-order-box item-inner" style={{width: '100%', height: '270px', marginTop: '10px', padding: '0px', position: 'relative'}}>
+                {
+                  login ?
+                  <Link to="/transaction"><div style={{ position: 'absolute', top: 10, right: 10}}>更多>></div></Link>
+                  :null
+                }
+                <OrderRecordPanel { ...{login, transac_list, lang: this.props.Lang.lang, getTransacList, withdraw}} />
+              </div>
+            </div>
+            :null
+          }
         </div>
         {/*<FilterModal {...{ coin_cate_list, filter_coin_list,
           Lang: this.props.Lang, coin_attr_list, active_cate,
@@ -638,39 +798,27 @@ class Trade extends Component{
           if(this.props.params.coin != 'default'){
             symbol = this.props.params.coin;
           }
-          this.dataInit(symbol);
+          var coinId = data[0].commodity_coin;
+          if(this.props.params.coinId ){
+            coinId = Number(this.props.params.coinId);
+          }
+          this.dataInit(symbol, coinId);
           this.socketInitX(symbol);
 
           //获取行情
-          this.props.actions.getDailyMarket({ symbol: config.CURRENCY})
+          this.props.actions.getDailyMarket({ symbol: config.CURRENCY, sort: 1})
             .fail( ({msg}) => {
-              Toast.error(msg || '获取行情数据失败', 5000);
+              Toast.error(msg || intl.get('MSG_getDailyMarket'), 5000);
             })
         }
       })
       .fail( ({msg }) => {
-        Toast.error( msg || '获取币对配置信息失败', 5000)
+        Toast.error( msg || intl.get('MSG_getCoinConfig'), 5000)
       })
       //当用户登录后获取用户资产
     var account_id = sessionStorage.getItem('_udata_accountid');
     if(account_id){
-      this.props.actions.getUserCoinList({})
-        .done( data => {
-          var currency_available_arr = data.filter( m => m.symbol == config.CURRENCY)
-          if(currency_available_arr && currency_available_arr.length){
-            var currency_available = currency_available_arr[0].balance;
-            this.setState({ currency_available })
-          }
-          var active_coin_arr = data.filter( m => m.symbol == this.props.Trade.activeCoin);
-          if(active_coin_arr && active_coin_arr.length){
-            var active_coin_available = active_coin_arr[0].balance;
-            this.setState({ active_coin_available });
-          }
-          this.setState({ user_coin_list: data });
-        })
-        .fail( ({msg}) => {
-          Toast.error( msg || '获取用户资产失败')
-        })
+      this.getUserCoinList();
       this.getTransacList(1);
       this.setState({ login: true });
     }else{
@@ -678,36 +826,56 @@ class Trade extends Component{
     }
     this.props.actions.getCoinCategoryList({})
       .fail( ({msg}) => {
-        Toast.error(msg || '获取币种分类失败', 5000);
+        Toast.error(msg || intl.get('MSG_getCoinCategory'), 5000);
       })
     this.props.actions.getCommonAttrList({})
       .fail( ({msg}) => {
-        Toast.error( msg || '获取币种属性失败', 5000);
+        Toast.error( msg || intl.get('MSG_getCommonAttr'), 5000);
       })
     this.loadLocales(this.props.Lang.lang);
+  }
+  getUserCoinList(){
+    this.props.actions.getUserCoinList({})
+      .done( data => {
+        var currency_available_arr = data.filter( m => m.symbol == config.CURRENCY)
+        if(currency_available_arr && currency_available_arr.length){
+          var currency_available = currency_available_arr[0].balance;
+          this.setState({ currency_available })
+        }
+        var active_coin_arr = data.filter( m => m.symbol == this.props.Trade.activeCoin);
+        if(active_coin_arr && active_coin_arr.length){
+          var active_coin_available = active_coin_arr[0].balance;
+          this.setState({ active_coin_available });
+        }
+        this.setState({ user_coin_list: data });
+      })
+      .fail( ({msg}) => {
+        Toast.error( msg || intl.get('MSG_getUserCoin'))
+      })
   }
   //"type": 查询类型 0 所有状态 1 当前委托 2 委托历史 3 成交明细
   getTransacList(type){
     this.props.actions.getTransacList({ type, pageno: 1, pagesize: 10, date_from: '', date_to: '', symbol: '' })
       .fail( ({msg}) => {
-        Toast.error(msg || '获取交易记录失败', 5000);
+        Toast.error(msg || intl.get('MSG_getTransac'), 5000);
       })
   }
   withdraw(symbol, order_id){
     this.props.actions.withdraw({ symbol, order_id})
       .done(() => {
-        Toast.success('撤单申请成功！')
+        Toast.success(intl.get('MSG_withdrawOrder_ok'))
         this.getTransacList(1)
       })
       .fail( ({msg}) => {
-        Toast.error( msg || '撤单申请失败！')
+        Toast.error( msg || intl.get('MSG_withdrawOrder_fail'))
       })
   }
   handleEnter(cate){
       this.setState({active_cate: cate, active_child_cate: []});
   }
-  triggerOpenCate(cate_id, level, parent, grand_parent){
-    this.props.actions.triggerOpenCate({ cate_id, level, parent, grand_parent});
+  triggerOpenCate(cate, level, parent, grand_parent){
+    this.props.actions.triggerOpenCate({ cate_id: cate.id, level, parent, grand_parent});
+    this.chooseCate(cate);
   }
 
   getActiveCoinAvailable(coin){
@@ -775,7 +943,7 @@ class Trade extends Component{
     }
   }
   //数据初始化
-  dataInit(symbol){
+  dataInit(symbol, coin_id){
     this.getBeforeMarketData(this.state.current_line, symbol);
     this.props.actions.getNewDeals({symbol, count: 10})
       .done(() => {
@@ -787,6 +955,11 @@ class Trade extends Component{
         this.setState({new_in_order_list: this.props.Trade.in_order_list,
           new_out_order_list: this.props.Trade.out_order_list
         })
+      })
+    //获取币的信息
+    this.props.actions.getCoinInfo({ id: coin_id})
+      .fail( ({msg}) => {
+        Toast.error( msg)
       })
   }
   socketOpen(socket, channel){
@@ -812,7 +985,7 @@ class Trade extends Component{
     var line = this.state.current_line;
     var symbol = this.props.Trade.activeCoin + config.CURRENCY;
     line = line == 'timeline' ? '1m' : line; //分时取1m数据
-    this.socketCancelSuscribe(window.mySocket, 'market.' +config.CURRENCY + '.kline.daily');
+    this.socketCancelSuscribe(window.mySocket, 'market.' +config.CURRENCY + '.kline.daily.1');
     this.socketCancelSuscribe(window.mySocket, 'market.' + symbol + '.trade.detail');
     this.socketCancelSuscribe(window.mySocket, 'market.' + symbol + '.depth.step0');
     this.socketCancelSuscribe(window.mySocket, 'market.' + symbol +'.kline.' + line );
@@ -820,7 +993,7 @@ class Trade extends Component{
   //初始化订阅时需要订阅的频道
   socketOpenInit(){
     //订阅daily;
-    this.socketOpen(window.mySocket, 'market.' +config.CURRENCY + '.kline.daily')
+    this.socketOpen(window.mySocket, 'market.' +config.CURRENCY + '.kline.daily.1')
   }
   waitForConnection(callback, socket, interval) {
       if (socket.readyState === 1) {
@@ -843,7 +1016,7 @@ class Trade extends Component{
         var line = self.state.current_line;
         line = line == 'timeline' ? '1m' : line; //分时取1m数据
         mySocket.onopen = function(){
-          self.socketOpen(mySocket, 'market.' +config.CURRENCY + '.kline.daily');
+          self.socketOpen(mySocket, 'market.' +config.CURRENCY + '.kline.daily.1');
           self.socketOpen(mySocket, 'market.' + symbol + '.trade.detail');
           self.socketOpen(mySocket, 'market.' + symbol + '.depth.step0');
           self.socketOpen(mySocket, 'market.' + symbol +'.kline.' + line );
@@ -871,7 +1044,7 @@ class Trade extends Component{
     var line = current_line == 'timeline' ? '1m' : current_line; //分时取1m数据
     if(this.state.suscribe_success){
       switch(blob.channel){
-        case 'market.' +config.CURRENCY + '.kline.daily':
+        case 'market.' +config.CURRENCY + '.kline.daily.1':
           this.handleDaily(blob);break;
         case 'market.' + symbol + '.trade.detail':
           this.handleDeal(blob);break;
@@ -912,12 +1085,16 @@ class Trade extends Component{
     var { coin_config_list } = this.props.Trade;
     var newDailyArr = coin_config_list.map( h => {
       var currentCoinInfo = dailyArr.filter( m => h.commodity_symbol == m.s);
-      var { price_decimal, quantity_decimal } = h;
-      var data = { name: currentCoinInfo[0].s, price: parseFloat(currentCoinInfo[0].c).toFixed(price_decimal), change: currentCoinInfo[0].cg,
-        highest: parseFloat(currentCoinInfo[0].h).toFixed(price_decimal),
-        lowest: parseFloat(currentCoinInfo[0].l).toFixed(price_decimal),
-        commit: parseFloat(currentCoinInfo[0].a).toFixed(price_decimal),
-        changeMoney: (parseFloat(currentCoinInfo[0].c) - parseFloat(currentCoinInfo[0].o)).toFixed(price_decimal),
+      var { price_decimal, quantity_decimal, commodity_coin } = h;
+      var data = {
+        name: currentCoinInfo[0].s,
+        price: currentCoinInfo[0].c ? parseFloat(currentCoinInfo[0].c).toFixed(price_decimal) : '/',
+        change: currentCoinInfo[0].cg ? currentCoinInfo[0].cg : '/',
+        highest: currentCoinInfo[0].h ? parseFloat(currentCoinInfo[0].h).toFixed(price_decimal) : '/',
+        lowest: currentCoinInfo[0].l ? parseFloat(currentCoinInfo[0].l).toFixed(price_decimal) : '/',
+        commit: currentCoinInfo[0].a ? parseFloat(currentCoinInfo[0].a).toFixed(price_decimal) : '/',
+        changeMoney: currentCoinInfo[0].c ? (parseFloat(currentCoinInfo[0].c) - parseFloat(currentCoinInfo[0].o)).toFixed(price_decimal) : '/',
+        commodity_coin
       };
       if(currentCoinInfo[0].cg.indexOf('-') != -1){
         data.direction = 'down'
@@ -954,11 +1131,11 @@ class Trade extends Component{
     }
     console.warn('daily数据：')
     console.warn(newDailyArr);
-    var { coin_list } = this.props.Trade;
+    var { filter_market_list } = this.state;
     var new_coin_list = [];
-    if(this.state.active_cate_id){
-      new_coin_list = coin_list.map( m => {
-        var index = newDailyArr.findIndex( n => n.name + 'USDX' == m.symbol);
+    if(this.state.active_cate_id || this.state.active_attr_arr.length){
+      new_coin_list = filter_market_list.map( m => {
+        var index = newDailyArr.findIndex( n => n.name == m.name);
         return newDailyArr[index];
       })
     }else{
@@ -1092,8 +1269,7 @@ class Trade extends Component{
       this.setState({ highest, lowest, commit, changeMoney});
     }
     var symbol = coin + config.CURRENCY;
-
-    this.dataInit(symbol);
+    this.dataInit(symbol, currentCoinInfo.commodity_coin);
     this.socketOpen(mySocket, 'market.' + symbol + '.trade.detail');
     this.socketOpen(mySocket, 'market.' + symbol + '.depth.step0');
     this.socketOpen(mySocket, 'market.' + symbol +'.kline.' + this.state.current_line );
@@ -1113,7 +1289,7 @@ class Trade extends Component{
     }
   }
   chooseCate(cate){
-    this.setState({ active_cate: cate });
+    this.setState({ active_cate: cate, active_cate_id: cate.id });
   }
   handleOut(e){
     var div = $('.hover-cate-panel')[0];
@@ -1132,13 +1308,13 @@ class Trade extends Component{
     this.setState({active_child_cate: cate, active_grand_child_cate: {}});
   }
   chooseChildCate(cate){
-    this.setState({ active_child_cate: cate, active_grand_child_cate: {} });
+    this.setState({ active_child_cate: cate, active_grand_child_cate: {}, active_cate_id: cate.id });
   }
   handleGrandChildEnter(cate){
     this.setState({ active_grand_child_cate: cate });
   }
   chooseGrandsonCate(cate){
-    this.setState({ active_grand_child_cate: cate });
+    this.setState({ active_grand_child_cate: cate, active_cate_id: cate.id });
   }
   chooseAttr(attr){
     var { active_attr_arr } = this.state;
@@ -1190,27 +1366,30 @@ class Trade extends Component{
       })
   }
   getCoinListByAttr(){
-    if(!this.state.isOpen){
-      var cate_id = 0, attr = "{}";
-      var { active_cate, active_attr_arr } = this.state;
-      if(active_cate.id){
-        cate_id = active_cate.id;
-      }
-      if(active_attr_arr.length){
-        var attr_arr = active_attr_arr.map( m => {return m.id})
-        attr = "{" + attr_arr.join(',') + "}";
-      }
-      this.props.actions.getCoinListByAttr({ category: cate_id, attr, top: 100})
-        .done( () => {
-          this.setState({isOpen: !this.state.isOpen});
-        })
-        .fail( ({msg}) => {
-          Toast.error( msg || '获取币失败')
-        })
-    }else{
-      this.setState({isOpen: !this.state.isOpen});
+    var cate_id = 0, attr = "{}";
+    var { active_cate, active_attr_arr } = this.state;
+    if(active_cate.id){
+      cate_id = active_cate.id;
     }
-
+    if(active_attr_arr.length){
+      var attr_arr = active_attr_arr.map( m => {return m.id})
+      attr = "{" + attr_arr.join(',') + "}";
+    }
+    this.setState({ get_coin_ing: true })
+    this.props.actions.getCoinListByAttr({ category: cate_id, attr, top: 100, name: this.state.search_ship_name, ico: 0})
+      .done( (data) => {
+        var { state_market_list } = this.state;
+        var { filter_coin_list } = this.props.Trade;
+        var new_coin_list = data.map( m => {
+          var index = state_market_list.findIndex( n => n.commodity_coin === m.commodity_coin);
+          return state_market_list[index];
+        })
+        this.setState({ get_coin_ing: false, filter_market_list: new_coin_list.filter( m => !!m)});
+      })
+      .fail( ({msg}) => {
+        this.setState({ get_coin_ing: false})
+        Toast.error( msg || intl.get('MSG_fail'))
+      })
   }
   clearCate(){
     var str = this.props.Lang.lang == 'en-US' ? 'Hot coins' : '热门虚拟币';
@@ -1227,7 +1406,14 @@ class Trade extends Component{
       this.setState({coin_quene_title: intl.get('categoriestitle') })
     })
   }
-
+  onChangeSearchShipName(e){
+    this.setState({ search_ship_name : e.target.value })
+  }
+  handleEnterKey = (e) => {
+    if(e.keyCode === 13){
+      this.getCoinListByAttr();
+    }
+  }
 }
 
 function mapStateToProps(state){

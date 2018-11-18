@@ -1,7 +1,7 @@
 {
   "balances": "资产",
   "symbol": "简称",
-  "coin": "币种",
+  "coin": "船币",
   "available": "可用",
   "action": "操作",
   "onorders": "冻结",
@@ -11,5 +11,10 @@
   "withdraw": "提现",
   "deposit": "充值",
   "action": "操作",
-  "withdrawaddress": "提币地址"
+  "withdrawaddress": "提币地址",
+  "MSG_creatOrderfail": "订单创建失败",
+  "MSG_depositwarning": "充值金额最少为0.01！",
+  "MSG_paysuccess": "充值成功",
+  "MSG_payfail": "充值失败",
+  "MSG_getDepositAddress": "获取充值地址失败"
 }

@@ -21,6 +21,8 @@ let components = {
   FakeTrade: require('./components/user/fake-trade.js').default,
   UserCharge: require('./components/user/charge.js').default,
   WithdrawAddrManage: require('./components/user/withdraw-address-manage.js').default,
+  paypaltest: require('./components/user/paypaltest.js').default,
+  buytoken: require('./components/buy-token.js').default
 }
 const requireAuth = (nextState, replace) => {
     if (!sessionStorage.getItem('_udata')) {
@@ -45,9 +47,11 @@ const App = () => (
       <Route path="/coin-coin-exchange" getComponent = { get('CoinCoinExchange')}/>
       <Route path="/transaction" onEnter = { requireAuth } getComponent = { get('Transaction')} />
       <Route path="/market" getComponent = { get('Market')} />
-      <Route path="/trade/:coin" getComponent = { get('Trade')} />
+      <Route path="/trade/:coin(/:coinId)" getComponent = { get('Trade')} />
       {/*<Route path="/user/fake-trade" getComponent = { get('FakeTrade') } />*/}
       <Route path="/user/withdraw-address" getComponent= { get('WithdrawAddrManage') } />
+      <Route path="/user/paypaltest" getComponent= { get('paypaltest') } />
+      <Route path="/buytoken/:token/:tokenId" getComponent={get('buytoken')} />
     </Route>
   </Router>
   )

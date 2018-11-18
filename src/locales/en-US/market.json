@@ -1,0 +1,22 @@
+{
+  "tips": "Tips",
+  "investment": "Investment Analysis",
+  "rankings": "Rankings",
+  "news": "News",
+  "token": "Ships",
+  "search": "Go",
+  "searchplaceholder": "search by ship token",
+  "categories": "Categories",
+  "age": "Age",
+  "shipname": "Ship Token",
+  "type": "Type",
+  "total": "Total",
+  "sold": "Sold",
+  "action": "Action",
+  "exchange": "Exchange",
+  "nodata": "NO DATA",
+  "price": "Price",
+  "MSG_getCoinListByAttr": "Fail to get ships list",
+  "notforsale": "Not for sale",
+  "buy": "Buy"
+}

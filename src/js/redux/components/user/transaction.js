@@ -35,7 +35,7 @@ const TransacDetailBody = (props) => {
               <Table.Cell>{m.order_id}</Table.Cell>
               <Table.Cell>{m.match_datetime}</Table.Cell>
               <Table.Cell>
-                <span className="primary-color">{m.trade_pair.replace('USDX', '/USDX')}</span>
+                <span className="primary-color">{m.trade_pair}</span>
               </Table.Cell>
               <Table.Cell>
                 <span className={`${ m.buy_or_sell ? 'color-up' : 'color-down'}`}>{ m.buy_or_sell ? intl.get('buy'): intl.get('sell')}</span>
@@ -97,7 +97,7 @@ class TransacHistoryBody extends Component{
             </span>
           </Table.Cell>
           <Table.Cell>
-            <span className="primary-color">{m.trade_pair.replace('USDX', '/USDX')}</span></Table.Cell>
+            <span className="primary-color">{m.trade_pair}</span></Table.Cell>
           <Table.Cell>{ (m.order_type == 1 || m.order_type == 3) ? intl.get('marketprice') : Number(m.limit_price).toFixed(8)}</Table.Cell>
           <Table.Cell>{ Number(m.quantity).toFixed(8)}</Table.Cell>
           <Table.Cell>{ Number(m.amount).toFixed(8)}</Table.Cell>
@@ -258,7 +258,7 @@ class Transaction extends Component{
                       dateFormat="YYYY-MM-DD HH:mm:ss"
                       timeFormat="HH:mm"
                       placeholderText={intl.get('endDate')}/></div>
-                   <Button onClick={this.search.bind(this)}>{intl.get('search')}</Button>
+                   <Button primary onClick={this.search.bind(this)}>{intl.get('search')}</Button>
                 </div>
                 {
                   order_cate == 3 ?
@@ -361,11 +361,11 @@ class Transaction extends Component{
   withdraw(symbol, order_id){
     this.props.actions.withdraw({ symbol, order_id})
       .done(() => {
-        Toast.success('撤单申请成功！')
+        Toast.success(intl.get('MSG_withdrawok'))
         this.getTransacList(1, this.state.pageno)
       })
-      .fail( (msg) => {
-        Toast.error( msg || '撤单申请失败！')
+      .fail( ({msg}) => {
+        Toast.error( msg || intl.get('MSG_withdrawfail'))
       })
   }
   selectDateChange(key, value){

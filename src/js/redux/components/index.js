@@ -5,39 +5,61 @@ import { Button, Icon, Table }  from 'semantic-ui-react';
 import * as IndexActions from 'actions/index.js';
 import Toast from './common/Toast.js';
 import config from 'config/app.config.js';
+import intl from 'react-intl-universal';
+import { home } from 'locales/index.js';
 
 
 class IndexPage extends Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      sort: 1,
+    }
+  }
   render(){
     var { PageIndex: { market_list }, Lang } = this.props;
+    var { sort } = this.state;
     return (
       <div>
-        <div className="fl-block"  style={{background: "url(images/bg.jpeg) no-repeat center", backgroundSize: '100% 100%'}}>
+        {/*<div className="fl-block"  style={{background: "url(images/bg.jpeg) no-repeat center", backgroundSize: '100% 100%'}}>
           <p className="fl-hd">操作更简单 资金更安全</p>
           <p style={{marginTop: '10px'}}>傻瓜式操作，五种体系保安全</p>
           <Button style={{marginTop: '20px'}} className="default-btn">立即注册</Button>
-        </div>
-        <div className="fl-block  reverse-fl-block" style={{padding: '20px 100px'}}>
+        </div>*/}
+        <div className="fl-block" style={{padding: 0, position: 'relative'}}>
+          <img src="/images/bg.png" width="100%" />
           <div className="coin-market-wrapper">
-            <div className="item item-5"><Button className="default-btn-simple">航运信息</Button></div>
-            <div className="item item-5"><Button className="default-btn-simple">关于我们</Button></div>
-            <div className="item item-5"><Button className="default-btn-simple">新手上路</Button></div>
-            <div className="item item-5"><Button className="default-btn-simple">上币申请</Button></div>
-            <div className="item item-5"><Button className="default-btn-simple">帮助中心</Button></div>
+            <div className="item item-5"><Button>{intl.get('marineinfo')}</Button></div>
+            <div className="item item-5"><Button>{intl.get('aboutus')}</Button></div>
+            <div className="item item-5"><Button>{intl.get('guide')}</Button></div>
+            <div className="item item-5"><Button>{intl.get('publish')}</Button></div>
+            <div className="item item-5"><Button>{intl.get('help')}</Button></div>
           </div>
         </div>
+        <div className="fl-block  reverse-fl-block" style={{padding: '20px 100px'}}>
+        </div>
         <div className="fl-block  reverse-fl-block" style={{padding: '0 100px', marginTop: '30px'}}>
-          <div className="table-title">最新排名</div>
-          <Table>
+          <div className="table-title">{intl.get('rank')}</div>
+          <Table basic="very" className="simple-table">
             <Table.Header>
               <Table.Row>
-                <Table.HeaderCell>排名</Table.HeaderCell>
-                <Table.HeaderCell>名称</Table.HeaderCell>
-                <Table.HeaderCell>最新价</Table.HeaderCell>
-                <Table.HeaderCell>涨幅</Table.HeaderCell>
-                <Table.HeaderCell>日最高价</Table.HeaderCell>
-                <Table.HeaderCell>日最低价</Table.HeaderCell>
-                <Table.HeaderCell>成交量</Table.HeaderCell>
+                <Table.HeaderCell>{intl.get('rank2')}</Table.HeaderCell>
+                <Table.HeaderCell>{intl.get('token')}</Table.HeaderCell>
+                <Table.HeaderCell>{intl.get('price')}({config.CURRENCY})</Table.HeaderCell>
+                <Table.HeaderCell>
+                  <span style={{cursor: 'pointer'}} className={`${ sort == 1 ? 'active' : ''}`} onClick={this.changeSort.bind(this, 1)}>
+                    {intl.get('change')}({config.CURRENCY})
+                    <Icon name="sort" />
+                  </span>
+                </Table.HeaderCell>
+                <Table.HeaderCell>{intl.get('high')}({config.CURRENCY})</Table.HeaderCell>
+                <Table.HeaderCell>{intl.get('low')}({config.CURRENCY})</Table.HeaderCell>
+                <Table.HeaderCell>
+                  <span style={{cursor: 'pointer'}} className={`${ sort == 2 ? 'active' : ''}`} onClick={this.changeSort.bind(this, 2)}>
+                    {intl.get('vol')}({config.CURRENCY})
+                    <Icon name="sort" />
+                  </span>
+                </Table.HeaderCell>
               </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -45,7 +67,18 @@ class IndexPage extends Component{
                 <Table.Cell>{index + 1}</Table.Cell>
                 <Table.Cell>{n.name}</Table.Cell>
                 <Table.Cell>{n.price}</Table.Cell>
-                <Table.Cell>{n.change}</Table.Cell>
+                <Table.Cell>
+                  {
+                    n.change.indexOf('-') < 0 ?
+                    <span className="color-up">
+                    {  '+' + n.change }
+                    </span>
+                    :
+                    <span className="color-down">
+                    {   n.change }
+                    </span>
+                  }
+                </Table.Cell>
                 <Table.Cell>{n.highest}</Table.Cell>
                 <Table.Cell>{n.lowest}</Table.Cell>
                 <Table.Cell>{n.commit}</Table.Cell>
@@ -54,7 +87,7 @@ class IndexPage extends Component{
           </Table>
         </div>
         <div className="fl-block  reverse-fl-block" style={{padding: '20px 100px', marginTop: '30px'}}>
-          <div className="table-title">市场概览</div>
+          <div className="table-title">{intl.get('marketoverview')}</div>
           <div className="chart-wrapper" style={{marginTop: '20px'}}>
             <div className="item" >
               <ul className="coin-name">
@@ -71,10 +104,9 @@ class IndexPage extends Component{
           </div>
         </div>
         <div className="fl-block  reverse-fl-block" style={{padding: '20px 100px', marginTop: '30px'}}>
-          <div className="table-title">船币新闻</div>
+          <div className="table-title">{intl.get('news')}</div>
           <div className="chart-wrapper" style={{marginTop: '20px'}}></div>
         </div>
-        
         {/*<div className="fl-block reverse-fl-block">
           <p className="fl-hd">币种平台严选 可交易数量繁多</p>
           <div className="coin-market-wrapper" style={{marginTop: '30px'}}>
@@ -169,10 +201,31 @@ class IndexPage extends Component{
       )
   }
   componentDidMount(){
-    this.props.actions.getDailyMarket_index({ symbol: config.CURRENCY})
+    this.getDailyMarket(this.state.sort);
+    this.loadLocales(this.props.Lang.lang);
+  }
+  getDailyMarket(sort){
+    this.props.actions.getDailyMarket_index({ symbol: config.CURRENCY, sort })
       .fail( ({msg}) => {
-        Toast.error(msg || '获取行情数据失败', 5000);
+        Toast.error(msg || intl.get('MSG_getDailyMarket'), 5000);
       });
+  }
+  changeSort(sort){
+    if(sort != this.state.sort){
+      this.setState({ sort });
+      this.getDailyMarket(sort);
+    }
+  }
+  componentWillReceiveProps(nextProps){
+    if(this.props.Lang.lang != nextProps.Lang.lang){
+      this.loadLocales(nextProps.Lang.lang);
+    }
+  }
+  loadLocales(lang){
+    intl.init({
+      currentLocale: lang,
+      locales: home
+    })
   }
 
 }

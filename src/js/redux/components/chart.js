@@ -33,7 +33,7 @@ export default class CandleCharts extends Component{
   }
   render() {
     return (
-      <div id="main" style={{ width: '100%', height: '300px' }}>
+      <div id="main" style={{ width: '100%', height: '268px' }}>
     {/*<ReactEcharts option={this.getOption()} />*/}
     </div>
     );

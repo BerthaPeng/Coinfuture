@@ -10,5 +10,11 @@
   "get_sms": "Send",
   "retry": "Retry",
   "retryafter": "Retry after ",
-  "agreement_txt": "I have read and argree with"
+  "agreement_txt": "I have read and argree with",
+  "invalidcaptcha": "Invalid captcha",
+  "invalidphone": "Invalid phone number",
+  "pwdrequired": "Password must be at least 8 characters, with letters and numbers.",
+  "differentpwd": "The two passwords are different. Please re-enter passwords.",
+  "registerok": "Sign up successfully, please log in",
+  "sendcaptchafirst": "Please send captcha first"
 }

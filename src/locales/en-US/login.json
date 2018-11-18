@@ -1,6 +1,9 @@
 {
-  "title": "Login in with WABI account",
+  "title": "Login in",
+  "account_placeholder": "Phone or Email",
+  "pwd_placeholder": "Password",
   "btn_txt": "Log In",
   "register_guide": "Not registered yet? ",
-  "register_btn_txt": "Sign Up"
+  "register_btn_txt": "Sign Up",
+  "loginfail": "Invalid username or password"
 }

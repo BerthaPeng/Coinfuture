@@ -4,5 +4,8 @@
   "sell": "Sell",
   "balances": "Balances",
   "orders": "Orders",
-  "simulatedtrading": "Simulated trading"
+  "simulatedtrading": "Simulated trading",
+  "openorders": "Open Orders",
+  "orderhistory": "Order History",
+  "transactionhistory": "Transaction History"
 }

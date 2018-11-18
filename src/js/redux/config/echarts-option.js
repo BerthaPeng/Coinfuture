@@ -1,5 +1,5 @@
 var setting =  {
-  backgroundColor: '#000000',  
+  backgroundColor: '#ffffff',  
   tooltip: { //提示框
           trigger: 'axis', //触发类型：坐标轴触发
           axisPointer: { //坐标轴指示器配置项 
@@ -29,7 +29,7 @@ var setting =  {
       x: 20, //grid组件离容器左侧的距离
       y: 40,
       x2: 60,
-      y2: 65,
+      y2: 70,
        //backgroundColor:'#ccc'  
   },
   xAxis: {  
@@ -40,14 +40,14 @@ var setting =  {
     axisLine: {
       onZero: false,
       lineStyle: {
-        color: '#404040',
+        color: 'rgb(102, 102, 102)',
         width: '1',
       }
     },
     axisLabel: {
       interval: 4,
       textStyle: {
-        color: 'hsla(0,0%,100%,.3)'
+        color: 'rgb(102, 102, 102)'
       }
     },
     splitLine: {
@@ -69,14 +69,14 @@ var setting =  {
     },
     axisLine: {
       lineStyle: {
-        color: '#404040',
+        color: 'rgb(102, 102, 102)',
         width: '1'
       } 
     },
     axisLabel: {
       interval: 4,
       textStyle: {
-        color: 'hsla(0,0%,100%,.3)',
+        color: 'rgb(102, 102, 102)',
       }
     },
   },
@@ -89,10 +89,10 @@ var setting =  {
     {   
       show: true,
       type: 'slider', //滑动条型数据区域缩放组件
-      y: '90%',
+      y: '85%',
       start: 50,
       end: 100,
-      borderColor:"#404040"
+      /*borderColor:"rgb(102, 102, 102)"*/
   }],
   series: [{ //图表类型
     name: 'K线',
@@ -106,7 +106,7 @@ var setting =  {
         borderColor: '#ee6560',
         borderColor0: '#4db872',
         lineStyle: {
-          width: 2,
+          width: 1,
           color: '#ee6560',
           color0: '#4db872', //阴线边框颜色
         }

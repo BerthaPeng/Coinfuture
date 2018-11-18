@@ -1,6 +1,6 @@
 .header
-  color: #303133
-  background-color: rgba(255, 255, 255, .6)
+  color: #fff
+  background-color: #0d1319
   height: 50px
   width: 100vw
   display: -webkit-box
@@ -14,10 +14,13 @@
   z-index: 1000
   box-shadow: 0 4px 8px 0 rgba(0,0,0,.1)
   .logo
-    color: $theme-primary-color
-    min-width: 150px;
+    color: #fff
+    min-width: 250px;
+    font-size: 16px;
   .social-nav
     margin-right: 25px
+    a
+      color: hsla(0,0%,100%,.65)
   .ui.login-btn,.ui.register-btn
     font-family: Nexa-Book;
     border-radius: 18px;
@@ -37,24 +40,21 @@
 .nav
   display: flex
   margin-right: auto
-  margin-left: 200px
+  margin-left: 150px
   font-size: 14px
   >a
-    color: $font-color
+    color: hsla(0,0%,100%,.65)
     white-space: nowrap
     &:hover
-      color: $theme-primary-color
+      color: #f4911a
       div
         line-height: 48px
-        border-bottom: 2px solid $theme-primary-color
     div
       margin-right: 72px
       line-height: 48px
-      border-bottom: 2px solid rgba(255,255,255, .6)
   >a.active
     div
-      color: $theme-primary-color
-      border-bottom: 2px solid $theme-primary-color
+      color: #f4911a
 .lang-box
   margin-right: 20px;
 .lang-box ul li
@@ -62,7 +62,7 @@
     list-style: none;
     margin-right: 3px
     a
-      color: rgba(99,75,63,.6);
+      color: hsla(0,0%,100%,.65);
       padding: 4px;
       background-color: $theme-default-color;
       border-radius: 50%;
@@ -73,5 +73,5 @@
       height: 25px;
       text-align: center;
 .lang-box ul li.current-lang a
-    background-color: $theme-primary-color;
+    background-color: #f4911a;
     color: #fff

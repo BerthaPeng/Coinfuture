@@ -32,14 +32,15 @@ class Header extends Component{
         </div>*/}
         <Link to="/">
           <div className="logo" style={{ marginLeft: '15px'}}>
-            <img src="images/logo.png" width="40" height="40" style={{verticalAlign: 'middle'}} />
+            <img src="images/logo-white.png" width="40" height="40" style={{verticalAlign: 'middle'}} />
              {'　' + intl.get('sitename')}
             {/*<img src="http://fakeimg.pl/60x30?text=logo" width="60" height="30" />*/}
           </div>
         </Link>
         <div className="nav">
-          <Link to="/market" activeClassName="active"><div>{intl.get('market')}</div></Link>
-          <Link to="/trade/default" activeClassName="active"><div>{intl.get('exchange_a')}</div></Link>
+          <Link onClick={this.clickLink.bind(this, 'home')} to="/" activeClassName={`${ path_url == 'home' ? 'active' : ''}`}><div>{intl.get('home')}</div></Link>
+          <Link onClick={this.clickLink.bind(this,'market')} to="/market" activeClassName={`${ path_url == 'market' ? 'active' : ''}`}><div>{intl.get('market')}</div></Link>
+          <Link onClick={this.clickLink.bind(this,'trade')} to="/trade/default" activeClassName={`${ path_url == 'trade' ? 'active' : ''}`}><div>{intl.get('exchange_a')}</div></Link>
           {/*<Link to=""><div>{intl.get('balances')}</div></Link>*/}
           {/*<Link to=""><div>帮助</div></Link>*/}
           {/*<Link to="/coin-coin-exchange"><div>下单</div></Link>*/}
@@ -63,8 +64,8 @@ class Header extends Component{
           </div>
           :
           <div className = "social-nav">
-            <Link to='/login'><Button className="login-btn" size="tiny">{intl.get('login')}</Button></Link>
-            <Link to='/register'><Button className="register-btn" size="tiny">{intl.get('signup')}</Button></Link>
+            <Link to='/login'><div style={{display: 'inline-block', marginRight: '30px'}}>{intl.get('login')}</div></Link>
+            <Link to='/register'><div style={{display: 'inline-block', marginRight: '10px'}}>{intl.get('signup')}</div></Link>
             {/*<Dropdown text='中文-CH' options={options} />*/}
           </div>
         }
@@ -83,6 +84,8 @@ class Header extends Component{
       this.setState({ path_url: 'market'})
     }else if( url.indexOf('trade') > -1){
       this.setState({path_url: 'trade'})
+    }else if( url.charAt(url.length - 1) == '/'){
+      this.setState({ path_url: 'home'})
     }
     if(sessionStorage.getItem('_udata')){
       var uname=sessionStorage.getItem('_udata_name')
@@ -96,6 +99,9 @@ class Header extends Component{
     if(this.props.Lang.lang != nextProps.Lang.lang){
       this.loadLocales(nextProps.Lang.lang);
     }
+  }
+  clickLink(e){
+    this.setState({path_url: e});
   }
   logout(){
     this.props.actions.logout({})

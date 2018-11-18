@@ -84,7 +84,7 @@ class Register extends Component{
                           style={{width: '100%'}}
                           error={telError}/>
                       }
-                      content="手机号输入有误"
+                      content={intl.get('invalidphone')}
                       open={ popupError == 'tel'}
                       position='top right'
                     />
@@ -98,7 +98,7 @@ class Register extends Component{
                       onChange={this.handleInputChange.bind(this)}
                       error={captchaError} />
                     }
-                    content="验证码无效"
+                    content={intl.get('invalidcaptcha')}
                     open={ popupError == 'captcha'}
                     position='top right'
                   />
@@ -131,7 +131,7 @@ class Register extends Component{
                     onBlur={this.onPwdBlur.bind(this)}
                     error={pwdError}/>
                 }
-                content="密码需要包含字母与数字，至少8个字符"
+                content={intl.get('pwdrequired')}
                 open={ popupError == 'pwd'}
                 position="top right"
               />
@@ -142,7 +142,7 @@ class Register extends Component{
                     onBlur={this.onConfirmpwdBlur.bind(this)}
                     error={confirmpwdError}/>
                 }
-                content="两次密码不一致"
+                content={intl.get('differentpwd')}
                 open={ popupError == 'confirmpwd'}
                 position="top right"
               />
@@ -230,7 +230,7 @@ class Register extends Component{
     var { send_captcha_status } = this.props.Register;
     var valid = true;
     if(send_captcha_status === 'primary'){
-      Toast.warning('请先发送验证码！');
+      Toast.warning(intl.get('sendcaptchafirst'));
       valid = false;
     }
     if(!UserCommon.telValidator(tel)){
@@ -258,7 +258,7 @@ class Register extends Component{
       this.props.actions.register({ mobile_num: tel, country_code: country,
         verificode: Number(captcha), pw:  pwd})
         .done( (msg) => {
-          Toast.success('注册成功，请登录')
+          Toast.success(intl.get('registerok'))
           history.push('/login')
         })
         .fail( ({msg}) => {

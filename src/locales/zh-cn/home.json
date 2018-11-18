@@ -1,0 +1,19 @@
+{
+  "rank": "最新排名",
+  "marineinfo": "航运信息",
+  "aboutus": "关于我们",
+  "help": "帮助中心",
+  "publish": "上币申请",
+  "guide": "新手上路",
+  "change": "24H涨跌幅",
+  "low": "24H最低",
+  "high": "24H最高",
+  "vol": "24H成交量",
+  "action": "操作",
+  "price": "最新价",
+  "rank2": "排名",
+  "token": "船币",
+  "news": "船币新闻",
+  "marketoverview": "市场概览",
+  "MSG_getDailyMarket": "获取行情数据失败"
+}

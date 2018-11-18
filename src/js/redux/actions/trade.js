@@ -191,3 +191,14 @@ export function triggerOpenCate(data){
   }
 }
 
+//获取币的详细信息
+export const GET_COIN_INFO = 'GET_COIN_INFO';
+export function getCoinInfo(params){
+  return dispatch => {
+    return post(202001, params)
+      .done(data => {
+        dispatch({ type: GET_COIN_INFO, data});
+      })
+  }
+}
+

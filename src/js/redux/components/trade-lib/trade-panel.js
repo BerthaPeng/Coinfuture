@@ -21,17 +21,18 @@ class TradePanel extends Component{
     }
   }
   handlePanelInputChange = (e, { name, value }) => {
+    var { price_decimal, quantity_decimal } = this.props.props;
     if(/^[0-9]+.?[0-9]*$/.test(value) || value == ''){
       var { current_price, buy_price } = this.state;
       var { panel_type } = this.props;
-      //控制输入金额保留8位小数，数量4位小数
+      //控制输入金额保留price_decimal位小数，数量quantity_decimal位小数
       var valueStrArr = value.split('.');
       if(name === 'buy_amount' || name === 'buy_price' || name === 'sell_price'){
-        if(valueStrArr.length < 2 ||valueStrArr.length == 2 && valueStrArr[1].length <= 2){
+        if(valueStrArr.length < 2 ||valueStrArr.length == 2 && valueStrArr[1].length <= price_decimal){
           this.setState({ [name] :value});
         }
       }else if(name === 'buy_count' || name === 'sell_count'){
-        if(valueStrArr.length < 2 || valueStrArr.length == 2 && valueStrArr[1].length <= 4){
+        if(valueStrArr.length < 2 || valueStrArr.length == 2 && valueStrArr[1].length <= quantity_decimal){
           this.setState({ [name] :value});
         }
       }else{
@@ -39,18 +40,18 @@ class TradePanel extends Component{
       }
       if(name === 'buy_amount'){
         var buy_count = panel_type == 'limit' ? value / buy_price || 0 : value / current_price || 0;
-        this.setState({ buy_count: buy_count.toFixed(4)})
+        this.setState({ buy_count: buy_count.toFixed(price_decimal)})
       }else if(name == 'buy_count'){
         var buy_amount = panel_type == 'limit' ? (value * buy_price) : (current_price * buy_price);
-        this.setState({ buy_amount : buy_amount.toFixed(2)});
+        this.setState({ buy_amount : buy_amount.toFixed(quantity_decimal)});
       }
     }
   }
   render(){
-    var { coin, exchange_available, market, coin_type, login, buy_submit_ing, sell_submit_ing ,
+    var { coin, coin_name, exchange_available, market, coin_type, login, buy_submit_ing, sell_submit_ing ,
       submit_msg,
       submit_status,
-      actions, current_price, currency_available, active_coin_available } = this.props.props;
+      actions, current_price, currency_available, active_coin_available, price_decimal, quantity_decimal  } = this.props.props;
     var { buy_price, buy_count, sell_count, sell_price, buy_amount } = this.state;
     var { panel_type } = this.props;
     actions = {}
@@ -60,11 +61,11 @@ class TradePanel extends Component{
     coin_type = "USDX"
     return(
       <Tab.Pane attached={false} className="fl-trade-panel">
-         <Grid style={{paddingBottom: '20px'}}>
+         <Grid style={{paddingBottom: '20px', height: '339px'}}>
            <Column width={8} style={{borderRight: '1px solid #eee'}}>
              <div className="wrapper">
              <div className="trade-panel-header">
-               <p>{intl.get('tradebuy')}　{coin}</p>
+               <p>{intl.get('tradebuy')}　{coin_name}</p>
              </div>
               <TipSelector value={pay_coin} placeholder={intl.get('paycoin')} />
              {/*<Dropdown value={pay_coin} placeholder="选择支付币种" fluid selection options={exchange_available.map( m =>({text: m, value: m}))}/>*/}
@@ -107,13 +108,11 @@ class TradePanel extends Component{
                  />
              }
             <Input
-              label={{ basic: true, content: coin }}
-              labelPosition='right'
               name="buy_count"
               value={ buy_count }
               onChange={this.handlePanelInputChange}
               style={{marginTop: '10px', width: '100%'}}
-              placeholder={intl.get('tradebuysum')}
+              placeholder={intl.get('tradebuysum')  + ' ' + coin_name}
               />
              {/*<p style={{width: '100%'}} className="light-grey-color">
               <span style={{display: 'inline-block', float: 'left'}}>实际买入量</span>
@@ -131,7 +130,7 @@ class TradePanel extends Component{
            <Column width={8}>
             <div className="wrapper">
               <div className="trade-panel-header">
-                <p>{intl.get('tradesell')}　{coin}</p>
+                <p>{intl.get('tradesell')}　{coin_name}</p>
               </div>
               <p style={{textAlign: 'left', width: '100%', marginBottom: '10px', fontSize: '10px'}}>{coin} {intl.get('availableSum')}：{ Number(active_coin_available) || 0}</p>
               {
@@ -155,13 +154,11 @@ class TradePanel extends Component{
                   />
               }
               <Input
-                label={{ basic: true, content: coin }}
-                labelPosition='right'
                 autoComplete="off"
                 name="sell_count"
                 value={ sell_count }
                 onChange={ this.handlePanelInputChange }
-                placeholder={intl.get('tradesellsum')}
+                placeholder={intl.get('tradesellsum') + ' ' + coin_name}
                 style={{width: '100%', marginBottom: '10px', marginTop: '10px'}}
                 />
               <TipSelector className="select-coin"  value={pay_coin} placeholder={intl.get('targetcoin')} onChange={this.onTradeCoinTypeChange.bind(this)} />
@@ -206,6 +203,7 @@ class TradePanel extends Component{
           sell_price, sell_count,
           trade_type, market: pay_coin, coin_type: coin})
       .done( () => {
+        this.props.props.actions.getUserCoinList();
         this.setState({
           sell_price: '',
           sell_count: '',

@@ -10,9 +10,21 @@ const footerEn = require('./en-us/footer.json');
 const footerCn = require('./zh-cn/footer.json');
 const footer = { 'en-US': footerEn, 'zh-CN': footerCn };
 
+const homeEn = require('./en-us/home.json');
+const homeCn = require('./zh-cn/home.json');
+const home = { 'en-US': {...footerEn, ...headerEn, ...commonEn, ...homeEn }, 'zh-CN': {...footerCn, ...headerCn, ...commonCn, ...homeCn } };
+
 const balancesTableEn = require('./en-us/balances-table.json');
 const balancesTableCn = require('./zh-cn/balances-table.json');
 const balancesTable = { 'en-US': balancesTableEn, 'zh-CN': balancesTableCn };
+
+const marketEn = require('./en-us/market.json');
+const marketCn = require('./zh-cn/market.json');
+const market = { 'en-US': {...footerEn, ...headerEn, ...commonEn, ...marketEn }, 'zh-CN': {...footerCn, ...headerCn, ...commonCn, ...marketCn } };
+
+const buyTokenEn = require('./en-us/buy-token.json');
+const buyTokenCn = require('./zh-cn/buy-token.json');
+const buyToken = { 'en-US': {...footerEn, ...headerEn, ...commonEn, ...buyTokenEn }, 'zh-CN': {...footerCn, ...headerCn, ...commonCn, ...buyTokenCn } };
 
 const coinEn = require('./en-us/coin-coin-exchange.json');
 const coinCn = require('./zh-cn/coin-coin-exchange.json');
@@ -49,4 +61,7 @@ export {
   register,
   orders,
   trade,
+  home,
+  market,
+  buyToken
 }

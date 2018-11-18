@@ -24,7 +24,7 @@ export default class ExpandTable extends Component{
           <dt>{intl.get('coin')}</dt>
           <dt>{intl.get('available')}</dt>
           <dt>{intl.get('onorders')}</dt>
-          <dt>{intl.get('action')}</dt>
+          {/*<dt>{intl.get('action')}</dt>*/}
         </dl>
         <div id="table_list">
           <div className="">
@@ -37,10 +37,10 @@ export default class ExpandTable extends Component{
                     {Number(m.balance) || '0.00000000'}
                   </dd>
                   <dd></dd>
-                  <dd>
+                  {/*<dd>
                     <span className="primary-color action-btn" onClick={this.deposit.bind(this, m.coin_id)}>{intl.get('deposit')}</span>
                     <span className="primary-color action-btn" onClick={this.withdraw.bind(this, m.coin_id)}>{intl.get('withdraw')}</span>
-                  </dd>
+                  </dd>*/}
                   {
                     active_coin == m.coin_id ?
                     <div className="action-box">

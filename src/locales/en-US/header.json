@@ -1,4 +1,5 @@
 {
+  "home": "HOME",
   "market": "MARKET",
   "otc": "OTC",
   "exchange_a": "EXCHANGE",
@@ -7,8 +8,8 @@
   "balances": "Balances",
   "orders": "Orders",
   "logout": "Log Out",
-  "zh": "ZH",
+  "zh": "中",
   "en": "EN",
   "sitename": "Marine Digital Republic",
-  "companyname": "Marine Digital Republic Limited",
+  "companyname": "Marine Digital Republic Limited"
 }

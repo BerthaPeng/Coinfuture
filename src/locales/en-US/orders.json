@@ -27,5 +27,8 @@
   "search": "Go",
   "marketprice": "Market Price",
   "buy": "Buy",
-  "sell": "Sell"
+  "sell": "Sell",
+  "logintips": "Log in and see more",
+  "MSG_withdrawok": "Withdraw successfully",
+  "MSG_withdrawfail": "Fail to withdraw"
 }

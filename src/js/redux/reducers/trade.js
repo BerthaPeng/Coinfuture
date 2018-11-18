@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import * as Actions from 'actions/trade.js';
-import { timestampToTime, timestampToDate } from 'utils/utils.js';
+import { timestampToTime, timestampToDate, dateFormat } from 'utils/utils.js';
 import marketData from 'config/market-data.js';
 import { Lang } from './lang.js';
 import config from 'config/app.config.js';
@@ -24,6 +24,8 @@ var initial_state = {
     price_decimal: 4,
     quantity_decimal: 4,
   },
+  coin_info_arr: [],
+  coin_info: {},
   isFake: false,
 }
 
@@ -86,13 +88,14 @@ function Trade(state = initial_state, action){
         if(selectedIndex > -1){
           h = {
             ...h,
+            name_en: h.commodity_symbol.replace(/_/g, ' '),
             name: daily[selectedIndex].s,
-            price: Number(daily[selectedIndex].c).toFixed( h.price_decimal),
-            change: daily[selectedIndex].cg,
-            highest: Number(daily[selectedIndex].h).toFixed(h.price_decimal),
-            lowest: Number(daily[selectedIndex].l).toFixed(h.price_decimal),
-            commit: Number(daily[selectedIndex].a).toFixed(h.price_decimal),
-            changeMoney: Number(daily[selectedIndex].c).toFixed(h.price_decimal),
+            price:  daily[selectedIndex].c ? Number(daily[selectedIndex].c).toFixed( h.price_decimal) : '/',
+            change: daily[selectedIndex].cg ? daily[selectedIndex].cg : '/',
+            highest: daily[selectedIndex].h ? Number(daily[selectedIndex].h).toFixed(h.price_decimal) : '/',
+            lowest: daily[selectedIndex].l ? Number(daily[selectedIndex].l).toFixed(h.price_decimal) : '/',
+            commit: daily[selectedIndex].a ? Number(daily[selectedIndex].a).toFixed(h.price_decimal) : '/',
+            changeMoney: daily[selectedIndex].cg ? daily[selectedIndex].cg: '/',
           }
           if(daily[selectedIndex].cg.indexOf('-') != -1){
             h.direction = 'down'
@@ -217,6 +220,32 @@ function Trade(state = initial_state, action){
       return { ...state, coin_list: action.data};break;
     case Actions.GET_COIN_LIST_BY_ATTR:
       return { ...state, filter_coin_list: action.data};break;
+    case Actions.GET_COIN_INFO:
+      var { data } = action;
+      var coin_info_arr = [];
+      if(data.length){
+        for(var  key in data[0]){
+          if(key != 'url' && key != 'id' && key != 'name' && key != 'price_evaluation'){
+            var keyForm = key.replace('_', ' ');
+            if(key == 'built'){
+              keyForm = 'year of build'
+            }else if(key=='loa' || key == 'breadth' || key == 'draft' || key == 'lbp'
+              || key == 'depth'){
+              keyForm = key + '(m)'
+            }else if( key == 'me'){
+              keyForm = 'main engine'
+            }else if( key == 'service_speed'){
+              keyForm = 'service speed(knots)'
+            }else if(key == 'consumption'){
+              keyForm = 'consumption(ton/day)'
+            }else if(key == 'teux'){
+              keyForm = 'teu x 14 tons'
+            }
+            coin_info_arr.push({key: keyForm, value: data[0][key]})
+          }
+        }
+      }
+      return { ...state, coin_info_arr, coin_info: data[0]};break;
     default:
       return state;break;
   }

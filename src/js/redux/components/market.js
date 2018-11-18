@@ -8,6 +8,11 @@ import * as MarketActions from 'actions/market.js';
 import RadioGroup from './common/radio-group';
 import RadioButton from './common/radio-button';
 
+import Toast from './common/Toast.js';
+
+import intl from 'react-intl-universal';
+import { market } from 'locales/index.js';
+
 
 class CatePanel extends Component{
   constructor(props){
@@ -17,20 +22,35 @@ class CatePanel extends Component{
       active_child_cate: {},
       active_grand_child_cate: {},
       active_attr_arr: [],
+      filter_name: '',
     }
   }
   render(){
     var { coin_cate_list, coin_attr_list, Lang: {lang}, active_cate, active_child_cate, active_grand_child_cate,
-     active_attr_arr, filter_coin_list } = this.props;
-     var { active_attr_arr, active_cate, active_child_cate, active_grand_child_cate } = this.state;
-    const options = [{ key: 1, text: '按币名（船名）排序', value: 1 }, { key: 2, text: '按船型排序', value: 2 }];
+     active_attr_arr, filter_coin_list, login } = this.props;
+     var { active_attr_arr, active_cate, active_child_cate, active_grand_child_cate, filter_name } = this.state;
     return (
-      <div className="filter-block" style={{margin: 'auto'}}>
+      <div className="filter-block" style={{margin: 'auto', padding: 0}}>
+        <div className="search-block">
+          <div className="table-title" style={{border: 'none'}}>
+            {intl.get('token')}
+            <Input size="mini" style={{fontSize: '12px', float: 'right'}} iconPosition='right' placeholder={intl.get('searchplaceholder')} action>
+              <input value={filter_name} onChange={this.onNameChange.bind(this)} />
+              <Button size="mini" type='submit' primary  onClick={this.getCoinListByAttr.bind(this)} >{intl.get('search')}</Button>
+            </Input>
+            {/*<Input size="mini" style={{fontSize: '12px', float: 'right'}} icon={<Icon style={{cursor: 'pointer'}} name='search' onClick={this.getCoinListByAttr.bind(this)} />} placeholder='输入想查找的币种' />*/}
+          </div>
+          {/*<div style={{float: 'left', paddingBottom: '10px'}}>
+            <label>排序方式　</label>
+            <Dropdown text="按船名" options={options} />
+          </div>*/}
+          <div style={{clear: 'both'}}></div>
+        </div>
         <div className="attrs">
           <div className="cateAttrs">
             <div className="attr">
               <div className="attrKey">
-                <span>分类</span>
+                <span>{intl.get('categories')}</span>
               </div>
               <div className="attrValues">
                 <ul>
@@ -79,7 +99,7 @@ class CatePanel extends Component{
             {
               coin_attr_list.map( attr => (<div className="attr" key={'attr-parent-' + attr.id}>
                   <div className="attrKey">
-                    <span>{ attr.descrpt_en }</span>
+                    <span>{ lang=='en-US' ? attr.descrpt_en : attr.descrpt_ch }</span>
                   </div>
                   <div className="attrValues">
                     <ul>
@@ -99,45 +119,63 @@ class CatePanel extends Component{
           </div>
         </div>
 
-        <div className="search-block">
-          {/*<div className="filter">
-            <div className="fl-form-item">
-            </div>
-          </div>*/}
-          <Input iconPosition='right' placeholder='输入想查找的币种' action>
-            <input />
-            <Button type='submit'  onClick={this.getCoinListByAttr.bind(this)} >搜索</Button>
-          </Input>
-          {/*<Input size="small" icon='search' placeholder='输入想查找的币种' style={{float: 'right',marginBottom: '10px'}} />*/}
-          {/*<Button size="mini" icon onClick={this.getCoinListByAttr.bind(this)}>搜索
-            <Icon name="search" />
-          </Button>*/}
-        </div>
         <div className="table-container" style={{width: '100%'}}>
-          <div style={{float: 'left', paddingBottom: '10px'}}>
-            <label>排序方式　</label>
-            <Dropdown text="按船名" options={options} />
-          </div>
-          <Table basic className="market-table">
+          <Table basic="very" className="simple-table">
             <Table.Header>
               <Table.Row>
-                <Table.HeaderCell>船名</Table.HeaderCell>
-                <Table.HeaderCell>船型</Table.HeaderCell>
-                <Table.HeaderCell>操作</Table.HeaderCell>
+                <Table.HeaderCell>{intl.get('shipname')}</Table.HeaderCell>
+                <Table.HeaderCell>{intl.get('type')}</Table.HeaderCell>
+                <Table.HeaderCell>{intl.get('total')}</Table.HeaderCell>
+                <Table.HeaderCell>{intl.get('sold')}</Table.HeaderCell>
+                <Table.HeaderCell>{intl.get('price')}</Table.HeaderCell>
+                <Table.HeaderCell>{intl.get('action')}</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
             <Table.Body>
               {
                 filter_coin_list.map( m => <Table.Row>
-                  <Table.Cell><Link to={'/trade/' + m.commodity_symbol}>{m.commodity_symbol}</Link></Table.Cell>
-                  <Table.Cell>{m.name_en}</Table.Cell>
+                  <Table.Cell><Link to={'/trade/' + m.commodity_symbol + '/' + m.commodity_coin}>
+                    <span style={{color: '#254d87'}}>{m.name_en}</span>
+                    </Link></Table.Cell>
                   <Table.Cell>
-                    <Button className="action-btn" primary content="去交易" size="mini" />
+                    {
+                      (m.cate_chain || []).map( n => <div><div className="attr-tag" key={n.descrpt_en}>{n.descrpt_en}</div></div>)
+                    }
+                  </Table.Cell>
+                  <Table.Cell>{m.total_supply}</Table.Cell>
+                  <Table.Cell>{m.total_in_market}</Table.Cell>
+                  <Table.Cell>
+                    {
+                      m.pub_status == 3 ?
+                      <div>{m.ico_price}</div>
+                      :
+                      <div className="unavailable-btn">{intl.get('notforsale')}</div>
+                    }
+                  </Table.Cell>
+                  <Table.Cell>
+                    <Link to={'/trade/' + m.commodity_symbol + '/' + m.commodity_coin}>
+                      <Button className="action-btn" primary content={intl.get('exchange')} size="mini" />
+                    </Link>
+                    {
+                      m.pub_status == 3 ?
+                      <Link to={ login ? '/buytoken/' + m.name_en + '/' + m.commodity_coin : '/login'}>
+                        <Button className="action-btn" primary content={intl.get('buy')} size="mini" />
+                      </Link>
+                      :null
+                    }
                   </Table.Cell>
                 </Table.Row>)
               }
             </Table.Body>
           </Table>
+          {
+            filter_coin_list.length == 0 ?
+            <div style={{textAlign: 'center', color: '#bfbfbf', fontSize: '16px', padding: '20px 0', marginBottom: '50px'}}>
+              <img src="/images/ship.png" />
+              <p>{intl.get('nodata')}……</p>
+            </div>
+            :null
+          }
 
         </div>
           {/*<div className="boats">
@@ -155,13 +193,28 @@ class CatePanel extends Component{
 
   }
   chooseCate(cate){
-    this.setState({ active_cate: cate, active_child_cate: {} });
+    if(this.state.active_cate.id == cate.id){
+      cate = {}
+    }
+    this.setState({ active_cate: cate, active_child_cate: {} }, () => {
+      this.getCoinListByAttr();
+    });
   }
   chooseChildCate(cate){
-    this.setState({ active_child_cate: cate, active_grand_child_cate: {} });
+    if(this.state.active_child_cate.id == cate.id){
+      cate = {}
+    }
+    this.setState({ active_child_cate: cate, active_grand_child_cate: {} }, () => {
+      this.getCoinListByAttr();
+    });
   }
   chooseGrandsonCate(cate){
-    this.setState({ active_grand_child_cate: cate });
+    if(this.state.active_grand_child_cate.id == cate.id){
+      cate = {}
+    }
+    this.setState({ active_grand_child_cate: cate }, () => {
+      this.getCoinListByAttr();
+    });
   }
   chooseAttr(attr){
     var { active_attr_arr } = this.state;
@@ -179,7 +232,7 @@ class CatePanel extends Component{
   }
   getCoinListByAttr(){
     var cate_id = 0, attr = "{}";
-    var { active_cate, active_child_cate, active_grand_child_cate, active_attr_arr } = this.state;
+    var { active_cate, active_child_cate, active_grand_child_cate, active_attr_arr, filter_name } = this.state;
     if(active_cate.id){
       cate_id = active_cate.id;
     }
@@ -193,18 +246,24 @@ class CatePanel extends Component{
       var attr_arr = active_attr_arr.map( m => {return m.id})
       attr = "{" + attr_arr.join(',') + "}";
     }
-    this.props.getCoinListByAttr({ category: cate_id, attr, top: 100})
+    this.props.getCoinListByAttr({ category: cate_id, attr, top: 100, name: filter_name, ico: 0})
   }
-
+  onNameChange(e){
+    this.setState({ filter_name: e.target.value})
+  }
 }
 
 class Market extends Component{
   constructor(props){
     super(props);
     this.getCoinListByAttr = this.getCoinListByAttr.bind(this);
+    this.state = {
+      login: false,
+    }
   }
   render(){
     var { getCoinListByAttr } = this;
+    var { login } = this.state;
     var { Market: { coin_cate_list, coin_attr_list, filter_coin_list }, Lang } = this.props;
     return (
       <div>
@@ -213,101 +272,20 @@ class Market extends Component{
         <div style={{background: '#00Bfff'}}>
           <p style={{textAlign: 'center', color: '#fff', padding: '10px 0px'}}>5月热门数字币投资分析</p>
         </div>*/}
-        <div className="fl-block"  style={{background: "url(images/bg.jpeg) no-repeat center", backgroundSize: '100% 100%'}}>
-        </div>
-        <div className="fl-block  reverse-fl-block" style={{padding: '20px 100px'}}>
+        <div className="fl-block" style={{padding: 0, position: 'relative'}}>
+          <img src="/images/bg.png" width="100%" />
           <div className="coin-market-wrapper">
-            <div className="item item-4"><Button className="default-btn-simple">币圈小常识</Button></div>
-            <div className="item item-4"><Button className="default-btn-simple">投资分析</Button></div>
-            <div className="item item-4"><Button className="default-btn-simple">排行榜</Button></div>
-            <div className="item item-4"><Button className="default-btn-simple">币圈动态</Button></div>
+            <div className="item item-4"><Button>{intl.get('tips')}</Button></div>
+            <div className="item item-4"><Button>{intl.get('investment')}</Button></div>
+            <div className="item item-4"><Button>{intl.get('rankings')}</Button></div>
+            <div className="item item-4"><Button>{intl.get('news')}</Button></div>
           </div>
         </div>
-        <div className="fl-block reverse-fl-block">
-          <div className="header-container">
-            <div className="item-3"></div>
-            <div className="item-3">
-              <RadioGroup>
-                <RadioButton label="我的收藏"></RadioButton>
-                <RadioButton label="全部币种"></RadioButton>
-              </RadioGroup>
-            </div>
-            <div className="item-3">
-            </div>
-          </div>
+        <div className="fl-block reverse-fl-block" style={{padding: 0}}>
           <div className="table-container">
-            <div className="fl-block reverse-fl-block">
-              <CatePanel { ...{ coin_attr_list, coin_cate_list, Lang, filter_coin_list, getCoinListByAttr }} />
+            <div className="fl-block reverse-fl-block"  style={{padding: 0}}>
+              <CatePanel { ...{ coin_attr_list, coin_cate_list, Lang, filter_coin_list, getCoinListByAttr, login }} />
             </div>
-            {/*<Table basic className="market-table">
-              <Table.Header>
-                <Table.Row>
-                  <Table.HeaderCell></Table.HeaderCell>
-                  <Table.HeaderCell>排名</Table.HeaderCell>
-                  <Table.HeaderCell>名称</Table.HeaderCell>
-                  <Table.HeaderCell>最新价（元）</Table.HeaderCell>
-                  <Table.HeaderCell>24h涨跌幅</Table.HeaderCell>
-                  <Table.HeaderCell>日最高价（元）</Table.HeaderCell>
-                  <Table.HeaderCell>日最低价（元）</Table.HeaderCell>
-                  <Table.HeaderCell>成交量（RMB）</Table.HeaderCell>
-                  <Table.HeaderCell>支付方式</Table.HeaderCell>
-                  <Table.HeaderCell>操作</Table.HeaderCell>
-                </Table.Row>
-              </Table.Header>
-              <Table.Body>
-                <Table.Row>
-                  <Table.Cell><Icon name="star outline"/></Table.Cell>
-                  <Table.Cell>1</Table.Cell>
-                  <Table.Cell>BTC比特币</Table.Cell>
-                  <Table.Cell>10,042.1</Table.Cell>
-                  <Table.Cell>+4.5%</Table.Cell>
-                  <Table.Cell>10,042.1</Table.Cell>
-                  <Table.Cell>10,042.1</Table.Cell>
-                  <Table.Cell>234566</Table.Cell>
-                  <Table.Cell></Table.Cell>
-                  <Table.Cell>
-                    <Button className="action-btn" primary content="去交易" size="mini" />
-                  </Table.Cell>
-                </Table.Row>
-                <Table.Row>
-                  <Table.Cell><Icon name="star outline"/></Table.Cell>
-                  <Table.Cell>1</Table.Cell>
-                  <Table.Cell>BTC比特币</Table.Cell>
-                  <Table.Cell>10,042.1</Table.Cell>
-                  <Table.Cell>+4.5%</Table.Cell>
-                  <Table.Cell>10,042.1</Table.Cell>
-                  <Table.Cell>10,042.1</Table.Cell>
-                  <Table.Cell>234566</Table.Cell>
-                  <Table.Cell></Table.Cell>
-                  <Table.Cell>
-                    <Button className="action-btn" primary content="去交易" size="mini" />
-                  </Table.Cell>
-                </Table.Row>
-                <Table.Row>
-                  <Table.Cell><Icon name="star outline"/></Table.Cell>
-                  <Table.Cell>1</Table.Cell>
-                  <Table.Cell>BTC比特币</Table.Cell>
-                  <Table.Cell>10,042.1</Table.Cell>
-                  <Table.Cell>+4.5%</Table.Cell>
-                  <Table.Cell>10,042.1</Table.Cell>
-                  <Table.Cell>10,042.1</Table.Cell>
-                  <Table.Cell>234566</Table.Cell>
-                  <Table.Cell></Table.Cell>
-                  <Table.Cell>
-                    <Button className="action-btn" primary content="去交易" size="mini" />
-                  </Table.Cell>
-                </Table.Row>
-                <Table.Row></Table.Row>
-                <Table.Row></Table.Row>
-                <Table.Row></Table.Row>
-                <Table.Row></Table.Row>
-                <Table.Row></Table.Row>
-                <Table.Row></Table.Row>
-                <Table.Row></Table.Row>
-              </Table.Body>
-            </Table>
-            <Pagination size="mini" defaultActivePage={5} totalPages={10} style={{marginTop: '10px'}} />*/}
-
           </div>
         </div>
       </div>
@@ -316,13 +294,30 @@ class Market extends Component{
   componentDidMount(){
     this.props.actions.getCoinCategoryList_market({});
     this.props.actions.getCommonAttrList_market({});
-    this.getCoinListByAttr({ category: 0, attr: "{}", top: 100})
+    this.getCoinListByAttr({ category: 0, attr: "{}", top: 100, name: '', ico: 0});
+    this.loadLocales(this.props.Lang.lang)
+    if(sessionStorage.getItem('_udata')){
+      this.setState({ login: true})
+    }else{
+      this.setState({ login: false})
+    }
+  }
+  componentWillReceiveProps(nextProps){
+    if(this.props.Lang.lang != nextProps.Lang.lang){
+      this.loadLocales(nextProps.Lang.lang);
+    }
   }
   getCoinListByAttr(params){
     this.props.actions.getCoinListByAttr_market(params)
       .fail( ({msg}) => {
-        Toast.error( msg || '获取币失败')
+        Toast.error( msg || intl.get('MSG_getCoinListByAttr'))
       })
+  }
+  loadLocales(lang){
+    intl.init({
+      currentLocale: lang,
+      locales: market
+    })
   }
 }
 

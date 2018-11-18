@@ -1,7 +1,11 @@
+const isProduction = process.env.NODE_ENV === 'production';
+const env = process.env.NODE_ENV;
+
 export default {
   SMS_COUNT: 50, //毫秒为单位
-  ajax: "http://112.74.51.97:8020/futurechain-base",
-  socket_url: 'ws://112.74.51.97:8020/futurechain-base',
+  ajax: isProduction ? "/futurechain-base" : "http://47.91.244.192:8020/futurechain-base",
+  //socket_url: isProduction ? "ws://47.91.244.192:8020/futurechain-base":'ws://112.74.51.97:8020/futurechain-base',
+  socket_url: isProduction ? "ws://112.74.51.97:8020/futurechain-base":'ws://47.91.244.192:8020/futurechain-base',
   COUNTRY_CODE_LIST: [{
     key: '+86',
     value: '+86',

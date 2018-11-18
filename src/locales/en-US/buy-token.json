@@ -1,0 +1,11 @@
+{
+  "quantity": "Quantity",
+  "price": "Price",
+  "exchangeamount": "Exchange Amount",
+  "buynow": "Buy now",
+  "cannotbuy": "This token is not sold now!",
+  "buyok": "Buy success!",
+  "buyfail": "Fail to buy!",
+  "quantityreg": "Quantity must be at least 1!",
+  "coininfoerror": "Fail to get token information!"
+}
